@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Collections;
 import java.net.ServerSocket;
 
@@ -31,13 +33,23 @@ public class Server extends JPanel implements ActionListener {
     int playersX[] = new int[amountofPlayer];
     int playersY[] = new int[amountofPlayer];
     Timer timer;
-
+    static int x;
+    static int y;
     boolean running = false;
 
     // try to auto generate.
     private ArrayList<Integer> P1 = new ArrayList<Integer>();
     private ArrayList<Integer> P2 = new ArrayList<Integer>();
     private ArrayList<Integer> P3 = new ArrayList<Integer>();
+
+    // Characters hashmap
+    HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
+
+    // Doors positions hashmap
+    HashMap<String, Integer[]> doors = new HashMap<String, Integer[]>();
+
+    // Has the string info of all of the cards on the cardDeck array.
+    HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
     private enum colors {
     };
@@ -65,7 +77,8 @@ public class Server extends JPanel implements ActionListener {
 
         distributeCards();
 
-        startServer();
+        main();
+        // startServer(); --> se esta llamando en el main.
     }
 
     // Opens the sockets and waits for a connection from the client.
@@ -82,6 +95,8 @@ public class Server extends JPanel implements ActionListener {
             timer.start();
 
             System.out.println("Pick your color");
+
+            newPlayer(); // test
 
             while (true) {
                 break;
@@ -100,6 +115,57 @@ public class Server extends JPanel implements ActionListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void main() {
+
+        // Adding the starting coordinates for each of the characters.
+        characters.put("Plum", new Integer[] { 9, 199 });
+        characters.put("Mustard", new Integer[] { 807, 263 });
+        characters.put("White", new Integer[] { 519, 807 });
+        characters.put("Scarlet", new Integer[] { 551, 39 });
+        characters.put("Green", new Integer[] { 327, 807 });
+        characters.put("Peacock", new Integer[] { 39, 615 });
+
+        // Adding the starting coordinates for each of the doors.
+        doors.put("LoungeRoom", new Integer[] { 583, 199 });
+        doors.put("DiningRoom", new Integer[] { 551, 423 });
+        doors.put("Kitchen", new Integer[] { 647, 583 });
+        doors.put("BallRoom", new Integer[] { 487, 583 });
+        doors.put("Hall", new Integer[] { 327, 167 });
+        doors.put("Observatory", new Integer[] { 167, 647 });
+        doors.put("StudyRoom", new Integer[] { 231, 135 });
+        doors.put("Library", new Integer[] { 231, 295 });
+        doors.put("BilliardRoom", new Integer[] { 199, 519 });
+        doors.put("DecisionRoom", new Integer[] { 391, 295 });
+
+        // Hashmap of the info on the cardDeck elements (dudas)
+        cardDeckMap.put(0, "Green");
+        cardDeckMap.put(1, "Plum");
+        cardDeckMap.put(2, "Peacock");
+        cardDeckMap.put(3, "White");
+        cardDeckMap.put(4, "Scarlet");
+        cardDeckMap.put(5, "Mustard");
+        cardDeckMap.put(6, "Kitchen");
+        cardDeckMap.put(7, "Observatory");
+        cardDeckMap.put(8, "Study");
+        cardDeckMap.put(9, "Hall");
+        cardDeckMap.put(10, "Billard");
+        cardDeckMap.put(11, "Dining");
+        cardDeckMap.put(12, "Lounge");
+        cardDeckMap.put(13, "Library");
+        cardDeckMap.put(14, "Ballroom");
+        cardDeckMap.put(15, "Dumbbell");
+        cardDeckMap.put(16, "Candlestick");
+        cardDeckMap.put(17, "Rope");
+        cardDeckMap.put(18, "Rope");
+        cardDeckMap.put(19, "Pistol");
+        cardDeckMap.put(20, "Poison");
+        cardDeckMap.put(21, "Axe");
+        cardDeckMap.put(22, "Knife");
+        cardDeckMap.put(23, "Bat");
+
+        startServer();
     }
 
     // Initializes the paint for the whole game
@@ -189,7 +255,6 @@ public class Server extends JPanel implements ActionListener {
         }
     }
 
-    //
     public void distributeCards() {
         int distribute = (23 - 2) / amountofPlayer;
         try {
@@ -213,8 +278,43 @@ public class Server extends JPanel implements ActionListener {
 
     }
 
+    // As an example cause there is not enough data.
+    // THIS WILL BE EREASED
+    String color = "White";
+    String[] charArr;
+
+    // JUST FOR TEST
     // Sets all players in their respective start positions.
     public void newPlayer() {
+
+        switch (color) {
+        case "Plum":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Mustard":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "White":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Scarlet":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Green":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Peacock":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        }
+
+        System.out.println(x + " " + y);
+    }
+
+    public static void getStartingCoordinates(String[] charArr) {
+
+        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
+        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
 
     }
 
