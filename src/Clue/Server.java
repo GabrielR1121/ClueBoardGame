@@ -27,7 +27,7 @@ public class Server extends JPanel implements ActionListener {
     int align = 6;
     char direction = 'p';
     static final int DELAY = 75;
-    int amountofPlayer = 1;
+    int amountofPlayer = 3;
     int playersX[] = new int[amountofPlayer];
     int playersY[] = new int[amountofPlayer];
     Timer timer;
@@ -192,19 +192,21 @@ public class Server extends JPanel implements ActionListener {
     //
     public void distributeCards() {
         int distribute = 23 / amountofPlayer;
+        try {
+            for (int i = 1; i <= amountofPlayer; i++)
+                for (int j = 0; j < distribute; j++) {
+                    if (i == 1)
+                        P1.add(CardDeck.get(j));
+                    else if (i == 2)
+                        P2.add(CardDeck.get(j));
+                    else if (i == 3)
+                        P3.add(CardDeck.get(j));
 
-        for (int i = 1; i <= amountofPlayer; i++)
-            for (int j = 0; j < distribute; j++) {
-                if (i == 1) {
-                    P1.add(CardDeck.get(j));
-                } else if (i == 2) {
-                    P2.add(CardDeck.get(j));
-                } else if (i == 3) {
-                    P3.add(CardDeck.get(j));
+                    CardDeck.remove(j);
                 }
-                System.out.println(P1.toString());
-                CardDeck.remove(j);
-            }
+        } catch (Exception e) {
+        }
+
         System.out.println(P1.toString());
         System.out.println(P2.toString());
         System.out.println(P3.toString());
