@@ -191,7 +191,7 @@ public class Server extends JPanel implements ActionListener {
 
     //
     public void distributeCards() {
-        int distribute = 23 / amountofPlayer;
+        int distribute = (23 - 2) / amountofPlayer;
         try {
             for (int i = 1; i <= amountofPlayer; i++)
                 for (int j = 0; j < distribute; j++) {
