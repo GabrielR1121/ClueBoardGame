@@ -3,7 +3,8 @@ package Clue;
 import javax.swing.JFrame;
 
 public class GameFrame extends JFrame {
-
+    // This class could be multi-use for the start, dispute and final rumor methods
+    // for their respective windows.
     GameFrame() {
 
         this.add(new Server());
@@ -14,9 +15,4 @@ public class GameFrame extends JFrame {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
     }
-
-    public static void main(String[] args) {
-        new GameFrame();
-    }
-
 }

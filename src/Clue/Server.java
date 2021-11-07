@@ -176,7 +176,7 @@ public class Server extends JPanel implements ActionListener {
     // * Players / Player Movement.
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard.jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(Updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 
