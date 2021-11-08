@@ -49,7 +49,7 @@ public class Server extends JPanel implements ActionListener {
     public List<ArrayList<Integer>> playerCards = new ArrayList<ArrayList<Integer>>();
 
     // Permited moves Hashmap
-    HashMap<Integer, Integer> permitedCoordinates = new HashMap<Integer, Integer>();
+    HashMap<Integer, ArrayList<Integer>> permitedCoordinates = new HashMap<Integer, ArrayList<Integer>>();
 
     // Characters hashmap
     HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
@@ -173,6 +173,233 @@ public class Server extends JPanel implements ActionListener {
         cardDeckMap.put(18, "Revolver");
         cardDeckMap.put(19, "Rope");
         cardDeckMap.put(20, "Wrench");
+
+        permitedCoordinates.put(263, new ArrayList<Integer>());
+        permitedCoordinates.get(263).add(71);
+        permitedCoordinates.get(263).add(135);
+        permitedCoordinates.get(263).add(103);
+        permitedCoordinates.get(263).add(167);
+        permitedCoordinates.get(263).add(199);
+        permitedCoordinates.get(263).add(231);
+        permitedCoordinates.get(263).add(263);
+        permitedCoordinates.get(263).add(295);
+        permitedCoordinates.get(263).add(327);
+        permitedCoordinates.get(263).add(359);
+        permitedCoordinates.get(263).add(391);
+        permitedCoordinates.get(263).add(423);
+        permitedCoordinates.get(263).add(455);
+        permitedCoordinates.get(263).add(487);
+        permitedCoordinates.get(263).add(519);
+        permitedCoordinates.get(263).add(551);
+        permitedCoordinates.get(263).add(583);
+        permitedCoordinates.get(263).add(615);
+        permitedCoordinates.get(263).add(647);
+        permitedCoordinates.get(263).add(679);
+        permitedCoordinates.get(263).add(711);
+        permitedCoordinates.get(263).add(743);
+        permitedCoordinates.get(263).add(755);
+        /////
+        permitedCoordinates.put(295, new ArrayList<Integer>());
+        permitedCoordinates.get(295).add(71);
+        permitedCoordinates.get(295).add(103);
+        permitedCoordinates.get(295).add(135);
+        permitedCoordinates.get(295).add(167);
+        permitedCoordinates.get(295).add(199);
+        permitedCoordinates.get(295).add(231);
+        permitedCoordinates.get(295).add(263);
+        permitedCoordinates.get(295).add(295);
+        permitedCoordinates.get(295).add(327);
+        permitedCoordinates.get(295).add(359);
+        permitedCoordinates.get(295).add(391);
+        permitedCoordinates.get(295).add(423);
+        permitedCoordinates.get(295).add(455);
+        permitedCoordinates.get(295).add(487);
+        permitedCoordinates.get(295).add(519);
+        permitedCoordinates.get(295).add(551);
+        permitedCoordinates.get(295).add(615);
+        permitedCoordinates.get(295).add(583);
+        permitedCoordinates.get(295).add(755);
+        ///
+        permitedCoordinates.put(231, new ArrayList<Integer>());
+        permitedCoordinates.get(231).add(199);
+        permitedCoordinates.get(231).add(231);
+        permitedCoordinates.get(231).add(359);
+        permitedCoordinates.get(231).add(391);
+        permitedCoordinates.get(231).add(423);
+        permitedCoordinates.get(231).add(455);
+        permitedCoordinates.get(231).add(487);
+        permitedCoordinates.get(231).add(519);
+        permitedCoordinates.get(231).add(551);
+        permitedCoordinates.get(231).add(583);
+        permitedCoordinates.get(231).add(615);
+        permitedCoordinates.get(231).add(647);
+        permitedCoordinates.get(231).add(679);
+        permitedCoordinates.get(231).add(711);
+        permitedCoordinates.get(231).add(743);
+        //////
+        permitedCoordinates.put(199, new ArrayList<Integer>());
+        permitedCoordinates.get(199).add(167);
+        permitedCoordinates.get(199).add(199);
+        permitedCoordinates.get(199).add(391);
+        permitedCoordinates.get(199).add(583);
+        permitedCoordinates.get(199).add(615);
+        permitedCoordinates.get(199).add(647);
+        /////
+        permitedCoordinates.put(167, new ArrayList<Integer>());
+        permitedCoordinates.get(167).add(167);
+        permitedCoordinates.get(167).add(199);
+        permitedCoordinates.get(167).add(391);
+        permitedCoordinates.get(167).add(583);
+        permitedCoordinates.get(167).add(615);
+        ////////
+        permitedCoordinates.put(135, new ArrayList<Integer>());
+        permitedCoordinates.get(135).add(167);
+        permitedCoordinates.get(135).add(199);
+        permitedCoordinates.get(135).add(391);
+        permitedCoordinates.get(135).add(583);
+        permitedCoordinates.get(135).add(615);
+        //
+        permitedCoordinates.put(103, new ArrayList<Integer>());
+        permitedCoordinates.get(103).add(167);
+        permitedCoordinates.get(103).add(199);
+        permitedCoordinates.get(103).add(391);
+        permitedCoordinates.get(103).add(583);
+        permitedCoordinates.get(103).add(615);
+        ////
+        permitedCoordinates.put(71, new ArrayList<Integer>());
+        permitedCoordinates.get(71).add(167);
+        permitedCoordinates.get(71).add(199);
+        permitedCoordinates.get(71).add(391);
+        permitedCoordinates.get(71).add(583);
+        permitedCoordinates.get(71).add(615);
+        //
+        permitedCoordinates.put(327, new ArrayList<Integer>());
+        permitedCoordinates.get(327).add(263);
+        permitedCoordinates.get(327).add(519);
+        permitedCoordinates.get(327).add(551);
+        permitedCoordinates.get(327).add(755);
+        //
+        permitedCoordinates.put(359, new ArrayList<Integer>());
+        permitedCoordinates.get(359).add(263);
+        permitedCoordinates.get(359).add(519);
+        permitedCoordinates.get(359).add(551);
+        //
+        permitedCoordinates.put(391, new ArrayList<Integer>());
+        permitedCoordinates.get(391).add(263);
+        permitedCoordinates.get(391).add(519);
+        permitedCoordinates.get(391).add(551);
+        //
+        permitedCoordinates.put(423, new ArrayList<Integer>());
+        permitedCoordinates.get(423).add(263);
+        permitedCoordinates.get(423).add(519);
+        permitedCoordinates.get(423).add(551);
+        //
+        permitedCoordinates.put(455, new ArrayList<Integer>());
+        permitedCoordinates.get(455).add(263);
+        permitedCoordinates.get(455).add(519);
+        permitedCoordinates.get(455).add(551);
+        //
+        permitedCoordinates.put(487, new ArrayList<Integer>());
+        permitedCoordinates.get(487).add(263);
+        permitedCoordinates.get(487).add(295);
+        permitedCoordinates.get(487).add(327);
+        permitedCoordinates.get(487).add(359);
+        permitedCoordinates.get(487).add(391);
+        permitedCoordinates.get(487).add(423);
+        permitedCoordinates.get(487).add(455);
+        permitedCoordinates.get(487).add(487);
+        permitedCoordinates.get(487).add(519);
+        permitedCoordinates.get(487).add(551);
+        permitedCoordinates.get(487).add(583);
+        permitedCoordinates.get(487).add(755);
+        /////
+        permitedCoordinates.put(519, new ArrayList<Integer>());
+        permitedCoordinates.get(519).add(71);
+        permitedCoordinates.get(519).add(103);
+        permitedCoordinates.get(519).add(135);
+        permitedCoordinates.get(519).add(167);
+        permitedCoordinates.get(519).add(199);
+        permitedCoordinates.get(519).add(231);
+        permitedCoordinates.get(519).add(263);
+        permitedCoordinates.get(519).add(295);
+        permitedCoordinates.get(519).add(327);
+        permitedCoordinates.get(519).add(359);
+        permitedCoordinates.get(519).add(391);
+        permitedCoordinates.get(519).add(423);
+        permitedCoordinates.get(519).add(455);
+        permitedCoordinates.get(519).add(487);
+        permitedCoordinates.get(519).add(519);
+        permitedCoordinates.get(519).add(551);
+        permitedCoordinates.get(519).add(583);
+        permitedCoordinates.get(519).add(755);
+        ///
+        permitedCoordinates.put(551, new ArrayList<Integer>());
+        permitedCoordinates.get(551).add(71);
+        permitedCoordinates.get(551).add(103);
+        permitedCoordinates.get(551).add(135);
+        permitedCoordinates.get(551).add(167);
+        permitedCoordinates.get(551).add(199);
+        permitedCoordinates.get(551).add(231);
+        permitedCoordinates.get(551).add(263);
+        permitedCoordinates.get(551).add(295);
+        permitedCoordinates.get(551).add(519);
+        permitedCoordinates.get(551).add(551);
+        permitedCoordinates.get(551).add(583);
+        permitedCoordinates.get(551).add(615);
+        permitedCoordinates.get(551).add(647);
+        permitedCoordinates.get(551).add(679);
+        permitedCoordinates.get(551).add(711);
+        permitedCoordinates.get(551).add(743);
+        permitedCoordinates.get(551).add(755);
+
+        permitedCoordinates.put(583, new ArrayList<Integer>());
+        permitedCoordinates.get(583).add(231);
+        permitedCoordinates.get(583).add(263);
+        permitedCoordinates.get(583).add(295);
+        permitedCoordinates.get(583).add(519);
+        permitedCoordinates.get(583).add(551);
+        permitedCoordinates.get(583).add(583);
+        permitedCoordinates.get(583).add(615);
+        permitedCoordinates.get(583).add(647);
+        permitedCoordinates.get(583).add(679);
+        permitedCoordinates.get(583).add(711);
+        permitedCoordinates.get(583).add(743);
+        ///
+        permitedCoordinates.put(615, new ArrayList<Integer>());
+        permitedCoordinates.get(615).add(231);
+        permitedCoordinates.get(615).add(263);
+        permitedCoordinates.get(615).add(295);
+        permitedCoordinates.get(615).add(519);
+        permitedCoordinates.get(615).add(551);
+        permitedCoordinates.get(615).add(583);
+        //
+        permitedCoordinates.put(647, new ArrayList<Integer>());
+        permitedCoordinates.get(647).add(231);
+        permitedCoordinates.get(647).add(263);
+        permitedCoordinates.get(647).add(295);
+        permitedCoordinates.get(647).add(551);
+        permitedCoordinates.get(647).add(583);
+        //
+        permitedCoordinates.put(679, new ArrayList<Integer>());
+        permitedCoordinates.get(679).add(231);
+        permitedCoordinates.get(679).add(263);
+        permitedCoordinates.get(679).add(295);
+        permitedCoordinates.get(679).add(551);
+        permitedCoordinates.get(679).add(583);
+        //
+        permitedCoordinates.put(711, new ArrayList<Integer>());
+        permitedCoordinates.get(711).add(231);
+        permitedCoordinates.get(711).add(263);
+        permitedCoordinates.get(711).add(295);
+        permitedCoordinates.get(711).add(551);
+        permitedCoordinates.get(711).add(583);
+        //
+        permitedCoordinates.put(743, new ArrayList<Integer>());
+        permitedCoordinates.get(743).add(231);
+        permitedCoordinates.get(743).add(263);
+        permitedCoordinates.get(743).add(295);
+
+        System.out.println("Coordinates:" + permitedCoordinates.get(263));
 
         startServer();
     }
@@ -348,6 +575,12 @@ public class Server extends JPanel implements ActionListener {
     // Checks to see if players are within the game bounds
     public void checkBounds() {
 
+        if (permitedCoordinates.containsKey(x)) {
+            if (permitedCoordinates.get(x).contains(y))
+                System.out.println("YOU CAN MOVE");
+            else
+                System.out.println(("NO"));
+        }
     }
 
     // Checks to see if players are entering a room through the door.
@@ -370,7 +603,7 @@ public class Server extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
-            // checkBounds();
+            checkBounds();
             checkPlayer();
             checkRoom();
         }
