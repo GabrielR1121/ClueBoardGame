@@ -47,9 +47,9 @@ public class Server extends JPanel implements ActionListener {
     // try to auto generate.
     private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
     public List<ArrayList<Integer>> playerCards = new ArrayList<ArrayList<Integer>>();
-    // private ArrayList<Integer> P1 = new ArrayList<Integer>();
-    // private ArrayList<Integer> P2 = new ArrayList<Integer>();
-    // private ArrayList<Integer> P3 = new ArrayList<Integer>();
+
+    // Permited moves Hashmap
+    HashMap<Integer, Integer> permitedCoordinates = new HashMap<Integer, Integer>();
 
     // Characters hashmap
     HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
@@ -132,12 +132,12 @@ public class Server extends JPanel implements ActionListener {
     public void main() {
 
         // Adding the starting coordinates for each of the characters.
-        characters.put("Green", new Integer[] { 9, 199 });
-        characters.put("Mustard", new Integer[] { 807, 263 });
-        characters.put("Orchid", new Integer[] { 519, 807 });
-        characters.put("Peacock", new Integer[] { 551, 39 });
-        characters.put("Plum", new Integer[] { 327, 807 });
-        characters.put("Scarlett", new Integer[] { 39, 615 });
+        characters.put("Green", new Integer[] { 327, 807 });
+        characters.put("Mustard", new Integer[] { 775, 263 });
+        characters.put("Orchid", new Integer[] { 487, 807 });// to do
+        characters.put("Peacock", new Integer[] { 39, 615 });
+        characters.put("Plum", new Integer[] { 39, 199 });
+        characters.put("Scarlett", new Integer[] { 551, 39 });
 
         // Adding the starting coordinates for each of the doors.
         doors.put("BallRoom", new Integer[] { 583, 199 });
@@ -198,9 +198,8 @@ public class Server extends JPanel implements ActionListener {
         }
 
         // for (int i = 0; i < amountofPlayer; i++) {
-        // g.setColor(colors[i]);
-        // g.fillOval(playersX[i] + align + 1, playersY[i] + align, UNIT_SIZE,
-        // UNIT_SIZE);
+        g.setColor(Color.GREEN);
+        g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
 
         // }
 
@@ -224,40 +223,28 @@ public class Server extends JPanel implements ActionListener {
         switch (direction) {
 
         case 'U':
-            for (int i = 0; i < amountofPlayer; i++) {
-                playersY[i] = playersY[i] - UNIT_SIZE;
-                System.out.println(
-                        "Player " + (i + 1) + " X: " + (playersX[i] + align + 1) + " Y: " + (playersY[i] + align + 1));
-            }
-
+            y = y - UNIT_SIZE;
             direction = 's';
 
             break;
 
         case 'D':
-            for (int i = 0; i < amountofPlayer; i++) {
-                playersY[i] = playersY[i] + UNIT_SIZE;
-                System.out.println(
-                        "Player " + (i + 1) + " X: " + (playersX[i] + align + 1) + " Y: " + (playersY[i] + align + 1));
-            }
+
+            y = y + UNIT_SIZE;
+
             direction = 's';
             break;
 
         case 'L':
-            for (int i = 0; i < amountofPlayer; i++) {
-                playersX[i] = playersX[i] - UNIT_SIZE;
-                System.out.println(
-                        "Player " + (i + 1) + " X: " + (playersX[i] + align + 1) + " Y: " + (playersY[i] + align + 1));
-            }
+
+            x = x - UNIT_SIZE;
+
             direction = 's';
             break;
 
         case 'R':
-            for (int i = 0; i < amountofPlayer; i++) {
-                playersX[i] = playersX[i] + UNIT_SIZE;
-                System.out.println(
-                        "Player " + (i + 1) + " X: " + (playersX[i] + align + 1) + " Y: " + (playersY[i] + align + 1));
-            }
+            x = x + UNIT_SIZE;
+
             direction = 's';
             break;
         }
@@ -290,17 +277,27 @@ public class Server extends JPanel implements ActionListener {
     }
 
     public void distributeCards() {
-        int distribute = (amountCards) / amountofPlayer;
+        amountofPlayer = 5;
+        int distribute = ((amountCards) / amountofPlayer);
+        int rem = amountCards % amountofPlayer;
+
         int start = 0;
         int end = distribute;
-
         List<List<Integer>> list = new ArrayList<List<Integer>>();
+
         for (int i = 1; i <= amountofPlayer; i++) {
+
+            int extra = (i <= rem) ? 1 : 0;
+
             list.add(CardDeck.subList(start, end));
-            start += distribute;
-            end += distribute;
+
+            start = end;
+            end += distribute + extra;
+
         }
+
         System.out.println(list.toString());
+
     }
 
     // As an example cause there is not enough data.
@@ -371,10 +368,10 @@ public class Server extends JPanel implements ActionListener {
 
     // activates when an action is preformed in order to run previus methods.
     public void actionPerformed(ActionEvent e) {
-        if (running && isPlayerTurn) {
+        if (running) {
             move();
+            // checkBounds();
             checkPlayer();
-            checkBounds();
             checkRoom();
         }
         repaint();
