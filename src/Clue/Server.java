@@ -6,11 +6,14 @@ import javax.swing.*;
 import javax.swing.JPanel;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Collections;
 import java.net.ServerSocket;
+import java.util.List;
+import java.util.Iterator;
 
 public class Server extends JPanel implements ActionListener {
 
@@ -29,19 +32,24 @@ public class Server extends JPanel implements ActionListener {
     int align = 6;
     char direction = 'p';
     static final int DELAY = 75;
-    int amountofPlayer = 3;
+
+    int amountofPlayer = 4;
+
     int playersX[] = new int[amountofPlayer];
     int playersY[] = new int[amountofPlayer];
     Timer timer;
     static int x;
     static int y;
     boolean running = false;
-    public int amountCards = 21;
+    int amountCards = 21;
+    Random rand = new Random();
 
     // try to auto generate.
-    private ArrayList<Integer> P1 = new ArrayList<Integer>();
-    private ArrayList<Integer> P2 = new ArrayList<Integer>();
-    private ArrayList<Integer> P3 = new ArrayList<Integer>();
+    private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
+    public List<ArrayList<Integer>> playerCards = new ArrayList<ArrayList<Integer>>();
+    // private ArrayList<Integer> P1 = new ArrayList<Integer>();
+    // private ArrayList<Integer> P2 = new ArrayList<Integer>();
+    // private ArrayList<Integer> P3 = new ArrayList<Integer>();
 
     // Characters hashmap
     HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
@@ -54,8 +62,6 @@ public class Server extends JPanel implements ActionListener {
 
     private enum colors {
     };
-
-    private int secretFolder[] = new int[3];
 
     private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
@@ -71,11 +77,14 @@ public class Server extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        for (int i = 0; i < amountCards; i++)
-            CardDeck.add(i);
 
-        // Add method to remove 3 cards from each
+        // Fills and Refills the Deck
+        fillCardDeck();
 
+        // Selects 3 cards at random from Character, Weapon and Room and sets them aside
+        secretFolderDistribute();
+
+        // Shuffles the remainning
         Collections.shuffle(CardDeck);
 
         distributeCards();
@@ -254,28 +263,44 @@ public class Server extends JPanel implements ActionListener {
         }
     }
 
+    public void fillCardDeck() {
+        CardDeck.clear();
+        for (int i = 0; i < amountCards; i++)
+            CardDeck.add(i);
+    }
+
+    public void secretFolderDistribute() {
+        secretFolder.clear();
+
+        int character = rand.nextInt(6);
+        secretFolder.add(character);
+
+        int room = rand.nextInt(14 - 6 + 1) + 6;
+        secretFolder.add(room);
+
+        int weapon = rand.nextInt(20 - 15 + 1) + 15;
+        secretFolder.add(weapon);
+
+        CardDeck.remove(weapon);
+        CardDeck.remove(room);
+        CardDeck.remove(character);
+        amountCards -= 3;
+        System.out.println("Secret Card: " + secretFolder.toString());
+
+    }
+
     public void distributeCards() {
         int distribute = (amountCards) / amountofPlayer;
-        try {
-            for (int i = 1; i <= amountofPlayer; i++)
-                for (int j = 0; j <= distribute; j++) {
-                    if (i == 1)
-                        P1.add(CardDeck.get(j));
-                    else if (i == 2)
-                        P2.add(CardDeck.get(j));
-                    else if (i == 3)
-                        P3.add(CardDeck.get(j));
+        int start = 0;
+        int end = distribute;
 
-                    CardDeck.remove(j);
-                }
-        } catch (Exception e) {
+        List<List<Integer>> list = new ArrayList<List<Integer>>();
+        for (int i = 1; i <= amountofPlayer; i++) {
+            list.add(CardDeck.subList(start, end));
+            start += distribute;
+            end += distribute;
         }
-
-        System.out.println(P1.toString());
-        System.out.println(P2.toString());
-        System.out.println(P3.toString());
-        System.out.println(CardDeck.toString());
-
+        System.out.println(list.toString());
     }
 
     // As an example cause there is not enough data.
