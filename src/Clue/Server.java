@@ -36,6 +36,7 @@ public class Server extends JPanel implements ActionListener {
     static int x;
     static int y;
     boolean running = false;
+    public int amountCards = 21;
 
     // try to auto generate.
     private ArrayList<Integer> P1 = new ArrayList<Integer>();
@@ -70,8 +71,10 @@ public class Server extends JPanel implements ActionListener {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < amountCards; i++)
             CardDeck.add(i);
+
+        // Add method to remove 3 cards from each
 
         Collections.shuffle(CardDeck);
 
@@ -252,10 +255,10 @@ public class Server extends JPanel implements ActionListener {
     }
 
     public void distributeCards() {
-        int distribute = (23 - 2) / amountofPlayer;
+        int distribute = (amountCards) / amountofPlayer;
         try {
             for (int i = 1; i <= amountofPlayer; i++)
-                for (int j = 0; j < distribute; j++) {
+                for (int j = 0; j <= distribute; j++) {
                     if (i == 1)
                         P1.add(CardDeck.get(j));
                     else if (i == 2)
@@ -271,6 +274,7 @@ public class Server extends JPanel implements ActionListener {
         System.out.println(P1.toString());
         System.out.println(P2.toString());
         System.out.println(P3.toString());
+        System.out.println(CardDeck.toString());
 
     }
 
