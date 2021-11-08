@@ -276,7 +276,7 @@ public class Server extends JPanel implements ActionListener {
 
     // As an example cause there is not enough data.
     // THIS WILL BE EREASED
-    String color = "White";
+    String color = "Green";
     String[] charArr;
 
     // JUST FOR TEST
@@ -284,22 +284,22 @@ public class Server extends JPanel implements ActionListener {
     public void newPlayer() {
 
         switch (color) {
-        case "Plum":
+        case "Green":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Mustard":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
-        case "White":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Scarlet":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Green":
+        case "Orchid":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Peacock":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Plum":
+            charArr = (Arrays.toString(characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Scarlett":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         }
