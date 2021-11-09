@@ -61,7 +61,27 @@ public class Server extends JPanel implements ActionListener {
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
     private enum colors {
-    };
+
+        SCARLETT("255,36,0"),
+        PLUM("142,69,133"),
+        ORCHID("218,112,214"),
+        GREEN("0,125,0"),
+        MUSTARD("255,204,102"),
+        PEACOCK("51,161,201");
+
+        private Color clr;
+
+        private colors(String rgb){
+
+            String[] strRGB= rgb.split(",");
+
+            clr = new Color(Integer.parseInt(strRGB[0]),Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
+        }
+
+        public Color getColor(){
+            return clr;
+        }
+    }
 
     private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
