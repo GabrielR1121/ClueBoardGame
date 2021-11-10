@@ -56,7 +56,7 @@ public class Server extends JPanel implements ActionListener {
     HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
 
     // Doors positions hashmap
-    HashMap<String, Integer[]> doors = new HashMap<String, Integer[]>();
+    HashMap<Integer, ArrayList<Integer>> doors = new HashMap<Integer, ArrayList<Integer>>();
 
     // Has the string info of all of the cards on the cardDeck array.
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
@@ -156,16 +156,26 @@ public class Server extends JPanel implements ActionListener {
         characters.put("Scarlett", new Integer[] { 551, 39 });
 
         // Adding the starting coordinates for each of the doors.
-        doors.put("BallRoom", new Integer[] { 583, 199 });
-        doors.put("BilliardRoom", new Integer[] { 551, 423 });
-        doors.put("Conservatory", new Integer[] { 647, 583 });
-        doors.put("DiningRoom", new Integer[] { 487, 583 });
-        doors.put("Hall", new Integer[] { 327, 167 });
-        doors.put("Kitchen", new Integer[] { 167, 647 });
-        doors.put("Library", new Integer[] { 231, 135 });
-        doors.put("Lounge", new Integer[] { 231, 295 });
-        doors.put("Study", new Integer[] { 199, 519 });
-        doors.put("DecisionRoom", new Integer[] { 391, 295 });
+        doors.put(487, new ArrayList<>());
+        doors.get(487).add(551); // ball room
+        doors.put(231, new ArrayList<>());
+        doors.get(231).add(519); // billiard room
+        doors.put(199, new ArrayList<>());
+        doors.get(199).add(647); // conservatory
+        doors.put(519, new ArrayList<>());
+        doors.get(519).add(423); // dining room
+        doors.put(295, new ArrayList<>());
+        doors.get(295).add(167); // hall
+        doors.put(647, new ArrayList<>());
+        doors.get(647).add(583); // kitchen
+        doors.put(263, new ArrayList<>());
+        doors.get(263).add(295); // library
+        doors.put(583, new ArrayList<>());
+        doors.get(583).add(231); // lounge
+        doors.put(231, new ArrayList<>());
+        doors.get(231).add(167); // study
+        doors.put(391, new ArrayList<>());
+        doors.get(391).add(263); // decision
 
         // Hashmap of the info on the cardDeck elements (dudas)
         cardDeckMap.put(0, "Green");
@@ -442,16 +452,22 @@ public class Server extends JPanel implements ActionListener {
         switch (color) {
         case "Green":
             g.setColor(colors.Green.getColor());
+            break;
         case "Mustard":
             g.setColor(colors.Mustard.getColor());
+            break;
         case "Orchid":
             g.setColor(colors.Orchid.getColor());
+            break;
         case "Peacock":
             g.setColor(colors.Peacock.getColor());
+            break;
         case "Plum":
             g.setColor(colors.Plum.getColor());
+            break;
         case "Scarlett":
-            // g.setColor(colors.Scarlett.getColor());
+            g.setColor(colors.Scarlett.getColor());
+            break;
         }
 
         g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
@@ -479,6 +495,10 @@ public class Server extends JPanel implements ActionListener {
         case 'U':
             if (checkBounds(x, y - UNIT_SIZE))
                 y = y - UNIT_SIZE;
+
+            if (checkRoom(x, y))
+                System.out.println("Want to enter this room?");
+
             direction = 's';
 
             break;
@@ -486,6 +506,8 @@ public class Server extends JPanel implements ActionListener {
         case 'D':
             if (checkBounds(x, y + UNIT_SIZE))
                 y = y + UNIT_SIZE;
+            if (checkRoom(x, y))
+                System.out.println("Want to enter this room?");
 
             direction = 's';
             break;
@@ -493,6 +515,8 @@ public class Server extends JPanel implements ActionListener {
         case 'L':
             if (checkBounds(x - UNIT_SIZE, y))
                 x = x - UNIT_SIZE;
+            if (checkRoom(x, y))
+                System.out.println("Want to enter this room?");
 
             direction = 's';
             break;
@@ -500,10 +524,13 @@ public class Server extends JPanel implements ActionListener {
         case 'R':
             if (checkBounds(x + UNIT_SIZE, y))
                 x = x + UNIT_SIZE;
+            if (checkRoom(x, y))
+                System.out.println("Want to enter this room?");
 
             direction = 's';
             break;
         }
+        // System.out.println("x: " + x + " y: " + y);
     }
 
     public void fillCardDeck() {
@@ -596,10 +623,26 @@ public class Server extends JPanel implements ActionListener {
 
     }
 
-    // Checks to see if players are not on top of each other.
-    public void checkPlayer() {
+    // // Checks to see if players are not on top of each other.
+    // public void checkPlayer(int xCoord, int yCoord) {
 
-    }
+    // if(checkDuplicateCoordinate(playerX, index) &&
+    // checkDuplicateCoordinate(playerY, 0)
+    // System.out.println("ON TOP");
+
+    // }
+
+    // private static boolean checkDuplicateCoordinate(int[] playerArray, int
+    // coordinateIdx) {
+    // for (int i = 0; i < playerArray.length; i++) {
+    // if (coordinateIdx != i) {
+    // if (playerArray[coordinateIdx] == playerArray[i])
+    // return true;
+    // }
+    // return false;
+    // }
+
+    // }
 
     // Checks to see if players are within the game bounds
     public Boolean checkBounds(int xCoord, int yCoord) {
@@ -612,7 +655,13 @@ public class Server extends JPanel implements ActionListener {
     }
 
     // Checks to see if players are entering a room through the door.
-    public void checkRoom() {
+    public Boolean checkRoom(int xCoord, int yCoord) {
+
+        if (doors.containsKey(xCoord)) {
+            if (doors.get(xCoord).contains(yCoord))
+                return true;
+        }
+        return false;
 
     }
 
@@ -632,7 +681,6 @@ public class Server extends JPanel implements ActionListener {
         if (running) {
             move();
             checkPlayer();
-            checkRoom();
         }
         repaint();
     }
