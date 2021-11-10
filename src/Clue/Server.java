@@ -32,6 +32,7 @@ public class Server extends JPanel implements ActionListener {
     int align = 6;
     char direction = 'p';
     static final int DELAY = 75;
+    String color;
 
     int amountofPlayer = 4;
 
@@ -61,24 +62,19 @@ public class Server extends JPanel implements ActionListener {
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
     private enum colors {
-
-        SCARLETT("255,36,0"),
-        PLUM("142,69,133"),
-        ORCHID("218,112,214"),
-        GREEN("0,125,0"),
-        MUSTARD("255,204,102"),
-        PEACOCK("51,161,201");
+        Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
+        Peacock("51,161,201");
 
         private Color clr;
 
-        private colors(String rgb){
+        private colors(String rgb) {
 
-            String[] strRGB= rgb.split(",");
+            String[] strRGB = rgb.split(",");
 
-            clr = new Color(Integer.parseInt(strRGB[0]),Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
+            clr = new Color(Integer.parseInt(strRGB[0]), Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
         }
 
-        public Color getColor(){
+        public Color getColor() {
             return clr;
         }
     }
@@ -126,7 +122,7 @@ public class Server extends JPanel implements ActionListener {
             timer = new Timer(DELAY, this);
             timer.start();
 
-            System.out.println("Pick your color");
+            // System.out.println("Pick your color");
 
             newPlayer(); // test
 
@@ -217,7 +213,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(263).add(679);
         permitedCoordinates.get(263).add(711);
         permitedCoordinates.get(263).add(743);
-        permitedCoordinates.get(263).add(755);
+        permitedCoordinates.get(263).add(775);
         /////
         permitedCoordinates.put(295, new ArrayList<Integer>());
         permitedCoordinates.get(295).add(71);
@@ -236,9 +232,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(295).add(487);
         permitedCoordinates.get(295).add(519);
         permitedCoordinates.get(295).add(551);
-        permitedCoordinates.get(295).add(615);
-        permitedCoordinates.get(295).add(583);
-        permitedCoordinates.get(295).add(755);
+        permitedCoordinates.get(295).add(775);
         ///
         permitedCoordinates.put(231, new ArrayList<Integer>());
         permitedCoordinates.get(231).add(199);
@@ -256,6 +250,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(231).add(679);
         permitedCoordinates.get(231).add(711);
         permitedCoordinates.get(231).add(743);
+        permitedCoordinates.get(231).add(167);
         //////
         permitedCoordinates.put(199, new ArrayList<Integer>());
         permitedCoordinates.get(199).add(167);
@@ -297,7 +292,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(327).add(263);
         permitedCoordinates.get(327).add(519);
         permitedCoordinates.get(327).add(551);
-        permitedCoordinates.get(327).add(755);
+        permitedCoordinates.get(327).add(775);
         //
         permitedCoordinates.put(359, new ArrayList<Integer>());
         permitedCoordinates.get(359).add(263);
@@ -330,8 +325,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(487).add(487);
         permitedCoordinates.get(487).add(519);
         permitedCoordinates.get(487).add(551);
-        permitedCoordinates.get(487).add(583);
-        permitedCoordinates.get(487).add(755);
+        permitedCoordinates.get(487).add(775);
         /////
         permitedCoordinates.put(519, new ArrayList<Integer>());
         permitedCoordinates.get(519).add(71);
@@ -350,8 +344,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(519).add(487);
         permitedCoordinates.get(519).add(519);
         permitedCoordinates.get(519).add(551);
-        permitedCoordinates.get(519).add(583);
-        permitedCoordinates.get(519).add(755);
+        permitedCoordinates.get(519).add(775);
         ///
         permitedCoordinates.put(551, new ArrayList<Integer>());
         permitedCoordinates.get(551).add(71);
@@ -370,7 +363,7 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(551).add(679);
         permitedCoordinates.get(551).add(711);
         permitedCoordinates.get(551).add(743);
-        permitedCoordinates.get(551).add(755);
+        permitedCoordinates.get(551).add(775);
 
         permitedCoordinates.put(583, new ArrayList<Integer>());
         permitedCoordinates.get(583).add(231);
@@ -418,8 +411,10 @@ public class Server extends JPanel implements ActionListener {
         permitedCoordinates.get(743).add(231);
         permitedCoordinates.get(743).add(263);
         permitedCoordinates.get(743).add(295);
+        permitedCoordinates.get(743).add(551);
+        permitedCoordinates.get(743).add(583);
 
-        System.out.println("Coordinates:" + permitedCoordinates.get(263));
+        // System.out.println("Coordinates:" + permitedCoordinates.get(263));
 
         startServer();
     }
@@ -444,11 +439,22 @@ public class Server extends JPanel implements ActionListener {
             g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
         }
 
-        // for (int i = 0; i < amountofPlayer; i++) {
-        g.setColor(Color.GREEN);
-        g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
+        switch (color) {
+        case "Green":
+            g.setColor(colors.Green.getColor());
+        case "Mustard":
+            g.setColor(colors.Mustard.getColor());
+        case "Orchid":
+            g.setColor(colors.Orchid.getColor());
+        case "Peacock":
+            g.setColor(colors.Peacock.getColor());
+        case "Plum":
+            g.setColor(colors.Plum.getColor());
+        case "Scarlett":
+            // g.setColor(colors.Scarlett.getColor());
+        }
 
-        // }
+        g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
 
         // Redraws the board each time something happens.
         repaint();
@@ -467,30 +473,33 @@ public class Server extends JPanel implements ActionListener {
     // For now print (X,Y) of the player.
     public void move() {
 
+        // int extra = (checkBounds()) ? UNIT_SIZE : 0;
         switch (direction) {
 
         case 'U':
-            y = y - UNIT_SIZE;
+            if (checkBounds(x, y - UNIT_SIZE))
+                y = y - UNIT_SIZE;
             direction = 's';
 
             break;
 
         case 'D':
-
-            y = y + UNIT_SIZE;
+            if (checkBounds(x, y + UNIT_SIZE))
+                y = y + UNIT_SIZE;
 
             direction = 's';
             break;
 
         case 'L':
-
-            x = x - UNIT_SIZE;
+            if (checkBounds(x - UNIT_SIZE, y))
+                x = x - UNIT_SIZE;
 
             direction = 's';
             break;
 
         case 'R':
-            x = x + UNIT_SIZE;
+            if (checkBounds(x + UNIT_SIZE, y))
+                x = x + UNIT_SIZE;
 
             direction = 's';
             break;
@@ -519,12 +528,11 @@ public class Server extends JPanel implements ActionListener {
         CardDeck.remove(room);
         CardDeck.remove(character);
         amountCards -= 3;
-        System.out.println("Secret Card: " + secretFolder.toString());
+        // System.out.println("Secret Card: " + secretFolder.toString());
 
     }
 
     public void distributeCards() {
-        amountofPlayer = 5;
         int distribute = ((amountCards) / amountofPlayer);
         int rem = amountCards % amountofPlayer;
 
@@ -543,18 +551,19 @@ public class Server extends JPanel implements ActionListener {
 
         }
 
-        System.out.println(list.toString());
+        // System.out.println(list.toString());
 
     }
 
     // As an example cause there is not enough data.
     // THIS WILL BE EREASED
-    String color = "Green";
+    String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
     String[] charArr;
 
     // JUST FOR TEST
     // Sets all players in their respective start positions.
     public void newPlayer() {
+        color = newColor[rand.nextInt(5)];
 
         switch (color) {
         case "Green":
@@ -570,6 +579,7 @@ public class Server extends JPanel implements ActionListener {
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Plum":
+
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Scarlett":
@@ -577,7 +587,6 @@ public class Server extends JPanel implements ActionListener {
             getStartingCoordinates(charArr);
         }
 
-        System.out.println(x + " " + y);
     }
 
     public static void getStartingCoordinates(String[] charArr) {
@@ -593,14 +602,13 @@ public class Server extends JPanel implements ActionListener {
     }
 
     // Checks to see if players are within the game bounds
-    public void checkBounds() {
+    public Boolean checkBounds(int xCoord, int yCoord) {
 
-        if (permitedCoordinates.containsKey(x)) {
-            if (permitedCoordinates.get(x).contains(y))
-                System.out.println("YOU CAN MOVE");
-            else
-                System.out.println(("NO"));
+        if (permitedCoordinates.containsKey(xCoord)) {
+            if (permitedCoordinates.get(xCoord).contains(yCoord))
+                return true;
         }
+        return false;
     }
 
     // Checks to see if players are entering a room through the door.
@@ -623,7 +631,6 @@ public class Server extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
-            checkBounds();
             checkPlayer();
             checkRoom();
         }
