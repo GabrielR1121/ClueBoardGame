@@ -172,7 +172,7 @@ public class Server extends JPanel implements ActionListener {
         doors.get(263).add(295); // library
         doors.put(583, new ArrayList<>());
         doors.get(583).add(231); // lounge
-        doors.put(231, new ArrayList<>());
+        // doors.put(231, new ArrayList<>());
         doors.get(231).add(167); // study
         doors.put(391, new ArrayList<>());
         doors.get(391).add(263); // decision
@@ -496,8 +496,10 @@ public class Server extends JPanel implements ActionListener {
             if (checkBounds(x, y - UNIT_SIZE))
                 y = y - UNIT_SIZE;
 
-            if (checkRoom(x, y))
+            if (checkRoom(x, y)) {
                 System.out.println("Want to enter this room?");
+                // System.out.println(Client.startRumor());
+            }
 
             direction = 's';
 
@@ -506,8 +508,10 @@ public class Server extends JPanel implements ActionListener {
         case 'D':
             if (checkBounds(x, y + UNIT_SIZE))
                 y = y + UNIT_SIZE;
-            if (checkRoom(x, y))
+            if (checkRoom(x, y)) {
                 System.out.println("Want to enter this room?");
+                // System.out.println(Client.startRumor());
+            }
 
             direction = 's';
             break;
@@ -515,8 +519,10 @@ public class Server extends JPanel implements ActionListener {
         case 'L':
             if (checkBounds(x - UNIT_SIZE, y))
                 x = x - UNIT_SIZE;
-            if (checkRoom(x, y))
+            if (checkRoom(x, y)) {
                 System.out.println("Want to enter this room?");
+                // System.out.println(Client.startRumor());
+            }
 
             direction = 's';
             break;
@@ -524,8 +530,10 @@ public class Server extends JPanel implements ActionListener {
         case 'R':
             if (checkBounds(x + UNIT_SIZE, y))
                 x = x + UNIT_SIZE;
-            if (checkRoom(x, y))
+            if (checkRoom(x, y)) {
                 System.out.println("Want to enter this room?");
+                // System.out.println(Client.startRumor());
+            }
 
             direction = 's';
             break;
@@ -678,10 +686,7 @@ public class Server extends JPanel implements ActionListener {
 
     // activates when an action is preformed in order to run previus methods.
     public void actionPerformed(ActionEvent e) {
-        if (running) {
-            move();
-            checkPlayer();
-        }
+        move();
         repaint();
     }
 
