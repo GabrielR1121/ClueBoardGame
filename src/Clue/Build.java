@@ -23,7 +23,7 @@ public class Build extends JPanel implements ActionListener {
     static int x;
     static int y;
     char direction = 'p';
-    String color;
+    public static String color;
     Random rand = new Random();
     JFrame frame = new JFrame();
 
@@ -75,7 +75,7 @@ public class Build extends JPanel implements ActionListener {
         frame.setLocationRelativeTo(null);
 
         main();
-        newPlayer();
+        //newPlayer();
 
     }
 
@@ -383,26 +383,26 @@ public class Build extends JPanel implements ActionListener {
             g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
         }
 
-        switch (color) {
-        case "Green":
-            g.setColor(colors.Green.getColor());
-            break;
-        case "Mustard":
-            g.setColor(colors.Mustard.getColor());
-            break;
-        case "Orchid":
-            g.setColor(colors.Orchid.getColor());
-            break;
-        case "Peacock":
-            g.setColor(colors.Peacock.getColor());
-            break;
-        case "Plum":
-            g.setColor(colors.Plum.getColor());
-            break;
-        case "Scarlett":
-            g.setColor(colors.Scarlett.getColor());
-            break;
-        }
+        // switch (color) {
+        // case "Green":
+        //     g.setColor(colors.Green.getColor());
+        //     break;
+        // case "Mustard":
+        //     g.setColor(colors.Mustard.getColor());
+        //     break;
+        // case "Orchid":
+        //     g.setColor(colors.Orchid.getColor());
+        //     break;
+        // case "Peacock":
+        //     g.setColor(colors.Peacock.getColor());
+        //     break;
+        // case "Plum":
+        //     g.setColor(colors.Plum.getColor());
+        //     break;
+        // case "Scarlett":
+        //     g.setColor(colors.Scarlett.getColor());
+        //     break;
+        //}
 
         g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
 
@@ -501,44 +501,42 @@ public class Build extends JPanel implements ActionListener {
 
     // As an example cause there is not enough data.
     // THIS WILL BE EREASED
-    String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
     String[] charArr;
 
     // JUST FOR TEST
     // Sets all players in their respective start positions.
-    public void newPlayer() {
-        color = newColor[rand.nextInt(5)];
+    // public void newPlayer() {
 
-        switch (color) {
-        case "Green":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        case "Mustard":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        case "Orchid":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        case "Peacock":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        case "Plum":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        case "Scarlett":
-            charArr = (Arrays.toString(characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-            break;
-        default:
-            System.out.println("I failed");
-        }
+    //     switch (color) {
+    //     case "Green":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     case "Mustard":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     case "Orchid":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     case "Peacock":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     case "Plum":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     case "Scarlett":
+    //         charArr = (Arrays.toString(characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //         break;
+    //     default:
+    //         System.out.println("I failed");
+    //     }
 
-    }
+    // }
 
     // activates when an action is preformed in order to run previus methods.
     // Useless method right now

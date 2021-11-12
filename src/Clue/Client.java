@@ -24,6 +24,10 @@ public class Client implements Runnable {
     Random rand = new Random();
     static int x;
     static int y;
+    private int amountofPlayers = 0;
+    ArrayList<Integer> playersX = new ArrayList<Integer>(); 
+    ArrayList<Integer> playersY = new ArrayList<Integer>(); 
+
 
     public Client() {
         try {
@@ -45,17 +49,53 @@ public class Client implements Runnable {
     public void run(){
         try {
             
-            String msg = in.readUTF();
+            //We should receive availableColors, turn, and isPlayerTurn
+            String inMsg = in.readUTF();
 
-            System.out.println("" + msg + " " + isPlayerTurn);
+            System.out.println(inMsg);
+
+            String[] strMsg = inMsg.split(";");
+
+            String[] availableColors = strMsg[0].split(",");
+
+            int currTurn = Integer.parseInt(strMsg[1]);
+
+            isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
+
+            System.out.println("Client arrays: " + Arrays.toString(availableColors) + ";" + currTurn + ";" + isPlayerTurn + ".");
+
+            int idx = 6;
+
+            int colorIdx = rand.nextInt(idx--);
+
+            // Build.color = availableColors[colorIdx];
             
 
-            // if(Integer.parseInt(msg) == 0){
-                
-            //     isPlayerTurn = true;
+            //We should send the index of the color chosen, and the amount of players to join.
+            // This is for the first player, the rest send only the color chosen.
+            String outMsg = "";
 
-            //     
-            // }
+            amountofPlayers = 3;
+
+            if(currTurn == 0)
+                outMsg += colorIdx + ";" + amountofPlayers;
+            else
+                outMsg += colorIdx + ";";
+
+            System.out.println("Out msg" + outMsg);
+            out.writeUTF(outMsg);
+
+            //Message to be received: Amount of players, and the starting position of each player.
+            inMsg = in.readUTF();
+
+            String[] positions = inMsg.split(";");
+
+            System.out.println("Positions: " + Arrays.toString(positions));
+
+            playersX.add(Integer.parseInt(positions[0]));
+            // System.out.println("PlayerX: " + Arrays.toString(playersX));
+            // System.out.println("PlayerY: " + Arrays.toString(playersY));
+
         
             
         } catch (Exception e) {
@@ -70,47 +110,47 @@ public class Client implements Runnable {
 
     }
     
-    public static void getStartingCoordinates(String[] charArr) {
+    // public static void getStartingCoordinates(String[] charArr) {
 
-        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
-        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
+    //     x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
+    //     y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
 
-    }
+    // }
     
-    // As an example cause there is not enough data.
-    // THIS WILL BE EREASED
-    String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
-    String[] charArr;
+    // // As an example cause there is not enough data.
+    // // THIS WILL BE EREASED
+    // String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
+    // String[] charArr;
     
-    // JUST FOR TEST
-    //EL HASHMAP DE CHARACTERS LO ESTA SACANDO DIRECTO DE SERVER.
-    //FIX THIS!!!!!
-    // Sets all players in their respective start positions.
-    public void newPlayer() {
-        color = newColor[rand.nextInt(5)];
+    // // JUST FOR TEST
+    // //EL HASHMAP DE CHARACTERS LO ESTA SACANDO DIRECTO DE SERVER.
+    // //FIX THIS!!!!!
+    // // Sets all players in their respective start positions.
+    // public void newPlayer() {
+    //     color = newColor[rand.nextInt(5)];
 
-        switch (color) {
-        case "Green":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Mustard":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Orchid":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Peacock":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Plum":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        case "Scarlett":
-            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
-            getStartingCoordinates(charArr);
-        }
+    //     switch (color) {
+    //     case "Green":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     case "Mustard":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     case "Orchid":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     case "Peacock":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     case "Plum":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     case "Scarlett":
+    //         charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+    //         getStartingCoordinates(charArr);
+    //     }
 
-    }
+    // }
 
 
     // Gives the player a new dice roll if its their turn.
