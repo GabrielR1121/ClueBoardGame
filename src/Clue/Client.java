@@ -4,13 +4,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.*;
-
 import javax.swing.JOptionPane;
 
 //Client side.
 //Methods in this class will be exclusively for the player and nobody else. 
 //Ask doubts abouut if a draw should be here too. 
-public class Client {
+public class Client implements Runnable {
     public final int SCREEN_WIDTH = 842;
     public final int SCREEN_HEIGHT = 872;
     public final int UNIT_SIZE = 32;
@@ -20,9 +19,16 @@ public class Client {
     private DataInputStream in;
     private int puerto = 2027;
     private String host = "localhost";
+    private boolean isPlayerTurn;
+    String color;
+    Random rand = new Random();
+    static int x;
+    static int y;
 
     public Client() {
         try {
+
+            System.out.println("Client created");
 
             cliente = new Socket(host,puerto);
 
@@ -34,11 +40,78 @@ public class Client {
         }
       
     }
+    
+    @Override
+    public void run(){
+        try {
+            
+            String msg = in.readUTF();
 
-    // Starts the game
-    public void startGame() {
+            System.out.println("" + msg + " " + isPlayerTurn);
+            
+
+            // if(Integer.parseInt(msg) == 0){
+                
+            //     isPlayerTurn = true;
+
+            //     
+            // }
+        
+            
+        } catch (Exception e) {
+
+        }
+
 
     }
+
+    // Starts the game
+    public void startClient() {
+
+    }
+    
+    public static void getStartingCoordinates(String[] charArr) {
+
+        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
+        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
+
+    }
+    
+    // As an example cause there is not enough data.
+    // THIS WILL BE EREASED
+    String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
+    String[] charArr;
+    
+    // JUST FOR TEST
+    //EL HASHMAP DE CHARACTERS LO ESTA SACANDO DIRECTO DE SERVER.
+    //FIX THIS!!!!!
+    // Sets all players in their respective start positions.
+    public void newPlayer() {
+        color = newColor[rand.nextInt(5)];
+
+        switch (color) {
+        case "Green":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Mustard":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Orchid":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Peacock":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Plum":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        case "Scarlett":
+            charArr = (Arrays.toString(Build.characters.get(color))).split(",");
+            getStartingCoordinates(charArr);
+        }
+
+    }
+
 
     // Gives the player a new dice roll if its their turn.
     public void newDiceRoll() {
@@ -65,6 +138,7 @@ public class Client {
         String character = JOptionPane.showInputDialog( "Enter the character you think was the murderer: ");
         String weapon = JOptionPane.showInputDialog( "Enter the weapon you think was used by the murderer: ");
 
+        //This may be removed later on
         HashMap<String, Integer> cardDeckMap = new HashMap<String, Integer>();
         cardDeckMap.put("Green", 0);
         cardDeckMap.put("Mustard", 1);

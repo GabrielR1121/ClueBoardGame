@@ -4,6 +4,11 @@ package Clue;
 public class ClueGame {
 
     public static void main(String[] args) {
-        new GameFrame();
+
+        Client client = new Client();
+        Thread thread = new Thread(client);
+        thread.start();
+        
+        new Build();
     }
 }

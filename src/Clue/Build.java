@@ -1,10 +1,9 @@
-package Clue;
+package jugador;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.net.Socket;
-import java.util.LinkedList;
+import javax.swing.JPanel;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,47 +11,27 @@ import java.util.HashMap;
 import java.util.Collections;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.Iterator;
+import javax.swing.JFrame;
 
+public class Build extends JPanel implements ActionListener{
 
-public class Server {
-
-    private final int port = 2027;
-    // Could change if pop-up added to ask amount of players.
-    private final int numberOfConnections = 6;
-    private LinkedList<Socket> users = new LinkedList<Socket>();
-    private boolean isPlayerTurn = false;
-    private int changeTurn = 0;
-
-    // Not in UML yet
-    private int turn;
     static final int SCREEN_WIDTH = 842;
     static final int SCREEN_HEIGHT = 872;
     static final int UNIT_SIZE = 32;
     int align = 6;
-    char direction = 'p';
-    static final int DELAY = 75;
-    String color;
-
-    int amountofPlayer = 4;
-
-    int playersX[] = new int[amountofPlayer];
-    int playersY[] = new int[amountofPlayer];
-    Timer timer;
     static int x;
     static int y;
-    boolean running = false;
-    int amountCards = 21;
+    char direction = 'p';
+    String color;
     Random rand = new Random();
-
-    // try to auto generate.
-    private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
-    public List<ArrayList<Integer>> playerCards = new ArrayList<ArrayList<Integer>>();
+    JFrame frame = new JFrame();
 
     // Permited moves Hashmap
     HashMap<Integer, ArrayList<Integer>> permitedCoordinates = new HashMap<Integer, ArrayList<Integer>>();
 
     // Characters hashmap
-    HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
+    public static HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
 
     // Doors positions hashmap
     HashMap<Integer, ArrayList<Integer>> doors = new HashMap<Integer, ArrayList<Integer>>();
@@ -60,102 +39,23 @@ public class Server {
     // Has the string info of all of the cards on the cardDeck array.
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
-    private enum colors {
-        Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
-        Peacock("51,161,201");
-
-        private Color clr;
-
-        private colors(String rgb) {
-
-            String[] strRGB = rgb.split(",");
-
-            clr = new Color(Integer.parseInt(strRGB[0]), Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
-        }
-
-        public Color getColor() {
-            return clr;
-        }
-    }
-
-    private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
-
-    private boolean isEliminated = false;
-
-    ServerSocket server;
-
-    public static void main(String[] args){
-        Server servidor= new Server();
-        servidor.startServer();
-    }
-
-    // Server constructor
-    // Initalizes the panel for the jFrome with the determined Width and Height.
-    // Adds the action Listeners
-    // Starts the server
-    Server() {
-
-        // this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        // this.setFocusable(true);
-        // this.addKeyListener(new MyKeyAdapter());
-
-        // Fills and Refills the Deck
-        fillCardDeck();
-
-        // Selects 3 cards at random from Character, Weapon and Room and sets them aside
-        secretFolderDistribute();
-
-        // Shuffles the remainning
-        Collections.shuffle(CardDeck);
-
-        distributeCards();
-    }
-
-    // Opens the sockets and waits for a connection from the client.
-    // Sets the program to running and allows the timer thread to start
-    // Eventually a pop up with the color will be displayed here.
-    public void startServer() {
-
-        System.out.println("Starting server...");
+    //Constructor
+    public Build(){
+    	
+        System.out.println("Starting build...");
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        this.setFocusable(true);
+        this.addKeyListener(new MyKeyAdapter());
         
-        try {
-
-            server = new ServerSocket(port, numberOfConnections);
-
-            // Test methods need clean up
-            // running = true;
-            // timer = new Timer(DELAY, this);
-            // timer.start();
-
-            // System.out.println("Pick your color");
-
-            //newPlayer(); // test
-
-            //Client being created (Main)
-            // Client cliente= new Client();
-            // Thread thread = new Thread(cliente);
-            // thread.start();
-            
-            while (true) {
+        System.out.println("Staring gameframe...");
+        frame.add(this);
+        frame.setTitle("Clue");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
         
-                System.out.println("Awaiting connection...");
-                Socket client = server.accept();
-                users.add(client);
-
-                //Connection went through
-                System.out.println(users.toString());
-
-                turn = changeTurn++;
-
-                Runnable run = new ThreadServer(client,users,turn);
-                Thread hilo = new Thread(run);
-                hilo.start();
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void main() {
@@ -439,58 +339,82 @@ public class Server {
 
         // System.out.println("Coordinates:" + permitedCoordinates.get(263));
 
+        //Build : Check this later.
+    }
+    
+    // Initializes the paint for the whole game
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        draw(g);
     }
 
-    // Initializes the paint for the whole game
-    // public void paintComponent(Graphics g) {
-    //     super.paintComponent(g);
-    //     draw(g);
-    // }
+    // Draws all the componets of the game onto the gameframe which include:
+    // * GameBoard
+    // * Players / Player Movement.
+    public void draw(Graphics g) {
+    													
+        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(Updated).jpg");
 
-    // // Draws all the componets of the game onto the gameframe which include:
-    // // * GameBoard
-    // // * Players / Player Movement.
-    // public void draw(Graphics g) {
+        g.drawImage(img, 0, 0, null);
 
-    //     Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(Updated).jpg");
+        for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
+            g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
+            g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
+        }
 
-    //     g.drawImage(img, 0, 0, null);
+        // switch (color) {
+        // case "Green":
+        //     g.setColor(colors.Green.getColor());
+        //     break;
+        // case "Mustard":
+        //     g.setColor(colors.Mustard.getColor());
+        //     break;
+        // case "Orchid":
+        //     g.setColor(colors.Orchid.getColor());
+        //     break;
+        // case "Peacock":
+        //     g.setColor(colors.Peacock.getColor());
+        //     break;
+        // case "Plum":
+        //     g.setColor(colors.Plum.getColor());
+        //     break;
+        // case "Scarlett":
+        //     g.setColor(colors.Scarlett.getColor());
+        //     break;
+        // }
 
-    //     for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
-    //         g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
-    //         g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
-    //     }
+        g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
 
-    //     switch (color) {
-    //     case "Green":
-    //         g.setColor(colors.Green.getColor());
-    //         break;
-    //     case "Mustard":
-    //         g.setColor(colors.Mustard.getColor());
-    //         break;
-    //     case "Orchid":
-    //         g.setColor(colors.Orchid.getColor());
-    //         break;
-    //     case "Peacock":
-    //         g.setColor(colors.Peacock.getColor());
-    //         break;
-    //     case "Plum":
-    //         g.setColor(colors.Plum.getColor());
-    //         break;
-    //     case "Scarlett":
-    //         g.setColor(colors.Scarlett.getColor());
-    //         break;
-    //     }
+        // Redraws the board each time something happens.
+        repaint();
 
-    //     g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
+    }
 
-    //     // Redraws the board each time something happens.
-    //     repaint();
+     // Checks to see if players are within the game bounds
+     public Boolean checkBounds(int xCoord, int yCoord) {
 
-    // }
+        if (permitedCoordinates.containsKey(xCoord)) {
+            if (permitedCoordinates.get(xCoord).contains(yCoord))
+                return true;
+        }
+        return false;
+    }
 
-    // Starts the Final Rumor
-    public void finalRumor() {
+    // Checks to see if players are entering a room through the door.
+    public Boolean checkRoom(int xCoord, int yCoord) {
+
+        if (doors.containsKey(xCoord)) {
+            if (doors.get(xCoord).contains(yCoord))
+                return true;
+        }
+        return false;
+
+    }
+
+    public static void getStartingCoordinates(String[] charArr) {
+
+        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
+        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
 
     }
 
@@ -553,56 +477,7 @@ public class Server {
         // System.out.println("x: " + x + " y: " + y);
     }
 
-    public void fillCardDeck() {
-        CardDeck.clear();
-        for (int i = 0; i < amountCards; i++)
-            CardDeck.add(i);
-    }
-
-    public void secretFolderDistribute() {
-        secretFolder.clear();
-
-        int character = rand.nextInt(6);
-        secretFolder.add(character);
-
-        int room = rand.nextInt(14 - 6 + 1) + 6;
-        secretFolder.add(room);
-
-        int weapon = rand.nextInt(20 - 15 + 1) + 15;
-        secretFolder.add(weapon);
-
-        CardDeck.remove(weapon);
-        CardDeck.remove(room);
-        CardDeck.remove(character);
-        amountCards -= 3;
-        // System.out.println("Secret Card: " + secretFolder.toString());
-
-    }
-
-    public void distributeCards() {
-        int distribute = ((amountCards) / amountofPlayer);
-        int rem = amountCards % amountofPlayer;
-
-        int start = 0;
-        int end = distribute;
-        List<List<Integer>> list = new ArrayList<List<Integer>>();
-
-        for (int i = 1; i <= amountofPlayer; i++) {
-
-            int extra = (i <= rem) ? 1 : 0;
-
-            list.add(CardDeck.subList(start, end));
-
-            start = end;
-            end += distribute + extra;
-
-        }
-
-        // System.out.println(list.toString());
-
-    }
-
-    // As an example cause there is not enough data.
+       // As an example cause there is not enough data.
     // THIS WILL BE EREASED
     String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
     String[] charArr;
@@ -626,7 +501,6 @@ public class Server {
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Plum":
-
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
         case "Scarlett":
@@ -636,94 +510,34 @@ public class Server {
 
     }
 
-    public static void getStartingCoordinates(String[] charArr) {
-
-        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
-        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
-
-    }
-
-    // // Checks to see if players are not on top of each other.
-    // public void checkPlayer(int xCoord, int yCoord) {
-
-    // if(checkDuplicateCoordinate(playerX, index) &&
-    // checkDuplicateCoordinate(playerY, 0)
-    // System.out.println("ON TOP");
-
-    // }
-
-    // private static boolean checkDuplicateCoordinate(int[] playerArray, int
-    // coordinateIdx) {
-    // for (int i = 0; i < playerArray.length; i++) {
-    // if (coordinateIdx != i) {
-    // if (playerArray[coordinateIdx] == playerArray[i])
-    // return true;
-    // }
-    // return false;
-    // }
-
-    // }
-
-    // Checks to see if players are within the game bounds
-    public Boolean checkBounds(int xCoord, int yCoord) {
-
-        if (permitedCoordinates.containsKey(xCoord)) {
-            if (permitedCoordinates.get(xCoord).contains(yCoord))
-                return true;
-        }
-        return false;
-    }
-
-    // Checks to see if players are entering a room through the door.
-    public Boolean checkRoom(int xCoord, int yCoord) {
-
-        if (doors.containsKey(xCoord)) {
-            if (doors.get(xCoord).contains(yCoord))
-                return true;
-        }
-        return false;
-
-    }
-
-    // Checks to see if player has remaining moves.
-    public void checkMoves(int roll) {
-
-    }
-
-    // Displays GameOver screen when a player wins or all players get eliminated.
-    // Will display winning cards and player who one if any.
-    public void gameOver() {
-
-    }
-
-    // activates when an action is preformed in order to run previus methods.
+        // activates when an action is preformed in order to run previus methods.
     public void actionPerformed(ActionEvent e) {
-        // move();
-        // repaint();
+            move();
+            repaint();
     }
-
-    // Checks to see if a key has been pressed and changes direction based on arrow
+        // Checks to see if a key has been pressed and changes direction based on arrow
     // keys.
-    // public class MyKeyAdapter extends KeyAdapter {
-    //     public void keyPressed(KeyEvent e) {
-    //         switch (e.getKeyCode()) {
+    public class MyKeyAdapter extends KeyAdapter {
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
 
-    //         case KeyEvent.VK_LEFT:
-    //             direction = 'L';
-    //             break;
+            case KeyEvent.VK_LEFT:
+                direction = 'L';
+                break;
 
-    //         case KeyEvent.VK_RIGHT:
-    //             direction = 'R';
-    //             break;
+            case KeyEvent.VK_RIGHT:
+                direction = 'R';
+                break;
 
-    //         case KeyEvent.VK_UP:
-    //             direction = 'U';
-    //             break;
+            case KeyEvent.VK_UP:
+                direction = 'U';
+                break;
 
-    //         case KeyEvent.VK_DOWN:
-    //             direction = 'D';
-    //             break;
-    //         }
-    //     }
-    // }
+            case KeyEvent.VK_DOWN:
+                direction = 'D';
+                break;
+            }
+        }
+    }
+    
 }
