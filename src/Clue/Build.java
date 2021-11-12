@@ -1,4 +1,4 @@
-package jugador;
+package Clue;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Iterator;
 import javax.swing.JFrame;
 
-public class Build extends JPanel implements ActionListener{
+public class Build extends JPanel implements ActionListener {
 
     static final int SCREEN_WIDTH = 842;
     static final int SCREEN_HEIGHT = 872;
@@ -39,14 +39,32 @@ public class Build extends JPanel implements ActionListener{
     // Has the string info of all of the cards on the cardDeck array.
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
-    //Constructor
-    public Build(){
-    	
+    private enum colors {
+        Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
+        Peacock("51,161,201");
+
+        private Color clr;
+
+        private colors(String rgb) {
+
+            String[] strRGB = rgb.split(",");
+
+            clr = new Color(Integer.parseInt(strRGB[0]), Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
+        }
+
+        public Color getColor() {
+            return clr;
+        }
+    }
+
+    // Constructor
+    public Build() {
+
         System.out.println("Starting build...");
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
-        
+
         System.out.println("Staring gameframe...");
         frame.add(this);
         frame.setTitle("Clue");
@@ -55,7 +73,10 @@ public class Build extends JPanel implements ActionListener{
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
-        
+
+        main();
+        newPlayer();
+
     }
 
     public void main() {
@@ -339,9 +360,9 @@ public class Build extends JPanel implements ActionListener{
 
         // System.out.println("Coordinates:" + permitedCoordinates.get(263));
 
-        //Build : Check this later.
+        // Build : Check this later.
     }
-    
+
     // Initializes the paint for the whole game
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -352,7 +373,7 @@ public class Build extends JPanel implements ActionListener{
     // * GameBoard
     // * Players / Player Movement.
     public void draw(Graphics g) {
-    													
+
         Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(Updated).jpg");
 
         g.drawImage(img, 0, 0, null);
@@ -362,26 +383,26 @@ public class Build extends JPanel implements ActionListener{
             g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
         }
 
-        // switch (color) {
-        // case "Green":
-        //     g.setColor(colors.Green.getColor());
-        //     break;
-        // case "Mustard":
-        //     g.setColor(colors.Mustard.getColor());
-        //     break;
-        // case "Orchid":
-        //     g.setColor(colors.Orchid.getColor());
-        //     break;
-        // case "Peacock":
-        //     g.setColor(colors.Peacock.getColor());
-        //     break;
-        // case "Plum":
-        //     g.setColor(colors.Plum.getColor());
-        //     break;
-        // case "Scarlett":
-        //     g.setColor(colors.Scarlett.getColor());
-        //     break;
-        // }
+        switch (color) {
+        case "Green":
+            g.setColor(colors.Green.getColor());
+            break;
+        case "Mustard":
+            g.setColor(colors.Mustard.getColor());
+            break;
+        case "Orchid":
+            g.setColor(colors.Orchid.getColor());
+            break;
+        case "Peacock":
+            g.setColor(colors.Peacock.getColor());
+            break;
+        case "Plum":
+            g.setColor(colors.Plum.getColor());
+            break;
+        case "Scarlett":
+            g.setColor(colors.Scarlett.getColor());
+            break;
+        }
 
         g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
 
@@ -390,8 +411,8 @@ public class Build extends JPanel implements ActionListener{
 
     }
 
-     // Checks to see if players are within the game bounds
-     public Boolean checkBounds(int xCoord, int yCoord) {
+    // Checks to see if players are within the game bounds
+    public Boolean checkBounds(int xCoord, int yCoord) {
 
         if (permitedCoordinates.containsKey(xCoord)) {
             if (permitedCoordinates.get(xCoord).contains(yCoord))
@@ -429,6 +450,7 @@ public class Build extends JPanel implements ActionListener{
         switch (direction) {
 
         case 'U':
+
             if (checkBounds(x, y - UNIT_SIZE))
                 y = y - UNIT_SIZE;
 
@@ -477,7 +499,7 @@ public class Build extends JPanel implements ActionListener{
         // System.out.println("x: " + x + " y: " + y);
     }
 
-       // As an example cause there is not enough data.
+    // As an example cause there is not enough data.
     // THIS WILL BE EREASED
     String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
     String[] charArr;
@@ -491,31 +513,41 @@ public class Build extends JPanel implements ActionListener{
         case "Green":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
         case "Mustard":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
         case "Orchid":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
         case "Peacock":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
         case "Plum":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
         case "Scarlett":
             charArr = (Arrays.toString(characters.get(color))).split(",");
             getStartingCoordinates(charArr);
+            break;
+        default:
+            System.out.println("I failed");
         }
 
     }
 
-        // activates when an action is preformed in order to run previus methods.
+    // activates when an action is preformed in order to run previus methods.
+    // Useless method right now
     public void actionPerformed(ActionEvent e) {
-            move();
-            repaint();
+        System.out.println(direction);
+
     }
-        // Checks to see if a key has been pressed and changes direction based on arrow
+
+    // Checks to see if a key has been pressed and changes direction based on arrow
     // keys.
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
@@ -523,21 +555,29 @@ public class Build extends JPanel implements ActionListener{
 
             case KeyEvent.VK_LEFT:
                 direction = 'L';
+                move();
+                repaint();
                 break;
 
             case KeyEvent.VK_RIGHT:
                 direction = 'R';
+                move();
+                repaint();
                 break;
 
             case KeyEvent.VK_UP:
                 direction = 'U';
+                move();
+                repaint();
                 break;
 
             case KeyEvent.VK_DOWN:
                 direction = 'D';
+                move();
+                repaint();
                 break;
             }
         }
     }
-    
+
 }
