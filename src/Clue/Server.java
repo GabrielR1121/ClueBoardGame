@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.net.ServerSocket;
 import java.util.List;
 
-
 public class Server {
 
     private final int port = 2027;
@@ -18,7 +17,7 @@ public class Server {
     private LinkedList<Socket> users = new LinkedList<Socket>();
     private boolean isPlayerTurn = false;
 
-    public static ArrayList<String> availableColors = new ArrayList<String>(){
+    public static ArrayList<String> availableColors = new ArrayList<String>() {
 
         {
             add("Mustard");
@@ -31,15 +30,15 @@ public class Server {
         }
 
     };
-
+    public static StringBuilder sb = new StringBuilder();
 
     // Not in UML yet
     public static int turn;
 
-    //Amount of players to connect
+    // Amount of players to connect
     int amountofPlayer = 4;
 
-    //Find out where they go.
+    // Find out where they go.
     // int playersX[] = new int[amountofPlayer];
     // int playersY[] = new int[amountofPlayer];
 
@@ -53,15 +52,14 @@ public class Server {
     private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
     List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
 
-
     private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
     private boolean isEliminated = false;
 
     ServerSocket server;
 
-    public static void main(String[] args){
-        Server servidor= new Server();
+    public static void main(String[] args) {
+        Server servidor = new Server();
         servidor.startServer();
     }
 
@@ -90,23 +88,22 @@ public class Server {
     // Eventually a pop up with the color will be displayed here.
     public void startServer() {
 
-        System.out.println("Starting server...");
-        
+        System.out.println("Starting server... \n-------------");
+
         try {
 
             server = new ServerSocket(port, numberOfConnections);
-            
+
             while (true) {
-        
+
                 System.out.println("Awaiting connection...");
                 Socket client = server.accept();
                 users.add(client);
 
-                //Connection went through
-                System.out.println(users.toString());
+                // Connection went through
+                // System.out.println(users.toString());
 
-
-                Runnable run = new ThreadServer(client,users,turn++);
+                Runnable run = new ThreadServer(client, users, turn++);
                 Thread hilo = new Thread(run);
                 hilo.start();
 

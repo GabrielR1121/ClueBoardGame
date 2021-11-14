@@ -8,7 +8,9 @@ public class ClueGame {
         Client client = new Client();
         Thread thread = new Thread(client);
         thread.start();
-        
+
         new Build();
+
     }
+
 }

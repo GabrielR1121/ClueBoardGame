@@ -17,10 +17,13 @@ public class ThreadServer implements Runnable {
     private boolean isPlayerTurn;
     private LinkedList<Socket> users = new LinkedList<Socket>();
     private int turn;
-    public int amountofPLayers = 0;
+    public int amountofPLayers = 3;
     static int x;
     static int y;
     int count = 0;
+    // Proximo mensaje
+
+    String startingPos = "";
 
     // Permited moves Hashmap
     static HashMap<Integer, ArrayList<Integer>> permitedCoordinates = new HashMap<Integer, ArrayList<Integer>>();
@@ -34,10 +37,7 @@ public class ThreadServer implements Runnable {
     // Has the string info of all of the cards on the cardDeck array.
     static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
-    
-
     public ThreadServer(Socket soc, LinkedList users, int turno) {
-        
 
         try {
 
@@ -47,29 +47,25 @@ public class ThreadServer implements Runnable {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-            
-
-
         } catch (Exception e) {
-            //TODO: handle exception
+            System.out.println("Error in ThreadServer creating thread constructor. Error message: " + e.getMessage());
         }
 
-
-
     }
-    @Override
-    public void run(){
 
-        System.out.println("Starting ThreadServer...");
-        
+    @Override
+    public void run() {
+
+        System.out.println("Starting ThreadServer... \n -------------------");
+
         try {
 
-            //First message to be sent  is: availableColors, turn, and isPlayerTurn
+            // First message to be sent is: availableColors, turn, and isPlayerTurn
             String outMsg = "";
-            
-            for(int i = 0; i< Server.availableColors.size(); i++){
 
-                if(i < Server.availableColors.size() - 1)
+            for (int i = 0; i < Server.availableColors.size(); i++) {
+
+                if (i < Server.availableColors.size() - 1)
                     outMsg += Server.availableColors.get(i) + ",";
                 else
                     outMsg += Server.availableColors.get(i) + ";";
@@ -77,78 +73,77 @@ public class ThreadServer implements Runnable {
 
             outMsg += turn + ";";
 
-            if(turn == 0)
+            if (turn == 0)
                 isPlayerTurn = true;
-            
+
             outMsg += isPlayerTurn + ";";
 
-            System.out.println("Primer mensaje..?");
+            // System.out.println("Primer mensaje..?");
 
             out.writeUTF(outMsg);
+        } catch (Exception e) {
+            System.out.println("Error in ThreadServer file sending first message. Error message: " + e.getMessage());
+        }
 
-            //Will receive the color chosen and the amountofPLayers (for the first Client).
+        try {
+            // Will receive the color chosen and the amountofPLayers (for the first Client).
+            // System.out.println("-------");
             String inMsg = in.readUTF();
 
             String[] strMsg = inMsg.split(";");
 
-            System.out.println("Array:" + Arrays.toString(strMsg));
+            // System.out.println("Array:" + Arrays.toString(strMsg));
+            // System.out.println("Available colors: " + Server.availableColors);
 
             newPlayer(Server.availableColors.get(Integer.parseInt(strMsg[0])));
 
-            Server.availableColors.remove(Integer.parseInt(strMsg[0]));
-
-            System.out.println("Available colors: " + Server.availableColors);
-
-            System.out.println("EL ULTIMO IN");
-
-            //Proximo mensaje
-            String startingPos = "";
-
-            if(turn == 0){
+            if (turn == 0) {
                 amountofPLayers = Integer.parseInt(strMsg[1]);
-                startingPos += amountofPLayers + ";";
+                Server.sb.append(amountofPLayers + ";");
             }
 
-            startingPos += x + ";" + y + ";";
+            Server.sb.append(Server.availableColors.get(Integer.parseInt(strMsg[0])) + ";" + x + ";" + y + ";");
+            Server.availableColors.remove(Integer.parseInt(strMsg[0]));
+            // System.out.println("starting pos: " + Server.sb.toString());
 
-            System.out.println(startingPos);
+            // System.out.println(Server.sb.toString());
 
-            //The message being sent contains the amount of players, and the starting
-            // position of each player. 
-            out.writeUTF(startingPos);
-            
+            // The message being sent contains the amount of players, and the starting
+            // position of each player.
 
-            System.out.println(Server.availableColors.toString());
+            out.writeUTF(Server.sb.toString());
 
+            // System.out.println(Server.availableColors.toString());
 
-    
         } catch (Exception e) {
-            //TODO: handle exception
+            System.out.println(
+                    "Error in ThreadServer file receiving amount of players and color player wants. Error message: "
+                            + e.getMessage());
         }
-       
+
     }
 
     public static void getStartingCoordinates(String[] charArr) {
 
-        System.out.println("STARTING COORDS..." + Arrays.toString(charArr));
+        // System.out.println("STARTING COORDS..." + Arrays.toString(charArr));
 
         x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
         y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
 
     }
-    
+
     // As an example cause there is not enough data.
     // THIS WILL BE EREASED
     String newColor[] = { "Green", "Mustard", "Orchid", "Peacock", "Plum", "Scarlett" };
     String[] charArr;
-    
+
     // JUST FOR TEST
-    //EL HASHMAP DE CHARACTERS LO ESTA SACANDO DIRECTO DE SERVER.
-    //FIX THIS!!!!!
+    // EL HASHMAP DE CHARACTERS LO ESTA SACANDO DIRECTO DE SERVER.
+    // FIX THIS!!!!!
     // Sets all players in their respective start positions.
     public void newPlayer(String color) {
 
-        System.out.println("EN NEW PLAYER..." + color);
+        // System.out.println("EN NEW PLAYER..." + color);
 
         switch (color) {
         case "Green":
@@ -462,7 +457,5 @@ public class ThreadServer implements Runnable {
 
         // Build : Check this later.
     }
-
-
 
 }
