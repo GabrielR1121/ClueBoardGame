@@ -19,15 +19,17 @@ public class Client implements Runnable {
     private DataInputStream in;
     private int puerto = 2027;
     private String host = "localhost";
-    private boolean isPlayerTurn;
+    // private boolean isPlayerTurn;
     String color;
     Random rand = new Random();
     static int x;
     static int y;
     private int amountofPlayers = 0;
-    int playerX[];
-    int playerY[];
-    String playerColor[];
+    public static ArrayList<Integer> playerX;
+    public static ArrayList<Integer> playerY;
+    public static ArrayList<String> playerColor = new ArrayList<String>();
+    public static boolean isPlayerTurn;
+    public static int currTurn;
 
     public Client() {
         try {
@@ -59,7 +61,7 @@ public class Client implements Runnable {
 
             String[] availableColors = strMsg[0].split(",");
 
-            int currTurn = Integer.parseInt(strMsg[1]);
+            currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
 
             isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
 
@@ -93,25 +95,21 @@ public class Client implements Runnable {
             // player.
             inMsg = in.readUTF();
 
+            // The first thing being sent is the amount of players, then the positions.
             String[] positions = inMsg.split(";");
-            playerColor = new String[Integer.parseInt(positions[0])];
-            playerX = new int[Integer.parseInt(positions[0])];
-            playerY = new int[Integer.parseInt(positions[0])];
 
             positions = Arrays.copyOfRange(positions, 1, positions.length);
             System.out.println("New Color and Positions: " + Arrays.toString(positions));
 
-            int idx = 0;
             for (int i = 0; i < positions.length; i += 3) {
-                playerColor[idx] = positions[i];
-                playerX[idx] = Integer.parseInt(positions[i + 1]);
-                playerY[idx] = Integer.parseInt(positions[i + 2]);
-                idx++;
+                playerColor.add(positions[i]);
+                playerX.add(Integer.parseInt(positions[i + 1]));
+                playerY.add(Integer.parseInt(positions[i + 2]));
             }
 
-            System.out.println("Player colors: " + Arrays.toString(playerColor));
-            System.out.println("X-coords: " + Arrays.toString(playerX));
-            System.out.print("Y-coords: " + Arrays.toString(playerY) + "\n");
+            System.out.println("Player colors: " + playerColor.toString());
+            System.out.println("X-coords: " + playerX.toString());
+            System.out.print("Y-coords: " + playerY.toString() + "\n");
 
         } catch (Exception e) {
             System.out.println(

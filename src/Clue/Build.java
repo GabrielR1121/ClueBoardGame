@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.JPanel;
+import javax.swing.text.Position;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +77,6 @@ public class Build extends JPanel implements ActionListener {
         frame.setLocationRelativeTo(null);
 
         main();
-        //newPlayer();
 
     }
 
@@ -381,34 +382,47 @@ public class Build extends JPanel implements ActionListener {
         for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
             g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
             g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
+            // g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
+            // Redraws the board each time something happens.
+            repaint();
         }
 
-        // switch (color) {
-        // case "Green":
-        //     g.setColor(colors.Green.getColor());
-        //     break;
-        // case "Mustard":
-        //     g.setColor(colors.Mustard.getColor());
-        //     break;
-        // case "Orchid":
-        //     g.setColor(colors.Orchid.getColor());
-        //     break;
-        // case "Peacock":
-        //     g.setColor(colors.Peacock.getColor());
-        //     break;
-        // case "Plum":
-        //     g.setColor(colors.Plum.getColor());
-        //     break;
-        // case "Scarlett":
-        //     g.setColor(colors.Scarlett.getColor());
-        //     break;
-        //}
+        // Gets the starting position for each players and draws it into the window.
+        for (int i = 0; i < Client.playerColor.size(); i++) {
 
-        g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
-
-        // Redraws the board each time something happens.
-        repaint();
-
+            if (Client.playerColor.get(i) != null) {
+                switch (Client.playerColor.get(i)) {
+                case "Green":
+                    g.setColor(colors.Green.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Mustard":
+                    g.setColor(colors.Mustard.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Orchid":
+                    g.setColor(colors.Orchid.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Peacock":
+                    g.setColor(colors.Peacock.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Plum":
+                    g.setColor(colors.Plum.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Scarlett":
+                    g.setColor(colors.Scarlett.getColor());
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                default:
+                    break;
+                }// switch()
+                g.fillOval(Client.playerX.get(i), Client.playerY.get(i), UNIT_SIZE, UNIT_SIZE);
+                // repaint(); --->BORRADO NO SUCEDE NADA
+            } // if()
+        }
     }
 
     // Checks to see if players are within the game bounds
@@ -432,10 +446,10 @@ public class Build extends JPanel implements ActionListener {
 
     }
 
-    public static void getStartingCoordinates(String[] charArr) {
+    public static void getStartingCoordinates(String[] charArr, int idx) {
 
-        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
-        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
+        Client.playerX.set(idx, Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
+        Client.playerY.set(idx, Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
 
     }
 
@@ -445,98 +459,56 @@ public class Build extends JPanel implements ActionListener {
     // movement.
     // For now print (X,Y) of the player.
     public void move() {
-
         // int extra = (checkBounds()) ? UNIT_SIZE : 0;
         switch (direction) {
 
         case 'U':
-
-            if (checkBounds(x, y - UNIT_SIZE))
-                y = y - UNIT_SIZE;
-
-            if (checkRoom(x, y)) {
+            System.out.println(Client.playerY.get(Client.currTurn));
+            if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) - UNIT_SIZE)) {
+                Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) - UNIT_SIZE);
+            }
+            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
-
             direction = 's';
-
             break;
 
         case 'D':
-            if (checkBounds(x, y + UNIT_SIZE))
-                y = y + UNIT_SIZE;
-            if (checkRoom(x, y)) {
+            System.out.println(Client.playerY.get(Client.currTurn));
+            if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) + UNIT_SIZE)) {
+                Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) + UNIT_SIZE);
+                System.out.println(Client.playerY.get(Client.currTurn));
+            }
+            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
-
             direction = 's';
             break;
 
         case 'L':
-            if (checkBounds(x - UNIT_SIZE, y))
-                x = x - UNIT_SIZE;
-            if (checkRoom(x, y)) {
+            if (checkBounds(Client.playerX.get(Client.currTurn) - UNIT_SIZE, Client.playerY.get(Client.currTurn)))
+                Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) - UNIT_SIZE);
+            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
-
             direction = 's';
             break;
 
         case 'R':
-            if (checkBounds(x + UNIT_SIZE, y))
-                x = x + UNIT_SIZE;
-            if (checkRoom(x, y)) {
+            if (checkBounds(Client.playerX.get(Client.currTurn) + UNIT_SIZE, Client.playerY.get(Client.currTurn)))
+                Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) + UNIT_SIZE);
+            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
-
             direction = 's';
             break;
         }
-        // System.out.println("x: " + x + " y: " + y);
+        System.out.println(Client.playerY.get(Client.currTurn));
     }
-
-    // As an example cause there is not enough data.
-    // THIS WILL BE EREASED
-    String[] charArr;
-
-    // JUST FOR TEST
-    // Sets all players in their respective start positions.
-    // public void newPlayer() {
-
-    //     switch (color) {
-    //     case "Green":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     case "Mustard":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     case "Orchid":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     case "Peacock":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     case "Plum":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     case "Scarlett":
-    //         charArr = (Arrays.toString(characters.get(color))).split(",");
-    //         getStartingCoordinates(charArr);
-    //         break;
-    //     default:
-    //         System.out.println("I failed");
-    //     }
-
-    // }
 
     // activates when an action is preformed in order to run previus methods.
     // Useless method right now
@@ -549,32 +521,37 @@ public class Build extends JPanel implements ActionListener {
     // keys.
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
 
-            case KeyEvent.VK_LEFT:
-                direction = 'L';
-                move();
-                repaint();
-                break;
+            System.out.println(Client.isPlayerTurn);
 
-            case KeyEvent.VK_RIGHT:
-                direction = 'R';
-                move();
-                repaint();
-                break;
+            if (Client.isPlayerTurn) {
+                switch (e.getKeyCode()) {
 
-            case KeyEvent.VK_UP:
-                direction = 'U';
-                move();
-                repaint();
-                break;
+                case KeyEvent.VK_LEFT:
+                    direction = 'L';
+                    move();
+                    // repaint();
+                    break;
 
-            case KeyEvent.VK_DOWN:
-                direction = 'D';
-                move();
-                repaint();
-                break;
-            }
+                case KeyEvent.VK_RIGHT:
+                    direction = 'R';
+                    move();
+                    // repaint();
+                    break;
+
+                case KeyEvent.VK_UP:
+                    direction = 'U';
+                    move();
+                    // repaint();
+                    break;
+
+                case KeyEvent.VK_DOWN:
+                    direction = 'D';
+                    move();
+                    // repaint();
+                    break;
+                }
+            } // if()
         }
     }
 
