@@ -360,8 +360,40 @@ public class Build extends JPanel implements ActionListener {
         permitedCoordinates.get(743).add(583);
 
         // System.out.println("Coordinates:" + permitedCoordinates.get(263));
-
+        newPlayer();
         // Build : Check this later.
+    }
+
+    public void newPlayer() {
+        // Gets the starting position for each players and draws it into the window.
+        for (int i = 0; i < Client.playerColor.size(); i++) {
+
+            if (Client.playerColor.get(i) != null) {
+                switch (Client.playerColor.get(i)) {
+                case "Green":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Mustard":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Orchid":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Peacock":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Plum":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                case "Scarlett":
+                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
+                    break;
+                default:
+                    break;
+                }// switch()
+            } // if()
+        }
+
     }
 
     // Initializes the paint for the whole game
@@ -394,27 +426,21 @@ public class Build extends JPanel implements ActionListener {
                 switch (Client.playerColor.get(i)) {
                 case "Green":
                     g.setColor(colors.Green.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 case "Mustard":
                     g.setColor(colors.Mustard.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 case "Orchid":
                     g.setColor(colors.Orchid.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 case "Peacock":
                     g.setColor(colors.Peacock.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 case "Plum":
                     g.setColor(colors.Plum.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 case "Scarlett":
                     g.setColor(colors.Scarlett.getColor());
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
                     break;
                 default:
                     break;
@@ -548,7 +574,9 @@ public class Build extends JPanel implements ActionListener {
                 case KeyEvent.VK_DOWN:
                     direction = 'D';
                     move();
+                    System.out.println(Client.playerY.get(Client.currTurn));
                     repaint();
+                    System.out.println(Client.playerY.get(Client.currTurn));
                     break;
                 }
             } // if()
