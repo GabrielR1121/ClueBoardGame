@@ -25,8 +25,8 @@ public class Client implements Runnable {
     static int x;
     static int y;
     private int amountofPlayers = 0;
-    public static ArrayList<Integer> playerX;
-    public static ArrayList<Integer> playerY;
+    public static ArrayList<Integer> playerX = new ArrayList<Integer>();
+    public static ArrayList<Integer> playerY = new ArrayList<Integer>();
     public static ArrayList<String> playerColor = new ArrayList<String>();
     public static boolean isPlayerTurn;
     public static int currTurn;

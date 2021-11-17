@@ -420,7 +420,7 @@ public class Build extends JPanel implements ActionListener {
                     break;
                 }// switch()
                 g.fillOval(Client.playerX.get(i), Client.playerY.get(i), UNIT_SIZE, UNIT_SIZE);
-                // repaint(); --->BORRADO NO SUCEDE NADA
+                repaint();
             } // if()
         }
     }
@@ -530,25 +530,25 @@ public class Build extends JPanel implements ActionListener {
                 case KeyEvent.VK_LEFT:
                     direction = 'L';
                     move();
-                    // repaint();
+                    repaint();
                     break;
 
                 case KeyEvent.VK_RIGHT:
                     direction = 'R';
                     move();
-                    // repaint();
+                    repaint();
                     break;
 
                 case KeyEvent.VK_UP:
                     direction = 'U';
                     move();
-                    // repaint();
+                    repaint();
                     break;
 
                 case KeyEvent.VK_DOWN:
                     direction = 'D';
                     move();
-                    // repaint();
+                    repaint();
                     break;
                 }
             } // if()
