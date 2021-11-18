@@ -28,6 +28,10 @@ public class Build extends JPanel implements ActionListener {
     public static String color;
     Random rand = new Random();
     JFrame frame = new JFrame();
+    public int diceRoll = 0;
+
+    // will be used for startPlayerTurn()
+    public static int mutablePlayerTurn = 0;
 
     // Permited moves Hashmap
     HashMap<Integer, ArrayList<Integer>> permitedCoordinates = new HashMap<Integer, ArrayList<Integer>>();
@@ -448,7 +452,47 @@ public class Build extends JPanel implements ActionListener {
                 g.fillOval(Client.playerX.get(i), Client.playerY.get(i), UNIT_SIZE, UNIT_SIZE);
                 repaint();
             } // if()
+        } // for()
+
+        startPlayerTurn();
+
+        g.setColor(Color.white);
+        g.setFont(new Font("Ink Free", Font.BOLD, 20));
+        FontMetrics metrics1 = getFontMetrics(g.getFont());
+        g.drawString("Player Turn: " + Client.playerColor.get(Client.currTurn),
+                (metrics1.stringWidth("Player Turn: ")) - 70, g.getFont().getSize() + align);
+
+        g.setColor(Color.white);
+        g.setFont(new Font("Ink Free", Font.BOLD, 20));
+        FontMetrics metrics2 = getFontMetrics(g.getFont());
+        g.drawString("Dice roll: " + diceRoll, (SCREEN_WIDTH - metrics2.stringWidth("Dice Roll: " + diceRoll)) - 35,
+                g.getFont().getSize() + align);
+    } // draw()
+
+    public void startPlayerTurn() {
+
+        if (mutablePlayerTurn == 0 && Client.isPlayerTurn) {
+            newDiceRoll();
+            mutablePlayerTurn = 1;
         }
+    }
+
+    // Checks to see if the player has remaining moves.
+    public boolean checkMoves() {
+        if (diceRoll < 1) {
+            Client.isPlayerTurn = false;
+            mutablePlayerTurn = 0;
+            return false;
+        }
+        return true;
+    }
+
+    // Gives the player a new dice roll if its their turn.
+    public void newDiceRoll() {
+
+        Random rand = new Random();
+        diceRoll = rand.nextInt(6) + 1;
+
     }
 
     // Checks to see if players are within the game bounds
@@ -489,9 +533,9 @@ public class Build extends JPanel implements ActionListener {
         switch (direction) {
 
         case 'U':
-            System.out.println(Client.playerY.get(Client.currTurn));
             if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) - UNIT_SIZE)) {
                 Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) - UNIT_SIZE);
+                diceRoll--;
             }
             if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
@@ -501,10 +545,9 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'D':
-            System.out.println(Client.playerY.get(Client.currTurn));
             if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) + UNIT_SIZE)) {
                 Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) + UNIT_SIZE);
-                System.out.println(Client.playerY.get(Client.currTurn));
+                diceRoll--;
             }
             if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
@@ -514,8 +557,10 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'L':
-            if (checkBounds(Client.playerX.get(Client.currTurn) - UNIT_SIZE, Client.playerY.get(Client.currTurn)))
+            if (checkBounds(Client.playerX.get(Client.currTurn) - UNIT_SIZE, Client.playerY.get(Client.currTurn))) {
                 Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) - UNIT_SIZE);
+                diceRoll--;
+            }
             if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
@@ -524,8 +569,10 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'R':
-            if (checkBounds(Client.playerX.get(Client.currTurn) + UNIT_SIZE, Client.playerY.get(Client.currTurn)))
+            if (checkBounds(Client.playerX.get(Client.currTurn) + UNIT_SIZE, Client.playerY.get(Client.currTurn))) {
                 Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) + UNIT_SIZE);
+                diceRoll--;
+            }
             if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
@@ -544,13 +591,11 @@ public class Build extends JPanel implements ActionListener {
     }
 
     // Checks to see if a key has been pressed and changes direction based on arrow
-    // keys.
+    // and the player's turn.
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
 
-            System.out.println(Client.isPlayerTurn);
-
-            if (Client.isPlayerTurn) {
+            if (Client.isPlayerTurn && checkMoves()) {
                 switch (e.getKeyCode()) {
 
                 case KeyEvent.VK_LEFT:
