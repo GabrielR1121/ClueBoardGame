@@ -29,6 +29,7 @@ public class Client implements Runnable {
     public static ArrayList<String> playerColor = new ArrayList<String>();
     public static boolean isPlayerTurn;
     public static int currTurn;
+    public static boolean turnEnded = false;
 
     public Client() {
         try {
@@ -75,8 +76,9 @@ public class Client implements Runnable {
             // This is for the first player, the rest send only the color chosen.
             String outMsg = "";
 
-            amountofPlayers = 6;
-
+            // amountofPlayers = Integer.parseInt(JOptionPane.showInputDialog("Enter the
+            // amount of players:"));
+            amountofPlayers = 1;
             if (currTurn == 0)
                 outMsg += colorIdx + ";" + amountofPlayers;
             else
@@ -114,6 +116,52 @@ public class Client implements Runnable {
             System.out.println(
                     "Error in Client file receiving and distributing colors and coords for players. Error message: "
                             + e.getMessage());
+        }
+        try {
+            while (true) {
+                System.out.println("Starting out message Client: ");
+                String outMsg = "";
+                outMsg += playerX.toString() + ";";
+                outMsg += playerY.toString() + ";";
+                outMsg += turnEnded + ";";
+                System.out.println(outMsg);
+                out.writeUTF(outMsg);
+                System.out.println("Sent out Message. Ready to receive.");
+                String inMsg = in.readUTF();
+
+                inMsg = inMsg.replace('[', ' ').trim();
+                inMsg = inMsg.replace(']', ' ').trim();
+                String[] strMsg = inMsg.split(";");
+
+                System.out.println(amountofPlayers);
+
+                strMsg[0] = strMsg[0].replace('[', ' ').trim();
+                strMsg[0] = strMsg[0].replace(']', ' ').trim();
+                String[] xP = strMsg[0].split(",");
+
+                System.out.println("Here: " + Arrays.toString(xP));
+
+                strMsg[1] = strMsg[1].replace('[', ' ').trim();
+                strMsg[1] = strMsg[1].replace(']', ' ').trim();
+                String[] yP = strMsg[1].split(",");
+
+                System.out.println("Before for loop");
+                for (int i = 0; i < amountofPlayers; i++) {
+                    playerX.set(i, Integer.parseInt(xP[i]));
+                    playerY.set(i, Integer.parseInt(yP[i]));
+                }
+
+                if (currTurn == Integer.parseInt(strMsg[2]))
+                    isPlayerTurn = true;
+
+                outMsg = playerX + ";" + playerY + ";" + turnEnded;
+                out.writeUTF(outMsg);
+                System.out.println("Sent out Message. Ready to receive. ThreadServer.");
+            }
+        } catch (Exception e) {
+            System.out.println(
+                    "Error in Client file sending constant x and y coordinates. Error message: " + e.getMessage());
+
         }
 
     }

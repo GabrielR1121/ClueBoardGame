@@ -482,6 +482,7 @@ public class Build extends JPanel implements ActionListener {
         if (diceRoll < 1) {
             Client.isPlayerTurn = false;
             mutablePlayerTurn = 0;
+            Client.turnEnded = true;
             return false;
         }
         return true;
@@ -619,9 +620,7 @@ public class Build extends JPanel implements ActionListener {
                 case KeyEvent.VK_DOWN:
                     direction = 'D';
                     move();
-                    System.out.println(Client.playerY.get(Client.currTurn));
                     repaint();
-                    System.out.println(Client.playerY.get(Client.currTurn));
                     break;
                 }
             } // if()
