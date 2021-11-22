@@ -36,7 +36,7 @@ public class Server {
     public static int turn;
 
     // Amount of players to connect
-    int amountofPlayer = 4;
+    int amountofPlayer = 2;
 
     // Find out where they go.
     // int playersX[] = new int[amountofPlayer];

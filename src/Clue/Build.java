@@ -30,6 +30,9 @@ public class Build extends JPanel implements ActionListener {
     JFrame frame = new JFrame();
     public int diceRoll = 0;
 
+    public static ArrayList<Integer> playerX = new ArrayList<Integer>();
+    public static ArrayList<Integer> playerY = new ArrayList<Integer>();
+
     // will be used for startPlayerTurn()
     public static int mutablePlayerTurn = 0;
 
@@ -411,7 +414,7 @@ public class Build extends JPanel implements ActionListener {
     // * Players / Player Movement.
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(Updated).jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 
@@ -427,7 +430,8 @@ public class Build extends JPanel implements ActionListener {
         for (int i = 0; i < Client.playerColor.size(); i++) {
 
             if (Client.playerColor.get(i) != null) {
-                switch (Client.playerColor.get(i)) {
+
+                switch (Client.playerColor.get(i).trim()) {
                 case "Green":
                     g.setColor(colors.Green.getColor());
                     break;
@@ -449,7 +453,8 @@ public class Build extends JPanel implements ActionListener {
                 default:
                     break;
                 }// switch()
-                g.fillOval(Client.playerX.get(i), Client.playerY.get(i), UNIT_SIZE, UNIT_SIZE);
+
+                g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
                 repaint();
             } // if()
         } // for()
@@ -492,7 +497,7 @@ public class Build extends JPanel implements ActionListener {
     public void newDiceRoll() {
 
         Random rand = new Random();
-        diceRoll = rand.nextInt(6) + 1;
+        diceRoll = rand.nextInt(12) + 1;
 
     }
 
@@ -519,8 +524,8 @@ public class Build extends JPanel implements ActionListener {
 
     public static void getStartingCoordinates(String[] charArr, int idx) {
 
-        Client.playerX.set(idx, Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
-        Client.playerY.set(idx, Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
+        Client.x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
+        Client.y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
 
     }
 
@@ -534,11 +539,12 @@ public class Build extends JPanel implements ActionListener {
         switch (direction) {
 
         case 'U':
-            if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) - UNIT_SIZE)) {
-                Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) - UNIT_SIZE);
+            if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
+
+                Client.y = Client.y - UNIT_SIZE;
                 diceRoll--;
             }
-            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
+            if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
@@ -546,11 +552,12 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'D':
-            if (checkBounds(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn) + UNIT_SIZE)) {
-                Client.playerY.set(Client.currTurn, Client.playerY.get(Client.currTurn) + UNIT_SIZE);
+            if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
+
+                Client.y = Client.y + UNIT_SIZE;
                 diceRoll--;
             }
-            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
+            if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
@@ -558,11 +565,12 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'L':
-            if (checkBounds(Client.playerX.get(Client.currTurn) - UNIT_SIZE, Client.playerY.get(Client.currTurn))) {
-                Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) - UNIT_SIZE);
+            if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
+
+                Client.x = Client.x - UNIT_SIZE;
                 diceRoll--;
             }
-            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
+            if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
@@ -570,18 +578,18 @@ public class Build extends JPanel implements ActionListener {
             break;
 
         case 'R':
-            if (checkBounds(Client.playerX.get(Client.currTurn) + UNIT_SIZE, Client.playerY.get(Client.currTurn))) {
-                Client.playerX.set(Client.currTurn, Client.playerX.get(Client.currTurn) + UNIT_SIZE);
+            if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
+
+                Client.x = Client.x + UNIT_SIZE;
                 diceRoll--;
             }
-            if (checkRoom(Client.playerX.get(Client.currTurn), Client.playerY.get(Client.currTurn))) {
+            if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
                 // System.out.println(Client.startRumor());
             }
             direction = 's';
             break;
         }
-        System.out.println(Client.playerY.get(Client.currTurn));
     }
 
     // activates when an action is preformed in order to run previus methods.
@@ -597,32 +605,34 @@ public class Build extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
 
             if (Client.isPlayerTurn && checkMoves()) {
+
                 switch (e.getKeyCode()) {
 
                 case KeyEvent.VK_LEFT:
                     direction = 'L';
                     move();
-                    repaint();
+                    // repaint();
                     break;
 
                 case KeyEvent.VK_RIGHT:
                     direction = 'R';
                     move();
-                    repaint();
+                    // repaint();
                     break;
 
                 case KeyEvent.VK_UP:
                     direction = 'U';
                     move();
-                    repaint();
+                    // repaint();
                     break;
 
                 case KeyEvent.VK_DOWN:
                     direction = 'D';
                     move();
-                    repaint();
+                    // repaint();
                     break;
                 }
+
             } // if()
         }
     }

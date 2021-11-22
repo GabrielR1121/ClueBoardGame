@@ -17,9 +17,7 @@ public class ThreadServer implements Runnable {
     private boolean isPlayerTurn;
     private LinkedList<Socket> users = new LinkedList<Socket>();
     private int turn;
-    public int amountofPlayers = 0;
-    static int x;
-    static int y;
+    public volatile int amountofPlayers = 0;
     int count = 0;
     public static int playerTurn = 0;
     // Proximo mensaje
@@ -38,6 +36,10 @@ public class ThreadServer implements Runnable {
     // Has the string info of all of the cards on the cardDeck array.
     static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
+    public static ArrayList<Integer> playerX = new ArrayList<Integer>();
+    public static ArrayList<Integer> playerY = new ArrayList<Integer>();
+    public static ArrayList<String> playerColor = new ArrayList<String>();
+
     public ThreadServer(Socket soc, LinkedList users, int turno) {
 
         try {
@@ -45,6 +47,7 @@ public class ThreadServer implements Runnable {
             this.users = users;
             socket = soc;
             this.turn = turno;
+            System.out.println("Player " + (turn + 1) + " has joined the game");
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
@@ -79,7 +82,7 @@ public class ThreadServer implements Runnable {
 
             outMsg += isPlayerTurn + ";";
 
-            // System.out.println("Primer mensaje..?");
+            // System.out.println("first messaage: " + outMsg);
 
             out.writeUTF(outMsg);
 
@@ -97,24 +100,31 @@ public class ThreadServer implements Runnable {
             // System.out.println("Array:" + Arrays.toString(strMsg));
             // System.out.println("Available colors: " + Server.availableColors);
 
-            newPlayer(Server.availableColors.get(Integer.parseInt(strMsg[0])));
-
             if (turn == 0) {
-                amountofPlayers = Integer.parseInt(strMsg[1]);
+                amountofPlayers = Integer.parseInt(strMsg[0]);
+                strMsg = Arrays.copyOfRange(strMsg, 1, strMsg.length);
                 Server.sb.append(amountofPlayers + ";");
             }
 
-            Server.sb.append(Server.availableColors.get(Integer.parseInt(strMsg[0])) + ";" + x + ";" + y + ";");
+            newPlayer(Server.availableColors.get(Integer.parseInt(strMsg[0])));
+
+            playerColor.add(Server.availableColors.get(Integer.parseInt(strMsg[0])));
             Server.availableColors.remove(Integer.parseInt(strMsg[0]));
+
             // System.out.println("starting pos: " + Server.sb.toString());
 
             // System.out.println(Server.sb.toString());
 
             // The message being sent contains the amount of players, and the starting
             // position of each player.
+            // System.out.println(
+            // "Colors and X Y" + playerColor.get(turn) + ";" + playerX.get(turn) + ";" +
+            // playerY.get(turn));
 
-            out.writeUTF(Server.sb.toString());
+            out.writeUTF(
+                    amountofPlayers + ";" + playerColor.get(turn) + ";" + playerX.get(turn) + ";" + playerY.get(turn));
 
+            // System.out.println("Player X size atm: " + playerX.size());
             // System.out.println(Server.availableColors.toString());
 
         } catch (Exception e) {
@@ -127,42 +137,28 @@ public class ThreadServer implements Runnable {
 
             while (true) {
 
-                System.out.println("Starting out message ThreadServer: ");
-                String inMsg = in.readUTF();
-                System.out.println(inMsg);
-                // inMsg = inMsg.replace("[", " ").trim();
-                // inMsg = inMsg.replace("]", " ").trim();
-                String[] strMsg = inMsg.split(";");
+                if (playerX.size() == amountofPlayers) {
 
-                System.out.println(Arrays.toString(strMsg));
-                int[] playerX = new int[amountofPlayers];
-                System.out.println(amountofPlayers);
+                    String inMsg = in.readUTF();
+                    System.out.println(inMsg);
 
-                strMsg[0] = strMsg[0].replace('[', ' ').trim();
-                strMsg[0] = strMsg[0].replace(']', ' ').trim();
-                String[] xP = strMsg[0].split(",");
+                    String[] strMsg = inMsg.split(";");
 
-                System.out.println(Arrays.toString(xP));
+                    System.out.println("In: " + Arrays.toString(strMsg));
 
-                int[] playerY = new int[amountofPlayers];
-                strMsg[1] = strMsg[1].replace('[', ' ').trim();
-                strMsg[1] = strMsg[1].replace(']', ' ').trim();
-                String[] yP = strMsg[1].split(",");
+                    if (Boolean.parseBoolean(strMsg[2]) == true) {
+                        playerTurn++;
+                        if (playerTurn == 5)
+                            playerTurn = 0;
+                    }
 
-                if (Boolean.parseBoolean(strMsg[2]) == true)
-                    playerTurn++;
+                    playerX.set(Integer.parseInt(strMsg[3]), Integer.parseInt(strMsg[0]));
+                    playerY.set(Integer.parseInt(strMsg[3]), Integer.parseInt(strMsg[1]));
 
-                System.out.println("Before for loop");
-                for (int i = 0; i < amountofPlayers; i++) {
-                    System.out.println("Inside for loop");
-                    playerX[i] = Integer.parseInt(xP[i].trim());
-                    playerY[i] = Integer.parseInt(yP[i].trim());
+                    String outMsg = playerColor.toString() + ";" + playerX.toString() + ";" + playerY.toString() + ";"
+                            + playerTurn;
+                    out.writeUTF(outMsg);
                 }
-
-                String outMsg = Arrays.toString(playerX) + ";" + Arrays.toString(playerY) + ";" + playerTurn;
-                System.out.println(outMsg);
-                out.writeUTF(outMsg);
-                System.out.println("Sent out Message. Ready to receive. ThreadServer.");
             }
         } catch (Exception e) {
             System.out.println("Error in ThreadServer file receiving amount of x and y coordinates. Error message: "
@@ -175,8 +171,8 @@ public class ThreadServer implements Runnable {
 
         // System.out.println("STARTING COORDS..." + Arrays.toString(charArr));
 
-        x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
-        y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
+        playerX.add(Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
+        playerY.add(Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
 
     }
 
