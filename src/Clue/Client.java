@@ -21,15 +21,22 @@ public class Client implements Runnable {
     // private boolean isPlayerTurn;
     String color;
     Random rand = new Random();
-    static int x;
-    static int y;
-    private int amountofPlayers = 0;
-    public static ArrayList<Integer> playerX = new ArrayList<Integer>();
-    public static ArrayList<Integer> playerY = new ArrayList<Integer>();
+    volatile static int x;
+    volatile static int y;
+
+    static int lastX = 0;
+    static int lastY = 0;
+
+    public static int amountofPlayers = 0;
+
     public static ArrayList<String> playerColor = new ArrayList<String>();
     public static boolean isPlayerTurn;
     public static int currTurn;
     public static boolean turnEnded = false;
+
+    public static boolean isGameRunning = false;
+
+    // ColorIdx Global
 
     public Client() {
         try {
@@ -55,8 +62,6 @@ public class Client implements Runnable {
             // We should receive availableColors, turn, and isPlayerTurn
             String inMsg = in.readUTF();
 
-            // System.out.println(inMsg);
-
             String[] strMsg = inMsg.split(";");
 
             String[] availableColors = strMsg[0].split(",");
@@ -65,22 +70,20 @@ public class Client implements Runnable {
 
             isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
 
-            int colorIdx = rand.nextInt(availableColors.length); // The error in threadServer is happening because
-                                                                 // of this. When we make the
-                                                                 // player pick the color the error will go away.
+            int colorIdx = rand.nextInt(availableColors.length); // Replace with while(colorIdn != -1) {break;}
 
             // System.out.println("Color index: " + colorIdx);
 
-            // We should send the index of the color chosen, and the amount of players to
+            // We should send the index of the amount of players, and the colorIdx to
             // join.
             // This is for the first player, the rest send only the color chosen.
             String outMsg = "";
 
             // amountofPlayers = Integer.parseInt(JOptionPane.showInputDialog("Enter the
             // amount of players:"));
-            amountofPlayers = 1;
+
             if (currTurn == 0)
-                outMsg += colorIdx + ";" + amountofPlayers;
+                outMsg += amountofPlayers + ";" + colorIdx;
             else
                 outMsg += colorIdx + ";";
 
@@ -99,18 +102,33 @@ public class Client implements Runnable {
             // The first thing being sent is the amount of players, then the positions.
             String[] positions = inMsg.split(";");
 
-            positions = Arrays.copyOfRange(positions, 1, positions.length);
+            // positions = Arrays.copyOfRange(positions, 1, positions.length);
             System.out.println("New Color and Positions: " + Arrays.toString(positions));
 
-            for (int i = 0; i < positions.length; i += 3) {
-                playerColor.add(positions[i]);
-                playerX.add(Integer.parseInt(positions[i + 1]));
-                playerY.add(Integer.parseInt(positions[i + 2]));
+            if (currTurn == 0) {
+                amountofPlayers = Integer.parseInt(positions[0]);
             }
 
+            positions = Arrays.copyOfRange(positions, 1, positions.length);
+            System.out.println("after if " + Arrays.toString(positions));
+            playerColor.add(positions[0]);
+            x = Integer.parseInt(positions[1]);
+            y = Integer.parseInt(positions[2]);
+
+            for (int i = 1; i < amountofPlayers; i++) {
+
+                playerColor.add(null);
+                Build.playerX.add(0);
+                Build.playerY.add(0);
+
+            }
+
+            Build.playerX.add(x);
+            Build.playerY.add(y);
+
             System.out.println("Player colors: " + playerColor.toString());
-            System.out.println("X-coords: " + playerX.toString());
-            System.out.print("Y-coords: " + playerY.toString() + "\n");
+            System.out.println("X-coords: " + x);
+            System.out.print("Y-coords: " + y + "\n");
 
         } catch (Exception e) {
             System.out.println(
@@ -119,55 +137,91 @@ public class Client implements Runnable {
         }
         try {
             while (true) {
-                System.out.println("Starting out message Client: ");
-                String outMsg = "";
-                outMsg += playerX.toString() + ";";
-                outMsg += playerY.toString() + ";";
-                outMsg += turnEnded + ";";
-                System.out.println(outMsg);
-                out.writeUTF(outMsg);
-                System.out.println("Sent out Message. Ready to receive.");
-                String inMsg = in.readUTF();
 
-                inMsg = inMsg.replace('[', ' ').trim();
-                inMsg = inMsg.replace(']', ' ').trim();
-                String[] strMsg = inMsg.split(";");
+                // System.out.println("Starting out message Client: ");
 
-                System.out.println(amountofPlayers);
+                // Forces while loop to online run when the values of x and y change.
+                if (lastX != x || lastY != y) {
+                    String outMsg = "";
+                    outMsg += x + ";";
+                    outMsg += y + ";";
+                    outMsg += turnEnded + ";";
+                    outMsg += currTurn + ";";
 
-                strMsg[0] = strMsg[0].replace('[', ' ').trim();
-                strMsg[0] = strMsg[0].replace(']', ' ').trim();
-                String[] xP = strMsg[0].split(",");
+                    System.out.println("out: " + outMsg);
+                    out.writeUTF(outMsg);
+                    lastX = x;
+                    lastY = y;
+                    // Forces the client to wait until all X and Y Values are ready.
+                    String inMsg = in.readUTF();
+                    System.out.println("in: " + inMsg);
 
-                System.out.println("Here: " + Arrays.toString(xP));
+                    changeXYValues(inMsg);
 
-                strMsg[1] = strMsg[1].replace('[', ' ').trim();
-                strMsg[1] = strMsg[1].replace(']', ' ').trim();
-                String[] yP = strMsg[1].split(",");
-
-                System.out.println("Before for loop");
-                for (int i = 0; i < amountofPlayers; i++) {
-                    playerX.set(i, Integer.parseInt(xP[i]));
-                    playerY.set(i, Integer.parseInt(yP[i]));
                 }
-
-                if (currTurn == Integer.parseInt(strMsg[2]))
-                    isPlayerTurn = true;
-
-                outMsg = playerX + ";" + playerY + ";" + turnEnded;
-                out.writeUTF(outMsg);
-                System.out.println("Sent out Message. Ready to receive. ThreadServer.");
             }
+
         } catch (Exception e) {
-            System.out.println(
-                    "Error in Client file sending constant x and y coordinates. Error message: " + e.getMessage());
+            System.out.println("Error in Client file sending constant x and y coordinates. Error message: "
+                    + e.getMessage() + "\n" + "Line number: " + e.getStackTrace()[0].getLineNumber());
 
         }
 
     }
 
     // Starts the game
-    public void startClient() {
+    public static void changeXYValues(String inMsg) {
+
+        inMsg = inMsg.replace('[', ' ').trim();
+        inMsg = inMsg.replace(']', ' ').trim();
+        String[] strMsg = inMsg.split(";");
+        // System.out.println(Arrays.toString(strMsg));
+
+        strMsg[0] = strMsg[0].replace('[', ' ').trim();
+        strMsg[0] = strMsg[0].replace(']', ' ').trim();
+        String[] cP = strMsg[0].split(",");
+
+        System.out.println("cP " + Arrays.toString(cP));
+
+        strMsg[1] = strMsg[1].replace('[', ' ').trim();
+        strMsg[1] = strMsg[1].replace(']', ' ').trim();
+        String[] xP = strMsg[1].split(",");
+        System.out.println("xP " + Arrays.toString(xP));
+
+        strMsg[2] = strMsg[2].replace('[', ' ').trim();
+        strMsg[2] = strMsg[2].replace(']', ' ').trim();
+        String[] yP = strMsg[2].split(",");
+        System.out.println("yP " + Arrays.toString(yP));
+
+        // System.out.println(Arrays.toString(yP));
+        System.out.println("Amount of players: " + amountofPlayers);
+
+        System.out.println("Build Player X " + Build.playerX);
+        System.out.println("Build Player Y " + Build.playerY);
+
+        for (int i = 0; i < amountofPlayers; i++) {
+
+            playerColor.set(i, cP[i]);
+            Build.playerX.set(i, Integer.parseInt(xP[i].trim()));
+            Build.playerY.set(i, Integer.parseInt(yP[i].trim()));
+
+        }
+
+        System.out.println("------------------------------------");
+        System.out.println("Player Color : " + playerColor);
+        System.out.println("Player X : " + Build.playerX);
+        System.out.println("Player Y : " + Build.playerY);
+        System.out.println("------------------------------------");
+
+        if (currTurn == Integer.parseInt(strMsg[3]))
+            isPlayerTurn = true;
+
+        // If the game is not running this will start the build for everyone with
+        // required values.
+        if (!isGameRunning) {
+            isGameRunning = true;
+            new Build();
+        }
 
     }
 
