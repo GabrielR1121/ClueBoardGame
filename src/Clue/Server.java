@@ -14,8 +14,12 @@ public class Server {
     private final int port = 2027;
     // Could change if pop-up added to ask amount of players.
     private final int numberOfConnections = 6;
-    private LinkedList<Socket> users = new LinkedList<Socket>();
+    public static ArrayList<Socket> users = new ArrayList<Socket>();
     private boolean isPlayerTurn = false;
+    public static int amountofPlayers = 2;
+    public static int connPlayers = 0;
+
+    public char label = 'A';
 
     public static ArrayList<String> availableColors = new ArrayList<String>() {
 
@@ -30,6 +34,7 @@ public class Server {
         }
 
     };
+    public static ArrayList<ClientHandeler> clientHandeler = new ArrayList<>();
     public static StringBuilder sb = new StringBuilder();
 
     // Not in UML yet
@@ -50,7 +55,7 @@ public class Server {
 
     // try to auto generate.
     private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
-    List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
+    public static List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
 
     private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
@@ -79,8 +84,9 @@ public class Server {
         Collections.shuffle(CardDeck);
 
         distributeCards();
+        // ThreadServer.main();
 
-        ThreadServer.main();
+        ClientHandeler.main();
     }
 
     // Opens the sockets and waits for a connection from the client.
@@ -98,14 +104,18 @@ public class Server {
 
                 System.out.println("Awaiting connection...");
                 Socket client = server.accept();
-                users.add(client);
+                ClientHandeler clienthandeler = new ClientHandeler(client, turn++, label++);
+                // users.add(client);
+
+                Thread thread = new Thread(clienthandeler);
+                thread.start();
 
                 // Connection went through
                 // System.out.println(users.toString());
 
-                Runnable run = new ThreadServer(client, users, turn++);
-                Thread hilo = new Thread(run);
-                hilo.start();
+                // Runnable run = new ThreadServer(client, turn++);
+                // Thread hilo = new Thread(run);
+                // hilo.start();
 
             }
 

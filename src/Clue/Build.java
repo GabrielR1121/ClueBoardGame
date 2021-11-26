@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.text.Position;
 
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,16 +23,16 @@ public class Build extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 872;
     static final int UNIT_SIZE = 32;
     int align = 6;
-    static int x;
-    static int y;
+    // static int x;
+    // static int y;
     char direction = 'p';
     public static String color;
     Random rand = new Random();
     JFrame frame = new JFrame();
     public int diceRoll = 0;
 
-    public static ArrayList<Integer> playerX = new ArrayList<Integer>();
-    public static ArrayList<Integer> playerY = new ArrayList<Integer>();
+    public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
+    public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
 
     // will be used for startPlayerTurn()
     public static int mutablePlayerTurn = 0;
@@ -414,7 +415,8 @@ public class Build extends JPanel implements ActionListener {
     // * Players / Player Movement.
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage(".\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage(
+                "C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 

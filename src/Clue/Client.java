@@ -19,13 +19,14 @@ public class Client implements Runnable {
     private int puerto = 2027;
     private String host = "localhost";
     // private boolean isPlayerTurn;
-    String color;
+    // String color;
     Random rand = new Random();
     volatile static int x;
     volatile static int y;
+    volatile static String color;
 
-    static int lastX = 0;
-    static int lastY = 0;
+    volatile static int lastX = 0;
+    volatile static int lastY = 0;
 
     public static int amountofPlayers = 0;
 
@@ -36,6 +37,10 @@ public class Client implements Runnable {
 
     public static boolean isGameRunning = false;
 
+    public String outMsg;
+    public String inMsg;
+    public String character;
+
     // ColorIdx Global
 
     public Client() {
@@ -45,15 +50,53 @@ public class Client implements Runnable {
 
             cliente = new Socket(host, puerto);
 
-            in = new DataInputStream(cliente.getInputStream());
+            this.in = new DataInputStream(cliente.getInputStream());
 
-            out = new DataOutputStream(cliente.getOutputStream());
+            this.out = new DataOutputStream(cliente.getOutputStream());
 
         } catch (Exception e) {
             System.out.println("Error in Client file creating client constructor. Error message: " + e.getMessage());
         }
 
     }
+
+    // public void sendMessage() {
+    // try {
+    //
+    // while(cliente.isConnected()) {
+    //
+    // out.writeUTF(outMsg);
+    // out.flush();
+    //
+    //
+    // }
+    //
+    //
+    //
+    // }catch(Exception e) {
+    //
+    // }
+    // }
+    //
+    //
+    //
+    //
+    // public void receiveMessage() {
+    //
+    // new Thread(new Runnable() {
+    // public void run() {
+    // try {
+    // inMsg = in.readUTF();
+    //
+    //
+    //
+    //
+    // } catch(Exception e) {
+    //
+    // }
+    // }
+    // }).start();
+    // }
 
     @Override
     public void run() {
@@ -110,12 +153,14 @@ public class Client implements Runnable {
             }
 
             positions = Arrays.copyOfRange(positions, 1, positions.length);
-            System.out.println("after if " + Arrays.toString(positions));
-            playerColor.add(positions[0]);
+            // System.out.println("after if " + Arrays.toString(positions));
+            // playerColor.add(positions[0]);
+
+            color = positions[0].trim();
             x = Integer.parseInt(positions[1]);
             y = Integer.parseInt(positions[2]);
 
-            for (int i = 1; i < amountofPlayers; i++) {
+            for (int i = 0; i < amountofPlayers; i++) {
 
                 playerColor.add(null);
                 Build.playerX.add(0);
@@ -123,8 +168,9 @@ public class Client implements Runnable {
 
             }
 
-            Build.playerX.add(x);
-            Build.playerY.add(y);
+            playerColor.set(currTurn, color);
+            Build.playerX.set(currTurn, x);
+            Build.playerY.set(currTurn, y);
 
             System.out.println("Player colors: " + playerColor.toString());
             System.out.println("X-coords: " + x);
@@ -136,28 +182,102 @@ public class Client implements Runnable {
                             + e.getMessage());
         }
         try {
+
+            String inMsg = in.readUTF();
+            System.out.println("Recieved everyones coords V");
+            System.out.println(inMsg);
+
+            inMsg = inMsg.replace('[', ' ').trim();
+            inMsg = inMsg.replace(']', ' ').trim();
+            String[] strMsg = inMsg.split(";");
+
+            // System.out.println(Arrays.toString(strMsg));
+
+            strMsg[0] = strMsg[0].replace('[', ' ').trim();
+            strMsg[0] = strMsg[0].replace(']', ' ').trim();
+            String[] cP = strMsg[0].split(",");
+
+            // System.out.println("cP " + Arrays.toString(cP));
+
+            strMsg[1] = strMsg[1].replace('[', ' ').trim();
+            strMsg[1] = strMsg[1].replace(']', ' ').trim();
+            String[] xP = strMsg[1].split(",");
+            // System.out.println("xP " + Arrays.toString(xP));
+
+            strMsg[2] = strMsg[2].replace('[', ' ').trim();
+            strMsg[2] = strMsg[2].replace(']', ' ').trim();
+            String[] yP = strMsg[2].split(",");
+            // System.out.println("yP " + Arrays.toString(yP));
+
+            // System.out.println(Arrays.toString(yP));
+
+            // System.out.println("Amount of players: " + amountofPlayers);
+
+            // System.out.println("Build Player X " + Build.playerX);
+            // System.out.println("Build Player Y " + Build.playerY);
+
+            for (int i = 0; i < amountofPlayers; i++) {
+                playerColor.set(i, cP[i]);
+                Build.playerX.set(i, Integer.parseInt(xP[i].trim()));
+                Build.playerY.set(i, Integer.parseInt(yP[i].trim()));
+
+            }
+
+            // System.out.println("------------------------------------");
+            // System.out.println("Player Color : " + playerColor);
+            // System.out.println("Player X : " + Build.playerX);
+            // System.out.println("Player Y : " + Build.playerY);
+            // System.out.println("------------------------------------");
+
+        } catch (Exception e) {
+            System.out.println("Error in coords: " + e.getMessage());
+        }
+
+        // lastX = x;
+        // lastY =y;
+
+        try {
             while (true) {
 
                 // System.out.println("Starting out message Client: ");
 
                 // Forces while loop to online run when the values of x and y change.
-                if (lastX != x || lastY != y) {
-                    String outMsg = "";
-                    outMsg += x + ";";
-                    outMsg += y + ";";
-                    outMsg += turnEnded + ";";
-                    outMsg += currTurn + ";";
+                if (!isGameRunning && !Build.playerX.contains(0)) {
+                    isGameRunning = true;
+                    new Build();
 
-                    System.out.println("out: " + outMsg);
-                    out.writeUTF(outMsg);
-                    lastX = x;
-                    lastY = y;
+                } else if (isPlayerTurn) {
+                    // String outMsg = "";
+                    // outMsg += x + ";";
+                    // outMsg += y + ";";
+                    // outMsg += turnEnded + ";";
+                    // outMsg += currTurn + ";";
+
+                    Build.playerX.set(currTurn, x);
+                    Build.playerY.set(currTurn, y);
+
+                    if ((lastX != x || lastY != y)) {
+                        lastX = x;
+                        lastY = y;
+                        String outMsg = "";
+                        outMsg += x + ";";
+                        outMsg += y + ";";
+                        outMsg += turnEnded + ";";
+                        outMsg += currTurn + ";";
+                        System.out.println("out: " + outMsg);
+                        out.writeUTF(outMsg);
+                        out.flush();
+
+                    }
+                    Build.playerX.set(currTurn, x);
+                    Build.playerY.set(currTurn, y);
+
                     // Forces the client to wait until all X and Y Values are ready.
+
+                } else {
                     String inMsg = in.readUTF();
                     System.out.println("in: " + inMsg);
-
                     changeXYValues(inMsg);
-
                 }
             }
 
@@ -175,53 +295,50 @@ public class Client implements Runnable {
         inMsg = inMsg.replace('[', ' ').trim();
         inMsg = inMsg.replace(']', ' ').trim();
         String[] strMsg = inMsg.split(";");
+
         // System.out.println(Arrays.toString(strMsg));
 
         strMsg[0] = strMsg[0].replace('[', ' ').trim();
         strMsg[0] = strMsg[0].replace(']', ' ').trim();
         String[] cP = strMsg[0].split(",");
 
-        System.out.println("cP " + Arrays.toString(cP));
+        // System.out.println("cP " + Arrays.toString(cP));
 
         strMsg[1] = strMsg[1].replace('[', ' ').trim();
         strMsg[1] = strMsg[1].replace(']', ' ').trim();
         String[] xP = strMsg[1].split(",");
-        System.out.println("xP " + Arrays.toString(xP));
+        // System.out.println("xP " + Arrays.toString(xP));
 
         strMsg[2] = strMsg[2].replace('[', ' ').trim();
         strMsg[2] = strMsg[2].replace(']', ' ').trim();
         String[] yP = strMsg[2].split(",");
-        System.out.println("yP " + Arrays.toString(yP));
+        // System.out.println("yP " + Arrays.toString(yP));
 
         // System.out.println(Arrays.toString(yP));
-        System.out.println("Amount of players: " + amountofPlayers);
 
-        System.out.println("Build Player X " + Build.playerX);
-        System.out.println("Build Player Y " + Build.playerY);
+        // System.out.println("Amount of players: " + amountofPlayers);
+
+        // System.out.println("Build Player X " + Build.playerX);
+        // System.out.println("Build Player Y " + Build.playerY);
 
         for (int i = 0; i < amountofPlayers; i++) {
-
             playerColor.set(i, cP[i]);
             Build.playerX.set(i, Integer.parseInt(xP[i].trim()));
             Build.playerY.set(i, Integer.parseInt(yP[i].trim()));
 
         }
 
-        System.out.println("------------------------------------");
-        System.out.println("Player Color : " + playerColor);
-        System.out.println("Player X : " + Build.playerX);
-        System.out.println("Player Y : " + Build.playerY);
-        System.out.println("------------------------------------");
+        // System.out.println("------------------------------------");
+        // System.out.println("Player Color : " + playerColor);
+        // System.out.println("Player X : " + Build.playerX);
+        // System.out.println("Player Y : " + Build.playerY);
+        // System.out.println("------------------------------------");
 
-        if (currTurn == Integer.parseInt(strMsg[3]))
-            isPlayerTurn = true;
+        // if (currTurn == Integer.parseInt(strMsg[3]))
+        // isPlayerTurn = true;
 
         // If the game is not running this will start the build for everyone with
-        // required values.
-        if (!isGameRunning) {
-            isGameRunning = true;
-            new Build();
-        }
+        // required values.S
 
     }
 
