@@ -1,9 +1,10 @@
-package Clue;
+package clue;
 
 import javax.swing.*;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.net.ServerSocket;
@@ -16,8 +17,14 @@ public class Server {
     private final int numberOfConnections = 6;
     public static ArrayList<Socket> users = new ArrayList<Socket>();
     private boolean isPlayerTurn = false;
-    public static int amountofPlayers = 2;
+    public volatile static int amountofPlayers = 2;
     public static int connPlayers = 0;
+    public volatile static int currTurn = 0;
+    
+    public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
+    public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
+    public static CopyOnWriteArrayList<String> playerColor = new CopyOnWriteArrayList<String>();
+
 
     public char label = 'A';
 
@@ -38,7 +45,7 @@ public class Server {
     public static StringBuilder sb = new StringBuilder();
 
     // Not in UML yet
-    public static int turn;
+    public static int turn = 0;
 
     // Amount of players to connect
     int amountofPlayer = 2;
@@ -97,6 +104,7 @@ public class Server {
         System.out.println("Starting server... \n-------------");
 
         try {
+        	
 
             server = new ServerSocket(port, numberOfConnections);
 

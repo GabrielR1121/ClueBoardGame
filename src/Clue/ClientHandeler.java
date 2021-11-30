@@ -1,4 +1,4 @@
-package Clue;
+package clue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,14 +13,14 @@ public class ClientHandeler implements Runnable {
 	private Socket socket;
 	private DataOutputStream out;
 	private DataInputStream in;
-	private static int playerTurn; // We can use the color the player picked as a username of sorts
+	private static int playerTurn; 
 
 	public String inMsg;
 	public String outMsg;
 
-	public static ArrayList<Integer> playerX = new ArrayList<Integer>();
-	public static ArrayList<Integer> playerY = new ArrayList<Integer>();
-	public static ArrayList<String> playerColor = new ArrayList<String>();
+	//	public static ArrayList<Integer> playerX = new ArrayList<Integer>();
+	//	public static ArrayList<Integer> playerY = new ArrayList<Integer>();
+	//	public static ArrayList<String> playerColor = new ArrayList<String>();
 	public static HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
 
 	public boolean isPlayerTurn = false;
@@ -28,11 +28,17 @@ public class ClientHandeler implements Runnable {
 	public boolean gameStarted = false;
 
 	public int amountOfPlayers = 0;
+	public int color;
+	public int x;
+	public int y;
+
+	//private int currTurn = 0;
 
 	// public int x;
 	// public int y;
 	// public String character;
 
+	@SuppressWarnings("static-access")
 	public ClientHandeler(Socket socket, int playerTurn, char label) {
 		try {
 			this.socket = socket;
@@ -71,7 +77,7 @@ public class ClientHandeler implements Runnable {
 			// System.out.println("first messaage: " + outMsg);
 
 			// use mthod to send
-			System.out.println("Sent the available colors");
+//			System.out.println("Sent the available colors");
 			out.writeUTF(outMsg);
 
 		} catch (Exception e) {
@@ -92,11 +98,11 @@ public class ClientHandeler implements Runnable {
 			// System.out.println("Available colors: " + Server.availableColors);
 
 			if (playerTurn == 0) {
-				amountOfPlayers = Integer.parseInt(strMsg[0]);
-				for (int i = 0; i < amountOfPlayers; i++) {
-					playerColor.add(null);
-					playerX.add(0);
-					playerY.add(0);
+				Server.amountofPlayers = Integer.parseInt(strMsg[0]);
+				for (int i = 0; i < Server.amountofPlayers; i++) {
+					Server.playerColor.add(null);
+					Server.playerX.add(0);
+					Server.playerY.add(0);
 				}
 
 				strMsg = Arrays.copyOfRange(strMsg, 1, strMsg.length);
@@ -105,7 +111,7 @@ public class ClientHandeler implements Runnable {
 
 			newPlayer(Server.availableColors.get(Integer.parseInt(strMsg[0])));
 
-			playerColor.set(playerTurn, Server.availableColors.get(Integer.parseInt(strMsg[0])));
+			Server.playerColor.set(playerTurn, Server.availableColors.get(Integer.parseInt(strMsg[0])));
 			Server.availableColors.remove(Integer.parseInt(strMsg[0]));
 
 			// System.out.println("starting pos: " + Server.sb.toString());
@@ -116,13 +122,15 @@ public class ClientHandeler implements Runnable {
 			// position of each player.
 			// System.out.println(
 			// "Colors and X Y" + playerColor.get(turn) + ";" + playerX.get(turn) + ";" +
-			// playerY.get(turn));
+			// playerY.get(turn));		
+
+//			System.out.println("Player's :" + Server.playerColor + ";" +Server.playerX +";" +Server.playerY);
 
 			// use method to send
-			out.writeUTF(amountOfPlayers + ";" + playerColor.get(playerTurn) + ";" + playerX.get(playerTurn) + ";"
-					+ playerY.get(playerTurn));
+			out.writeUTF(Server.amountofPlayers + ";" + Server.playerColor.get(playerTurn) + ";" + Server.playerX.get(playerTurn) + ";"
+					+ Server.playerY.get(playerTurn));
 
-			System.out.println("Sent out player coords");
+//			System.out.println("Sent out player coords");
 			// System.out.println(Server.availableColors.toString());
 
 		} catch (Exception e) {
@@ -133,47 +141,59 @@ public class ClientHandeler implements Runnable {
 
 		// System.out.println("about to enter the while loop");
 
-		sendDM(playerColor + ";" + playerX + ";" + playerY + ";" + playerTurn);
+		sendDM(Server.playerColor + ";" + Server.playerX + ";" + Server.playerY + ";" + playerTurn);
 
-		while (true) {
+		try {
+			while (true) {
 
-			try {
+
 				// System.out.println("Players online: " +Server.connPlayers);
 
 				// System.out.println("in while loop");
 				// inMsg = in.readUTF();
 				String inMsg = in.readUTF();
-				System.out.println(inMsg);
+				System.out.println("in: " + inMsg);
 
 				String[] strMsg = inMsg.split(";");
 
 				// System.out.println("In: " + Arrays.toString(strMsg));
+				//				System.out.println("StrMSG: " + strMsg[2]);
 
-				// if (Boolean.parseBoolean(strMsg[2]) == true) {
-				// playerTurn++;
-				// if (playerTurn == 5)
-				// playerTurn = 0;
-				// }
+
 
 				// System.out.println("about to send message");
+				//				outMsg = strMsg[0] + ";" + strMsg[1] + ";" + ((Boolean.parseBoolean(strMsg[2])) ? true : false);
+				outMsg = strMsg[0] + ";" + strMsg[1] + ";" + Server.currTurn + ";" + strMsg[2];
 
-				playerX.set(Integer.parseInt(strMsg[3]), Integer.parseInt(strMsg[0]));
-				playerY.set(Integer.parseInt(strMsg[3]), Integer.parseInt(strMsg[1]));
+				
+				broadcastMessage(outMsg);
 
-				outMsg = playerColor + ";" + playerX + ";" + playerY + ";" + playerTurn;
+				//Changes turns
+				if (Boolean.parseBoolean(strMsg[2]) == true) {
+
+					Server.currTurn ++;
+					if (Server.currTurn == Server.amountofPlayers)
+						Server.currTurn = 0;
+					System.out.println("SERVER CHANGING TURNS" + "TURN: " + Server.currTurn);
+
+
+				}
+				//				Server.playerX.set(Server.currTurn, Integer.parseInt(strMsg[0]));
+				//				Server.playerY.set(Server.currTurn, Integer.parseInt(strMsg[1]));
+
 				// out.writeUTF(outMsg);
 
 				// use send method
 
-				broadcastMessage(outMsg);
 
-			} catch (Exception e) {
 
-			}
+
+
+			}//while
+		} catch (Exception e) {
 
 		}
-
-	}
+	}//run
 
 	public void broadcastMessage(String outMsg) {
 		// System.out.println("here");
@@ -199,16 +219,23 @@ public class ClientHandeler implements Runnable {
 		for (ClientHandeler clientHandeler : Server.clientHandeler) {
 
 			try {
-				if (!playerX.contains(0)) {
+				if (!Server.playerX.contains(0)) {
 					System.out.println("Sending Dm " + outMsg);
 					clientHandeler.out.writeUTF(outMsg);
 					clientHandeler.out.flush();
+					/////////////////////////
+					Server.playerX.clear();
+					Server.playerY.clear();
+					Server.playerColor.clear();
+					/////////////////////////
 				}
 
 			} catch (Exception e) {
 
 			}
 		}
+
+
 	}
 
 	public void newPlayer(String color) {
@@ -251,8 +278,8 @@ public class ClientHandeler implements Runnable {
 		// System.out.println("STARTING COORDS..." + Arrays.toString(charArr));
 		// System.out.println(Arrays.toString(charArr));
 
-		playerX.set(playerTurn, Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
-		playerY.set(playerTurn, Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
+		Server.playerX.set(playerTurn, Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
+		Server.playerY.set(playerTurn, Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
 		// System.out.println("new player");
 
 	}

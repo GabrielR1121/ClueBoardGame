@@ -1,4 +1,4 @@
-package Clue;
+package clue;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,7 +29,7 @@ public class Build extends JPanel implements ActionListener {
     public static String color;
     Random rand = new Random();
     JFrame frame = new JFrame();
-    public int diceRoll = 0;
+    public static int diceRoll = 0;
 
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
@@ -368,7 +368,7 @@ public class Build extends JPanel implements ActionListener {
         permitedCoordinates.get(743).add(583);
 
         // System.out.println("Coordinates:" + permitedCoordinates.get(263));
-        newPlayer();
+        //newPlayer();
         // Build : Check this later.
     }
 
@@ -415,8 +415,7 @@ public class Build extends JPanel implements ActionListener {
     // * Players / Player Movement.
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage(
-                "C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage("C:\\Users\\djavi\\Desktop\\ClueGameBoard(updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 
@@ -462,6 +461,7 @@ public class Build extends JPanel implements ActionListener {
         } // for()
 
         startPlayerTurn();
+        checkMoves();
 
         g.setColor(Color.white);
         g.setFont(new Font("Ink Free", Font.BOLD, 20));
@@ -485,18 +485,17 @@ public class Build extends JPanel implements ActionListener {
     }
 
     // Checks to see if the player has remaining moves.
-    public boolean checkMoves() {
-        if (diceRoll < 1) {
+    public void checkMoves() {
+        if (diceRoll == 0 && Client.isPlayerTurn) {
             Client.isPlayerTurn = false;
             mutablePlayerTurn = 0;
-            Client.turnEnded = true;
-            return false;
-        }
-        return true;
-    }
+                       
+        }//if
+    
+    }//checkMoves
 
     // Gives the player a new dice roll if its their turn.
-    public void newDiceRoll() {
+    public static void newDiceRoll() {
 
         Random rand = new Random();
         diceRoll = rand.nextInt(12) + 1;
@@ -528,6 +527,8 @@ public class Build extends JPanel implements ActionListener {
 
         Client.x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
         Client.y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
+        
+        System.out.println("CLIENTS X: " + Client.x + "\nCLIENTSY: "+ Client.y);
 
     }
 
@@ -544,7 +545,7 @@ public class Build extends JPanel implements ActionListener {
             if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
 
                 Client.y = Client.y - UNIT_SIZE;
-                diceRoll--;
+                --diceRoll;
             }
             if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
@@ -557,7 +558,7 @@ public class Build extends JPanel implements ActionListener {
             if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
 
                 Client.y = Client.y + UNIT_SIZE;
-                diceRoll--;
+                --diceRoll;
             }
             if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
@@ -570,7 +571,7 @@ public class Build extends JPanel implements ActionListener {
             if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
 
                 Client.x = Client.x - UNIT_SIZE;
-                diceRoll--;
+                --diceRoll;
             }
             if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
@@ -583,7 +584,7 @@ public class Build extends JPanel implements ActionListener {
             if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
 
                 Client.x = Client.x + UNIT_SIZE;
-                diceRoll--;
+                --diceRoll;
             }
             if (checkRoom(Client.x, Client.y)) {
                 System.out.println("Want to enter this room?");
@@ -606,7 +607,7 @@ public class Build extends JPanel implements ActionListener {
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
 
-            if (Client.isPlayerTurn && checkMoves()) {
+            if (Client.isPlayerTurn && diceRoll != 0) {
 
                 switch (e.getKeyCode()) {
 
