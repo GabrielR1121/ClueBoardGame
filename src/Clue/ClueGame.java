@@ -6,6 +6,8 @@ import javax.swing.*;
 public class ClueGame {
 
     public static void main(String[] args) {
+    	
+    	//Will change with Main Menu
         Client.amountofPlayers = Integer.parseInt(JOptionPane.showInputDialog("How many players?"));
         Client client = new Client();
         Thread thread = new Thread(client);

@@ -1,8 +1,6 @@
-package clue;
+package Clue;
 
-import javax.swing.*;
 import java.net.Socket;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
@@ -13,11 +11,12 @@ import java.util.List;
 public class Server {
 
     private final int port = 2027;
-    // Could change if pop-up added to ask amount of players.
     private final int numberOfConnections = 6;
     public static ArrayList<Socket> users = new ArrayList<Socket>();
-    private boolean isPlayerTurn = false;
+    
+    //THIS NEEDS TO BE CHANGED
     public volatile static int amountofPlayers = 2;
+    
     public static int connPlayers = 0;
     public volatile static int currTurn = 0;
     
@@ -25,10 +24,10 @@ public class Server {
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<String> playerColor = new CopyOnWriteArrayList<String>();
 
-
     public char label = 'A';
 
-    public static ArrayList<String> availableColors = new ArrayList<String>() {
+    @SuppressWarnings("serial")
+	public static ArrayList<String> availableColors = new ArrayList<String>() {
 
         {
             add("Mustard");
@@ -41,22 +40,11 @@ public class Server {
         }
 
     };
+    
     public static ArrayList<ClientHandeler> clientHandeler = new ArrayList<>();
-    public static StringBuilder sb = new StringBuilder();
 
     // Not in UML yet
     public static int turn = 0;
-
-    // Amount of players to connect
-    int amountofPlayer = 2;
-
-    // Find out where they go.
-    // int playersX[] = new int[amountofPlayer];
-    // int playersY[] = new int[amountofPlayer];
-
-    // static int x;
-    // static int y;
-
     int amountCards = 21;
     Random rand = new Random();
 
@@ -65,8 +53,6 @@ public class Server {
     public static List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
 
     private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
-
-    private boolean isEliminated = false;
 
     ServerSocket server;
 
@@ -113,24 +99,17 @@ public class Server {
                 System.out.println("Awaiting connection...");
                 Socket client = server.accept();
                 ClientHandeler clienthandeler = new ClientHandeler(client, turn++, label++);
-                // users.add(client);
 
                 Thread thread = new Thread(clienthandeler);
                 thread.start();
 
-                // Connection went through
-                // System.out.println(users.toString());
-
-                // Runnable run = new ThreadServer(client, turn++);
-                // Thread hilo = new Thread(run);
-                // hilo.start();
-
-            }
+            }//while
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+        
+    }//startServer
 
     // Starts the Final Rumor
     public void finalRumor() {
@@ -159,20 +138,19 @@ public class Server {
         CardDeck.remove(room);
         CardDeck.remove(character);
         amountCards -= 3;
-        // System.out.println("Secret Card: " + secretFolder.toString());
 
     }
 
     public void distributeCards() {
 
         playerCards.clear();
-        int distribute = ((amountCards) / amountofPlayer);
-        int rem = amountCards % amountofPlayer;
+        int distribute = ((amountCards) / amountofPlayers);
+        int rem = amountCards % amountofPlayers;
 
         int start = 0;
         int end = distribute;
 
-        for (int i = 1; i <= amountofPlayer; i++) {
+        for (int i = 1; i <= amountofPlayers; i++) {
 
             int extra = (i <= rem) ? 1 : 0;
 
@@ -183,35 +161,7 @@ public class Server {
 
         }
 
-        // System.out.println(list.toString());
-
-    }
-
-    // // Checks to see if players are not on top of each other.
-    // public void checkPlayer(int xCoord, int yCoord) {
-
-    // if(checkDuplicateCoordinate(playerX, index) &&
-    // checkDuplicateCoordinate(playerY, 0)
-    // System.out.println("ON TOP");
-
-    // }
-
-    // private static boolean checkDuplicateCoordinate(int[] playerArray, int
-    // coordinateIdx) {
-    // for (int i = 0; i < playerArray.length; i++) {
-    // if (coordinateIdx != i) {
-    // if (playerArray[coordinateIdx] == playerArray[i])
-    // return true;
-    // }
-    // return false;
-    // }
-
-    // }
-
-    // Checks to see if player has remaining moves.
-    public void checkMoves(int roll) {
-
-    }
+    }//distributeCards
 
     // Displays GameOver screen when a player wins or all players get eliminated.
     // Will display winning cards and player who one if any.
@@ -219,4 +169,4 @@ public class Server {
 
     }
 
-}
+}//class

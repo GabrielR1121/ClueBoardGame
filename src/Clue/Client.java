@@ -1,4 +1,4 @@
-package clue;
+package Clue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,8 +7,7 @@ import java.util.*;
 import javax.swing.JOptionPane;
 
 //Client side.
-//Methods in this class will be exclusively for the player and nobody else. 
-//Ask doubts abouut if a draw should be here too. 
+//Methods in this class will be exclusively for the player and nobody else.  
 public class Client implements Runnable {
 	public final int SCREEN_WIDTH = 842;
 	public final int SCREEN_HEIGHT = 872;
@@ -18,8 +17,8 @@ public class Client implements Runnable {
 	private DataInputStream in;
 	private int puerto = 2027;
 	private String host = "localhost";
-	// private boolean isPlayerTurn;
-	// String color;
+//	private String host = "147.182.234.14";
+
 	Random rand = new Random();
 	volatile static int x;
 	volatile static int y;
@@ -61,44 +60,6 @@ public class Client implements Runnable {
 
 	}
 
-	// public void sendMessage() {
-	// try {
-	//
-	// while(cliente.isConnected()) {
-	//
-	// out.writeUTF(outMsg);
-	// out.flush();
-	//
-	//
-	// }
-	//
-	//
-	//
-	// }catch(Exception e) {
-	//
-	// }
-	// }
-	//
-	//
-	//
-	//
-	// public void receiveMessage() {
-	//
-	// new Thread(new Runnable() {
-	// public void run() {
-	// try {
-	// inMsg = in.readUTF();
-	//
-	//
-	//
-	//
-	// } catch(Exception e) {
-	//
-	// }
-	// }
-	// }).start();
-	// }
-
 	@Override
 	public void run() {
 		try {
@@ -113,6 +74,11 @@ public class Client implements Runnable {
 			currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
 
 			isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
+			
+			
+			
+			
+			
 
 			int colorIdx = rand.nextInt(availableColors.length); // Replace with while(colorIdn != -1) {break;}
 
@@ -121,11 +87,14 @@ public class Client implements Runnable {
 			// We should send the index of the amount of players, and the colorIdx to
 			// join.
 			// This is for the first player, the rest send only the color chosen.
+			
+			
+			
+			
+			
 			String outMsg = "";
 
-			// amountofPlayers = Integer.parseInt(JOptionPane.showInputDialog("Enter the
-			// amount of players:"));
-
+			//Only for the first player
 			if (currTurn == 0)
 				outMsg += amountofPlayers + ";" + colorIdx;
 			else
@@ -146,21 +115,17 @@ public class Client implements Runnable {
 			// The first thing being sent is the amount of players, then the positions.
 			String[] positions = inMsg.split(";");
 
-			// positions = Arrays.copyOfRange(positions, 1, positions.length);
-			//            System.out.println("New Color and Positions: " + Arrays.toString(positions));
-
+			//First player only
 			if (currTurn == 0) 
 				amountofPlayers = Integer.parseInt(positions[0]);
 
 
 			positions = Arrays.copyOfRange(positions, 1, positions.length);
-			// System.out.println("after if " + Arrays.toString(positions));
-			// playerColor.add(positions[0]);
-
 			color = positions[0].trim();
 			x = Integer.parseInt(positions[1]);
 			y = Integer.parseInt(positions[2]);
 
+			//Placeholders
 			for (int i = 0; i < amountofPlayers; i++) {
 
 				playerColor.add(null);
@@ -173,10 +138,6 @@ public class Client implements Runnable {
 			Build.playerX.set(currTurn, x);
 			Build.playerY.set(currTurn, y);
 
-			//            System.out.println("Player colors: " + playerColor.toString());
-			//            System.out.println("X-coords: " + x);
-			//            System.out.print("Y-coords: " + y + "\n");
-
 		} catch (Exception e) {
 			System.out.println(
 					"Error in Client file receiving and distributing colors and coords for players. Error message: "
@@ -184,38 +145,24 @@ public class Client implements Runnable {
 		}
 		try {
 
+			//Setting the initial values for the colors, and the starting positions of each.
 			String inMsg = in.readUTF();
-//			System.out.println("Recieved everyones coords V");
-//			System.out.println(inMsg);
 
 			inMsg = inMsg.replace('[', ' ').trim();
 			inMsg = inMsg.replace(']', ' ').trim();
 			String[] strMsg = inMsg.split(";");
 
-			// System.out.println(Arrays.toString(strMsg));
-
 			strMsg[0] = strMsg[0].replace('[', ' ').trim();
 			strMsg[0] = strMsg[0].replace(']', ' ').trim();
 			String[] cP = strMsg[0].split(",");
 
-			// System.out.println("cP " + Arrays.toString(cP));
-
 			strMsg[1] = strMsg[1].replace('[', ' ').trim();
 			strMsg[1] = strMsg[1].replace(']', ' ').trim();
 			String[] xP = strMsg[1].split(",");
-//			System.out.println("xP " + Arrays.toString(xP));
-
+			
 			strMsg[2] = strMsg[2].replace('[', ' ').trim();
 			strMsg[2] = strMsg[2].replace(']', ' ').trim();
 			String[] yP = strMsg[2].split(",");
-//			System.out.println("yP " + Arrays.toString(yP));
-
-			// System.out.println(Arrays.toString(yP));
-
-			// System.out.println("Amount of players: " + amountofPlayers);
-
-			// System.out.println("Build Player X " + Build.playerX);
-			// System.out.println("Build Player Y " + Build.playerY);
 
 			for (int i = 0; i < amountofPlayers; i++) {
 				playerColor.set(i, cP[i]);
@@ -224,11 +171,6 @@ public class Client implements Runnable {
 
 			}
 
-			//             System.out.println("------------------------------------");
-			//             System.out.println("Player Color : " + playerColor);
-			//             System.out.println("Player X : " + Build.playerX);
-			//             System.out.println("Player Y : " + Build.playerY);
-			//             System.out.println("------------------------------------");
 
 		} catch (Exception e) {
 			System.out.println("Error in coords: " + e.getMessage());
@@ -237,81 +179,46 @@ public class Client implements Runnable {
 
 		try {
 
-
-
 			lastX = x;
 			lastY =y;
 
 			while (true) {
-
-				// System.out.println("Starting out message Client: ");
-
-				// Forces while loop to online run when the values of x and y change.
+				// If the game is not running this will start the build for everyone with
+				// required values. These must not contain 0.
 				if (!isGameRunning && !Build.playerX.contains(0)) {
 					isGameRunning = true;
 					new Build();
-
-				} else {
+				  
+				}// Forces while loop to online run when the values of x and y change.
+				else {
 					if (isPlayerTurn) {
-
-
-						// String outMsg = "";
-						// outMsg += x + ";";
-						// outMsg += y + ";";
-						// outMsg += turnEnded + ";";
-						// outMsg += currTurn + ";";
-
-
-
-
+						
 						if ((lastX != x || lastY != y)) {
-
-
-
-							//                    	if(Build.diceRoll ==0)
-							//                    		playerTurn++;
-
-
-							//                    	System.out.println("Build PlayerX: " + Build.playerX);
-							//                    	System.out.println("Build Playery: " + Build.playerY);
 
 							isPlayerTurn = ((Build.diceRoll != 0) ? true : false);
 							lastX = x;
 							lastY = y;
 							Build.playerX.set(currTurn, x);
 							Build.playerY.set(currTurn, y);
-
-//							x = Build.playerX.get(currTurn);
-//							y = Build.playerY.get(currTurn);
-
 							String outMsg = "";
 							outMsg += x + ";";
 							outMsg += y + ";";
-							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de turnENded
-							//outMsg += turnEnded + ";";// Estamos haciendo el trabajo de turnENded
+							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de turnEnded().
 							System.out.println("out: " + outMsg);
 							out.writeUTF(outMsg);
 							out.flush();
 
-
-
-
-						}
-
-
-
-						// Forces the client to wait until all X and Y Values are ready.
+						}//if
 
 					} else {
+						
 						String inMsg = in.readUTF();
 						System.out.println("in: " + inMsg);
 						changeXYValues(inMsg);
 
-
 					}//else
 
 				}//else        
-
 
 			}//while
 
@@ -321,103 +228,33 @@ public class Client implements Runnable {
 
 		}//catch
 
-
-
 	}//run
 
 	//We receive x y and index to change value at 
-
-	// Starts the game
 	public static void changeXYValues(String inMsg) {
 
 		inMsg = inMsg.replace('[', ' ').trim();
 		inMsg = inMsg.replace(']', ' ').trim();
 		String[] strMsg = inMsg.split(";");
-//		System.out.println("This is what we receive in changeXY" + Arrays.toString(strMsg));
-		//+ "PlayerTurn: " + playerTurn + "CurrTurn: " + currTurn
-		//        
-		//        System.out.println("This is the index: " + playerTurn);
-
-
-		//        // System.out.println("cP " + Arrays.toString(cP));
-		//
-		//        strMsg[0] = strMsg[0].replace('[', ' ').trim();
-		//        strMsg[0] = strMsg[0].replace(']', ' ').trim();
-		//        System.out.println("STRMSG0 CHNAGEXY: " + strMsg[0]);
-		//        String[] xP = strMsg[0].split(",");
-		//        // System.out.println("xP " + Arrays.toString(xP));
-		//
-		//        strMsg[1] = strMsg[1].replace('[', ' ').trim();
-		//        strMsg[1] = strMsg[1].replace(']', ' ').trim();
-		//        String[] yP = strMsg[1].split(",");
-		//        // System.out.println("yP " + Arrays.toString(yP));
-		//
-		//        // System.out.println(Arrays.toString(yP));
-		//
-		//        // System.out.println("Amount of players: " + amountofPlayers);
-		//
-		////         System.out.println("Build Player X " + Build.playerX);
-		////         System.out.println("Build Player Y " + Build.playerY);
-		//        System.out.println("INDEX" + strMsg[2]);
-
-
-
-		//        for (int i = 0; i < amountofPlayers; i++) {
-		//            playerColor.set(i, cP[i]);
-		//            Build.playerX.set(i, Integer.parseInt(xP[i].trim()));
-		//            Build.playerY.set(i, Integer.parseInt(yP[i].trim()));
-		//
-		//        }
-
-		//         System.out.println("------------------------------------");
-		//         System.out.println("Player Color : " + playerColor);
-		//         System.out.println("Player X : " + Build.playerX);
-		//         System.out.println("Player Y : " + Build.playerY);
-		//         System.out.println("------------------------------------");
-
-
-
 
 		Build.playerX.set(Integer.parseInt(strMsg[2]) , Integer.parseInt(strMsg[0]));
 		Build.playerY.set(Integer.parseInt(strMsg[2]) , Integer.parseInt(strMsg[1]));
 
 		if (Boolean.parseBoolean(strMsg[3]) == true) {
-			
-			System.out.println("STRMSG2 : " + strMsg[2]);
-			System.out.println("BEFORE AMNT OF PLAYERS: " + amountofPlayers + "\nplayerTurn: " + playerTurn);
 
 			playerTurn = Integer.parseInt(strMsg[2]) + 1;
-			
-			System.out.println("AFTER AMNT OF PLAYERS: " + amountofPlayers + "\nplayerTurn: " + playerTurn);
-			
+						
 			if (playerTurn == amountofPlayers)
-				playerTurn = 0;
-			
-			System.out.println("CLIENT CHANGING TURNS" + " TURN: " + playerTurn);
-
-
-
-		}
+				playerTurn = 0;	
+		}//if
 		
 		if(Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
-			System.out.println("STRMSG: " + strMsg[3] + " AND CURR TURN: " + currTurn + "\n Player Turn: " + playerTurn);
 			Build.newDiceRoll();
 			isPlayerTurn = true;
 		}//if
 
-
-
-
-
-		// If the game is not running this will start the build for everyone with
-		// required values.S
-
 	}// changeXY
 
-	// run method
-	/*
-	 * Debe recibir con el readUTF(): x and y Color isEliminated isPlayerTurn
-	 */
 
 	// Makes refrence to gameframe in order to create the window needed. Also needs
 	// to connect to server inorder to send accusation cards to next player.

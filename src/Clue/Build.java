@@ -1,4 +1,4 @@
-package clue;
+package Clue;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,8 +23,6 @@ public class Build extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 872;
     static final int UNIT_SIZE = 32;
     int align = 6;
-    // static int x;
-    // static int y;
     char direction = 'p';
     public static String color;
     Random rand = new Random();
@@ -49,6 +47,7 @@ public class Build extends JPanel implements ActionListener {
     // Has the string info of all of the cards on the cardDeck array.
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
+    //Enumerator for the colors with their RGB code
     private enum colors {
         Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
         Peacock("51,161,201");
@@ -367,41 +366,6 @@ public class Build extends JPanel implements ActionListener {
         permitedCoordinates.get(743).add(551);
         permitedCoordinates.get(743).add(583);
 
-        // System.out.println("Coordinates:" + permitedCoordinates.get(263));
-        //newPlayer();
-        // Build : Check this later.
-    }
-
-    public void newPlayer() {
-        // Gets the starting position for each players and draws it into the window.
-        for (int i = 0; i < Client.playerColor.size(); i++) {
-
-            if (Client.playerColor.get(i) != null) {
-                switch (Client.playerColor.get(i)) {
-                case "Green":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                case "Mustard":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                case "Orchid":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                case "Peacock":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                case "Plum":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                case "Scarlett":
-                    getStartingCoordinates((Arrays.toString(characters.get(Client.playerColor.get(i)))).split(","), i);
-                    break;
-                default:
-                    break;
-                }// switch()
-            } // if()
-        }
-
     }
 
     // Initializes the paint for the whole game
@@ -413,6 +377,7 @@ public class Build extends JPanel implements ActionListener {
     // Draws all the componets of the game onto the gameframe which include:
     // * GameBoard
     // * Players / Player Movement.
+    // * Their respective color
     public void draw(Graphics g) {
 
         Image img = Toolkit.getDefaultToolkit().getImage("C:\\Users\\djavi\\Desktop\\ClueGameBoard(updated).jpg");
@@ -422,7 +387,6 @@ public class Build extends JPanel implements ActionListener {
         for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
             g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
             g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
-            // g.fillOval(x, y, UNIT_SIZE, UNIT_SIZE);
             // Redraws the board each time something happens.
             repaint();
         }
@@ -523,22 +487,13 @@ public class Build extends JPanel implements ActionListener {
 
     }
 
-    public static void getStartingCoordinates(String[] charArr, int idx) {
-
-        Client.x = Integer.parseInt((charArr[0].replace('[', ' ')).trim());
-        Client.y = Integer.parseInt((charArr[1].replace(']', ' ')).trim());
-        
-        System.out.println("CLIENTS X: " + Client.x + "\nCLIENTSY: "+ Client.y);
-
-    }
-
     // Uses the global variable direction in order to move a player N,E,S,W with
     // respect to the Unit_Size.
     // After player moves direction is switched to s in order to prevent cosntant
     // movement.
     // For now print (X,Y) of the player.
     public void move() {
-        // int extra = (checkBounds()) ? UNIT_SIZE : 0;
+
         switch (direction) {
 
         case 'U':
@@ -614,30 +569,26 @@ public class Build extends JPanel implements ActionListener {
                 case KeyEvent.VK_LEFT:
                     direction = 'L';
                     move();
-                    // repaint();
                     break;
 
                 case KeyEvent.VK_RIGHT:
                     direction = 'R';
                     move();
-                    // repaint();
                     break;
 
                 case KeyEvent.VK_UP:
                     direction = 'U';
                     move();
-                    // repaint();
                     break;
 
                 case KeyEvent.VK_DOWN:
                     direction = 'D';
                     move();
-                    // repaint();
                     break;
                 }
 
             } // if()
-        }
-    }
+        }//keyPressed
+    }//MyKeyAdapter
 
-}
+}//class
