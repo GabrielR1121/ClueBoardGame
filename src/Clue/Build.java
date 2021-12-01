@@ -2,19 +2,11 @@ package Clue;
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import javax.swing.JPanel;
-import javax.swing.text.Position;
-
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Collections;
-import java.net.ServerSocket;
-import java.util.List;
-import java.util.Iterator;
 import javax.swing.JFrame;
 
 public class Build extends JPanel implements ActionListener {
@@ -31,6 +23,8 @@ public class Build extends JPanel implements ActionListener {
 
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
+    public static CopyOnWriteArrayList<Integer> playerCards = new CopyOnWriteArrayList<Integer>();
+    public static CopyOnWriteArrayList<Integer> secretCards = new CopyOnWriteArrayList<Integer>();
 
     // will be used for startPlayerTurn()
     public static int mutablePlayerTurn = 0;
@@ -47,7 +41,7 @@ public class Build extends JPanel implements ActionListener {
     // Has the string info of all of the cards on the cardDeck array.
     HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
-    //Enumerator for the colors with their RGB code
+    // Enumerator for the colors with their RGB code
     private enum colors {
         Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
         Peacock("51,161,201");
@@ -397,26 +391,26 @@ public class Build extends JPanel implements ActionListener {
             if (Client.playerColor.get(i) != null) {
 
                 switch (Client.playerColor.get(i).trim()) {
-                case "Green":
-                    g.setColor(colors.Green.getColor());
-                    break;
-                case "Mustard":
-                    g.setColor(colors.Mustard.getColor());
-                    break;
-                case "Orchid":
-                    g.setColor(colors.Orchid.getColor());
-                    break;
-                case "Peacock":
-                    g.setColor(colors.Peacock.getColor());
-                    break;
-                case "Plum":
-                    g.setColor(colors.Plum.getColor());
-                    break;
-                case "Scarlett":
-                    g.setColor(colors.Scarlett.getColor());
-                    break;
-                default:
-                    break;
+                    case "Green":
+                        g.setColor(colors.Green.getColor());
+                        break;
+                    case "Mustard":
+                        g.setColor(colors.Mustard.getColor());
+                        break;
+                    case "Orchid":
+                        g.setColor(colors.Orchid.getColor());
+                        break;
+                    case "Peacock":
+                        g.setColor(colors.Peacock.getColor());
+                        break;
+                    case "Plum":
+                        g.setColor(colors.Plum.getColor());
+                        break;
+                    case "Scarlett":
+                        g.setColor(colors.Scarlett.getColor());
+                        break;
+                    default:
+                        break;
                 }// switch()
 
                 g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
@@ -453,10 +447,10 @@ public class Build extends JPanel implements ActionListener {
         if (diceRoll == 0 && Client.isPlayerTurn) {
             Client.isPlayerTurn = false;
             mutablePlayerTurn = 0;
-                       
-        }//if
-    
-    }//checkMoves
+
+        } // if
+
+    }// checkMoves
 
     // Gives the player a new dice roll if its their turn.
     public static void newDiceRoll() {
@@ -496,57 +490,57 @@ public class Build extends JPanel implements ActionListener {
 
         switch (direction) {
 
-        case 'U':
-            if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
+            case 'U':
+                if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
 
-                Client.y = Client.y - UNIT_SIZE;
-                --diceRoll;
-            }
-            if (checkRoom(Client.x, Client.y)) {
-                System.out.println("Want to enter this room?");
-                // System.out.println(Client.startRumor());
-            }
-            direction = 's';
-            break;
+                    Client.y = Client.y - UNIT_SIZE;
+                    --diceRoll;
+                }
+                if (checkRoom(Client.x, Client.y)) {
+                    System.out.println("Want to enter this room?");
+                    // System.out.println(Client.startRumor());
+                }
+                direction = 's';
+                break;
 
-        case 'D':
-            if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
+            case 'D':
+                if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
 
-                Client.y = Client.y + UNIT_SIZE;
-                --diceRoll;
-            }
-            if (checkRoom(Client.x, Client.y)) {
-                System.out.println("Want to enter this room?");
-                // System.out.println(Client.startRumor());
-            }
-            direction = 's';
-            break;
+                    Client.y = Client.y + UNIT_SIZE;
+                    --diceRoll;
+                }
+                if (checkRoom(Client.x, Client.y)) {
+                    System.out.println("Want to enter this room?");
+                    // System.out.println(Client.startRumor());
+                }
+                direction = 's';
+                break;
 
-        case 'L':
-            if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
+            case 'L':
+                if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
 
-                Client.x = Client.x - UNIT_SIZE;
-                --diceRoll;
-            }
-            if (checkRoom(Client.x, Client.y)) {
-                System.out.println("Want to enter this room?");
-                // System.out.println(Client.startRumor());
-            }
-            direction = 's';
-            break;
+                    Client.x = Client.x - UNIT_SIZE;
+                    --diceRoll;
+                }
+                if (checkRoom(Client.x, Client.y)) {
+                    System.out.println("Want to enter this room?");
+                    // System.out.println(Client.startRumor());
+                }
+                direction = 's';
+                break;
 
-        case 'R':
-            if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
+            case 'R':
+                if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
 
-                Client.x = Client.x + UNIT_SIZE;
-                --diceRoll;
-            }
-            if (checkRoom(Client.x, Client.y)) {
-                System.out.println("Want to enter this room?");
-                // System.out.println(Client.startRumor());
-            }
-            direction = 's';
-            break;
+                    Client.x = Client.x + UNIT_SIZE;
+                    --diceRoll;
+                }
+                if (checkRoom(Client.x, Client.y)) {
+                    System.out.println("Want to enter this room?");
+                    // System.out.println(Client.startRumor());
+                }
+                direction = 's';
+                break;
         }
     }
 
@@ -566,29 +560,29 @@ public class Build extends JPanel implements ActionListener {
 
                 switch (e.getKeyCode()) {
 
-                case KeyEvent.VK_LEFT:
-                    direction = 'L';
-                    move();
-                    break;
+                    case KeyEvent.VK_LEFT:
+                        direction = 'L';
+                        move();
+                        break;
 
-                case KeyEvent.VK_RIGHT:
-                    direction = 'R';
-                    move();
-                    break;
+                    case KeyEvent.VK_RIGHT:
+                        direction = 'R';
+                        move();
+                        break;
 
-                case KeyEvent.VK_UP:
-                    direction = 'U';
-                    move();
-                    break;
+                    case KeyEvent.VK_UP:
+                        direction = 'U';
+                        move();
+                        break;
 
-                case KeyEvent.VK_DOWN:
-                    direction = 'D';
-                    move();
-                    break;
+                    case KeyEvent.VK_DOWN:
+                        direction = 'D';
+                        move();
+                        break;
                 }
 
             } // if()
-        }//keyPressed
-    }//MyKeyAdapter
+        }// keyPressed
+    }// MyKeyAdapter
 
-}//class
+}// class

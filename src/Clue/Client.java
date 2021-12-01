@@ -17,7 +17,7 @@ public class Client implements Runnable {
 	private DataInputStream in;
 	private int puerto = 2027;
 	private String host = "localhost";
-//	private String host = "147.182.234.14";
+	// private String host = "147.182.234.14";
 
 	Random rand = new Random();
 	volatile static int x;
@@ -74,11 +74,6 @@ public class Client implements Runnable {
 			currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
 
 			isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
-			
-			
-			
-			
-			
 
 			int colorIdx = rand.nextInt(availableColors.length); // Replace with while(colorIdn != -1) {break;}
 
@@ -87,14 +82,10 @@ public class Client implements Runnable {
 			// We should send the index of the amount of players, and the colorIdx to
 			// join.
 			// This is for the first player, the rest send only the color chosen.
-			
-			
-			
-			
-			
+
 			String outMsg = "";
 
-			//Only for the first player
+			// Only for the first player
 			if (currTurn == 0)
 				outMsg += amountofPlayers + ";" + colorIdx;
 			else
@@ -115,17 +106,36 @@ public class Client implements Runnable {
 			// The first thing being sent is the amount of players, then the positions.
 			String[] positions = inMsg.split(";");
 
-			//First player only
-			if (currTurn == 0) 
-				amountofPlayers = Integer.parseInt(positions[0]);
+			// Receives the distributed cards from server.
+			positions[4] = positions[4].replace("[", "");
+			positions[4] = positions[4].replace("]", "");
 
+			String[] cP = positions[4].split(",");
+
+			for (int i = 0; i < cP.length; i++)
+				Build.playerCards.add(Integer.parseInt(cP[i].trim()));
+
+			// Receives the secret cards from server.
+			positions[5] = positions[5].replace("[", "");
+			positions[5] = positions[5].replace("]", "");
+
+			String[] sC = positions[5].split(",");
+
+			for (int i = 0; i < sC.length; i++)
+				Build.secretCards.add(Integer.parseInt(sC[i].trim()));
+
+			System.out.println(Build.secretCards);
+
+			// First player only
+			if (currTurn == 0)
+				amountofPlayers = Integer.parseInt(positions[0]);
 
 			positions = Arrays.copyOfRange(positions, 1, positions.length);
 			color = positions[0].trim();
 			x = Integer.parseInt(positions[1]);
 			y = Integer.parseInt(positions[2]);
 
-			//Placeholders
+			// Placeholders
 			for (int i = 0; i < amountofPlayers; i++) {
 
 				playerColor.add(null);
@@ -145,7 +155,8 @@ public class Client implements Runnable {
 		}
 		try {
 
-			//Setting the initial values for the colors, and the starting positions of each.
+			// Setting the initial values for the colors, and the starting positions of
+			// each.
 			String inMsg = in.readUTF();
 
 			inMsg = inMsg.replace('[', ' ').trim();
@@ -159,7 +170,7 @@ public class Client implements Runnable {
 			strMsg[1] = strMsg[1].replace('[', ' ').trim();
 			strMsg[1] = strMsg[1].replace(']', ' ').trim();
 			String[] xP = strMsg[1].split(",");
-			
+
 			strMsg[2] = strMsg[2].replace('[', ' ').trim();
 			strMsg[2] = strMsg[2].replace(']', ' ').trim();
 			String[] yP = strMsg[2].split(",");
@@ -171,16 +182,14 @@ public class Client implements Runnable {
 
 			}
 
-
 		} catch (Exception e) {
 			System.out.println("Error in coords: " + e.getMessage());
 		}
 
-
 		try {
 
 			lastX = x;
-			lastY =y;
+			lastY = y;
 
 			while (true) {
 				// If the game is not running this will start the build for everyone with
@@ -188,11 +197,11 @@ public class Client implements Runnable {
 				if (!isGameRunning && !Build.playerX.contains(0)) {
 					isGameRunning = true;
 					new Build();
-				  
-				}// Forces while loop to online run when the values of x and y change.
+
+				} // Forces while loop to online run when the values of x and y change.
 				else {
 					if (isPlayerTurn) {
-						
+
 						if ((lastX != x || lastY != y)) {
 
 							isPlayerTurn = ((Build.diceRoll != 0) ? true : false);
@@ -203,58 +212,58 @@ public class Client implements Runnable {
 							String outMsg = "";
 							outMsg += x + ";";
 							outMsg += y + ";";
-							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de turnEnded().
+							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de
+																					// turnEnded().
 							System.out.println("out: " + outMsg);
 							out.writeUTF(outMsg);
 							out.flush();
 
-						}//if
+						} // if
 
 					} else {
-						
+
 						String inMsg = in.readUTF();
 						System.out.println("in: " + inMsg);
 						changeXYValues(inMsg);
 
-					}//else
+					} // else
 
-				}//else        
+				} // else
 
-			}//while
+			} // while
 
 		} catch (Exception e) {
 			System.out.println("Error in Client file sending constant x and y coordinates. Error message: "
 					+ e.getMessage() + "\n" + "Line number: " + e.getStackTrace()[0].getLineNumber());
 
-		}//catch
+		} // catch
 
-	}//run
+	}// run
 
-	//We receive x y and index to change value at 
+	// We receive x y and index to change value at
 	public static void changeXYValues(String inMsg) {
 
 		inMsg = inMsg.replace('[', ' ').trim();
 		inMsg = inMsg.replace(']', ' ').trim();
 		String[] strMsg = inMsg.split(";");
 
-		Build.playerX.set(Integer.parseInt(strMsg[2]) , Integer.parseInt(strMsg[0]));
-		Build.playerY.set(Integer.parseInt(strMsg[2]) , Integer.parseInt(strMsg[1]));
+		Build.playerX.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[0]));
+		Build.playerY.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[1]));
 
 		if (Boolean.parseBoolean(strMsg[3]) == true) {
 
 			playerTurn = Integer.parseInt(strMsg[2]) + 1;
-						
+
 			if (playerTurn == amountofPlayers)
-				playerTurn = 0;	
-		}//if
-		
-		if(Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
+				playerTurn = 0;
+		} // if
+
+		if (Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
 			Build.newDiceRoll();
 			isPlayerTurn = true;
-		}//if
+		} // if
 
 	}// changeXY
-
 
 	// Makes refrence to gameframe in order to create the window needed. Also needs
 	// to connect to server inorder to send accusation cards to next player.
@@ -289,7 +298,7 @@ public class Client implements Runnable {
 		cardDeckMap.put("Wrench", 20);
 
 		return cardDeckMap.get(weapon).toString() + ", " + cardDeckMap.get(character).toString() + ", "
-		+ cardDeckMap.get(room).toString();
+				+ cardDeckMap.get(room).toString();
 
 	}
 

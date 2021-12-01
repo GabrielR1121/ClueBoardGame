@@ -13,13 +13,12 @@ public class Server {
     private final int port = 2027;
     private final int numberOfConnections = 6;
     public static ArrayList<Socket> users = new ArrayList<Socket>();
-    
-    //THIS NEEDS TO BE CHANGED
-    public volatile static int amountofPlayers = 2;
-    
+
+    public volatile static int amountofPlayers = 0;
+
     public static int connPlayers = 0;
     public volatile static int currTurn = 0;
-    
+
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<String> playerColor = new CopyOnWriteArrayList<String>();
@@ -27,7 +26,7 @@ public class Server {
     public char label = 'A';
 
     @SuppressWarnings("serial")
-	public static ArrayList<String> availableColors = new ArrayList<String>() {
+    public static ArrayList<String> availableColors = new ArrayList<String>() {
 
         {
             add("Mustard");
@@ -40,19 +39,19 @@ public class Server {
         }
 
     };
-    
+
     public static ArrayList<ClientHandeler> clientHandeler = new ArrayList<>();
 
     // Not in UML yet
     public static int turn = 0;
-    int amountCards = 21;
-    Random rand = new Random();
+    static int amountCards = 21;
+    static Random rand = new Random();
 
     // try to auto generate.
-    private ArrayList<Integer> secretFolder = new ArrayList<Integer>();
+    public static ArrayList<Integer> secretFolder = new ArrayList<Integer>();
     public static List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
 
-    private ArrayList<Integer> CardDeck = new ArrayList<Integer>();
+    public static ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
     ServerSocket server;
 
@@ -67,18 +66,6 @@ public class Server {
     // Starts the server
     Server() {
 
-        // Fills and Refills the Deck
-        fillCardDeck();
-
-        // Selects 3 cards at random from Character, Weapon and Room and sets them aside
-        secretFolderDistribute();
-
-        // Shuffles the remainning
-        Collections.shuffle(CardDeck);
-
-        distributeCards();
-        // ThreadServer.main();
-
         ClientHandeler.main();
     }
 
@@ -90,7 +77,6 @@ public class Server {
         System.out.println("Starting server... \n-------------");
 
         try {
-        	
 
             server = new ServerSocket(port, numberOfConnections);
 
@@ -103,26 +89,26 @@ public class Server {
                 Thread thread = new Thread(clienthandeler);
                 thread.start();
 
-            }//while
+            } // while
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-    }//startServer
+
+    }// startServer
 
     // Starts the Final Rumor
     public void finalRumor() {
 
     }
 
-    public void fillCardDeck() {
+    public static void fillCardDeck() {
         CardDeck.clear();
         for (int i = 0; i < amountCards; i++)
             CardDeck.add(i);
     }
 
-    public void secretFolderDistribute() {
+    public static void secretFolderDistribute() {
         secretFolder.clear();
 
         int character = rand.nextInt(6);
@@ -141,7 +127,7 @@ public class Server {
 
     }
 
-    public void distributeCards() {
+    public static void distributeCards() {
 
         playerCards.clear();
         int distribute = ((amountCards) / amountofPlayers);
@@ -161,7 +147,7 @@ public class Server {
 
         }
 
-    }//distributeCards
+    }// distributeCards
 
     // Displays GameOver screen when a player wins or all players get eliminated.
     // Will display winning cards and player who one if any.
@@ -169,4 +155,4 @@ public class Server {
 
     }
 
-}//class
+}// class

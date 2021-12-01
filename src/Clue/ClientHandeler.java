@@ -4,8 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class ClientHandeler implements Runnable {
@@ -13,7 +13,7 @@ public class ClientHandeler implements Runnable {
 	private Socket socket;
 	private DataOutputStream out;
 	private DataInputStream in;
-	private static int playerTurn; 
+	private static int playerTurn;
 
 	public String inMsg;
 	public String outMsg;
@@ -78,6 +78,18 @@ public class ClientHandeler implements Runnable {
 
 			if (playerTurn == 0) {
 				Server.amountofPlayers = Integer.parseInt(strMsg[0]);
+
+				// Prepares cars for distribuation
+				Server.fillCardDeck();
+
+				// Selects 3 cards at random from Character, Weapon and Room and sets them aside
+				Server.secretFolderDistribute();
+
+				// Shuffles the remainning
+				Collections.shuffle(Server.CardDeck);
+
+				Server.distributeCards();
+
 				for (int i = 0; i < Server.amountofPlayers; i++) {
 					Server.playerColor.add(null);
 					Server.playerX.add(0);
@@ -93,8 +105,10 @@ public class ClientHandeler implements Runnable {
 			Server.playerColor.set(playerTurn, Server.availableColors.get(Integer.parseInt(strMsg[0])));
 			Server.availableColors.remove(Integer.parseInt(strMsg[0]));
 
-			out.writeUTF(Server.amountofPlayers + ";" + Server.playerColor.get(playerTurn) + ";" + Server.playerX.get(playerTurn) + ";"
-					+ Server.playerY.get(playerTurn));
+			out.writeUTF(Server.amountofPlayers + ";" + Server.playerColor.get(playerTurn) + ";"
+					+ Server.playerX.get(playerTurn) + ";"
+					+ Server.playerY.get(playerTurn) + ";" + Server.playerCards.get(playerTurn) + ";"
+					+ Server.secretFolder);
 
 		} catch (Exception e) {
 			System.out.println(
@@ -114,23 +128,22 @@ public class ClientHandeler implements Runnable {
 
 				outMsg = strMsg[0] + ";" + strMsg[1] + ";" + Server.currTurn + ";" + strMsg[2];
 
-				
 				broadcastMessage(outMsg);
 
-				//Changes turns
+				// Changes turns
 				if (Boolean.parseBoolean(strMsg[2]) == true) {
 
-					Server.currTurn ++;
+					Server.currTurn++;
 					if (Server.currTurn == Server.amountofPlayers)
 						Server.currTurn = 0;
 
 				}
-				
-			}//while
+
+			} // while
 		} catch (Exception e) {
 
 		}
-	}//run
+	}// run
 
 	public void broadcastMessage(String outMsg) {
 
@@ -168,7 +181,6 @@ public class ClientHandeler implements Runnable {
 			}
 		}
 
-
 	}
 
 	public void newPlayer(String color) {
@@ -176,36 +188,35 @@ public class ClientHandeler implements Runnable {
 		String charArr[];
 
 		switch (color) {
-		case "Green":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
-		case "Mustard":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
-		case "Orchid":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
-		case "Peacock":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
-		case "Plum":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
-		case "Scarlett":
-			charArr = (Arrays.toString(characters.get(color))).split(",");
-			getStartingCoordinates(charArr);
-			break;
+			case "Green":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
+			case "Mustard":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
+			case "Orchid":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
+			case "Peacock":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
+			case "Plum":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
+			case "Scarlett":
+				charArr = (Arrays.toString(characters.get(color))).split(",");
+				getStartingCoordinates(charArr);
+				break;
 		}
 
 	}
 
 	public static void getStartingCoordinates(String[] charArr) {
-
 
 		Server.playerX.set(playerTurn, Integer.parseInt((charArr[0].replace('[', ' ')).trim()));
 		Server.playerY.set(playerTurn, Integer.parseInt((charArr[1].replace(']', ' ')).trim()));
