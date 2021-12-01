@@ -15,8 +15,8 @@ public class ClientHandeler implements Runnable {
 	private DataInputStream in;
 	private static int playerTurn;
 
-	public String inMsg;
-	public String outMsg;
+	public String inMsg = "";
+	public String outMsg = "";
 
 	public static HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
 
@@ -24,7 +24,7 @@ public class ClientHandeler implements Runnable {
 	public char label;
 	public boolean gameStarted = false;
 
-	public int amountOfPlayers = 0;
+	//public int amountOfPlayers = 0;
 	public int color;
 	public int x;
 	public int y;
@@ -47,7 +47,7 @@ public class ClientHandeler implements Runnable {
 
 	@Override
 	public void run() {
-
+		
 		try {
 
 			for (int i = 0; i < Server.availableColors.size(); i++) {
@@ -56,13 +56,14 @@ public class ClientHandeler implements Runnable {
 					outMsg += Server.availableColors.get(i) + ",";
 				else
 					outMsg += Server.availableColors.get(i) + ";";
+				
 			}
-
+			
 			outMsg += playerTurn + ";";
 
 			if (playerTurn == 0)
 				this.isPlayerTurn = true;
-
+			
 			outMsg += isPlayerTurn + ";";
 			out.writeUTF(outMsg);
 
@@ -103,8 +104,10 @@ public class ClientHandeler implements Runnable {
 			newPlayer(Server.availableColors.get(Integer.parseInt(strMsg[0])));
 
 			Server.playerColor.set(playerTurn, Server.availableColors.get(Integer.parseInt(strMsg[0])));
+			
+			//
 			Server.availableColors.remove(Integer.parseInt(strMsg[0]));
-
+			
 			out.writeUTF(Server.amountofPlayers + ";" + Server.playerColor.get(playerTurn) + ";"
 					+ Server.playerX.get(playerTurn) + ";"
 					+ Server.playerY.get(playerTurn) + ";" + Server.playerCards.get(playerTurn) + ";"

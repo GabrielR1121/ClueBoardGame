@@ -20,7 +20,7 @@ public class Build extends JPanel implements ActionListener {
     Random rand = new Random();
     JFrame frame = new JFrame();
     public static int diceRoll = 0;
-    public static String roomName = null;
+    public static String roomName = "";
 
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
@@ -28,6 +28,7 @@ public class Build extends JPanel implements ActionListener {
     public static CopyOnWriteArrayList<Integer> secretCards = new CopyOnWriteArrayList<Integer>();
     public static HashMap<Integer, ArrayList<HashMap<Integer, String>>> roomCoord = new HashMap<Integer, ArrayList<HashMap<Integer, String>>>();
 
+    
     // will be used for startPlayerTurn()
     public static int mutablePlayerTurn = 0;
 
@@ -94,62 +95,83 @@ public class Build extends JPanel implements ActionListener {
         characters.put("Scarlett", new Integer[] { 551, 39 });
 
         // Adding the starting coordinates for each of the doors.
-
-        roomCoord.put(199, new ArrayList<>());
-        roomCoord.get(199).add(new HashMap<>() {
-            {
-                put(647, "Conservatory");
-            }
-        });
-
-        roomCoord.put(519, new ArrayList<>());
-        roomCoord.get(519).add(new HashMap<>() {
-            {
-                put(423, "DiningRoom");
-            }
-        });
-
-        roomCoord.put(295, new ArrayList<>());
-        roomCoord.get(295).add(new HashMap<>() {
-            {
-                put(167, "Hall");
-            }
-        });
-
-        roomCoord.put(647, new ArrayList<>());
-        roomCoord.get(647).add(new HashMap<>() {
-            {
-                put(583, "Kitchen");
-            }
-        });
-
-        roomCoord.put(263, new ArrayList<>());
-        roomCoord.get(263).add(new HashMap<>() {
-            {
-                put(295, "Library");
-            }
-        });
-
-        roomCoord.put(583, new ArrayList<>());
-        roomCoord.get(583).add(new HashMap<>() {
-            {
-                put(231, "Lounge");
-            }
-        });
-
-        roomCoord.get(231).add(new HashMap<>() {
-            {
-                put(167, "StudyRoom");
-            }
-        });
-
-        roomCoord.put(391, new ArrayList<>());
-        roomCoord.get(391).add(new HashMap<>() {
-            {
-                put(263, "DecisionRoom");
-            }
-        });
-
+        doors.put(487, new ArrayList<>());
+        doors.get(487).add(551); // ball room
+        doors.put(231, new ArrayList<>());
+        doors.get(231).add(519); // billiard room
+        doors.put(199, new ArrayList<>());
+        doors.get(199).add(647); // conservatory
+        doors.put(519, new ArrayList<>());
+        doors.get(519).add(423); // dining room
+        doors.put(295, new ArrayList<>());
+        doors.get(295).add(167); // hall
+        doors.put(647, new ArrayList<>());
+        doors.get(647).add(583); // kitchen
+        doors.put(263, new ArrayList<>());
+        doors.get(263).add(295); // library
+        doors.put(583, new ArrayList<>());
+        doors.get(583).add(231); // lounge
+        // doors.put(231, new ArrayList<>());
+        doors.get(231).add(167); // study
+        doors.put(391, new ArrayList<>());
+        doors.get(391).add(263); // decision
+        
+     // Adding the starting coordinates for each of the doors.
+//        roomCoord.put(199, new ArrayList<>());
+//        roomCoord.get(199).add(new HashMap<>() {
+//            {
+//                put(647, "Conservatory");
+//            }
+//        });
+//
+//        roomCoord.put(519, new ArrayList<>());
+//        roomCoord.get(519).add(new HashMap<>() {
+//            {
+//                put(423, "DiningRoom");
+//            }
+//        });
+//
+//        roomCoord.put(295, new ArrayList<>());
+//        roomCoord.get(295).add(new HashMap<>() {
+//            {
+//                put(167, "Hall");
+//            }
+//        });
+//
+//        roomCoord.put(647, new ArrayList<>());
+//        roomCoord.get(647).add(new HashMap<>() {
+//            {
+//                put(583, "Kitchen");
+//            }
+//        });
+//
+//        roomCoord.put(263, new ArrayList<>());
+//        roomCoord.get(263).add(new HashMap<>() {
+//            {
+//                put(295, "Library");
+//            }
+//        });
+//
+//        roomCoord.put(583, new ArrayList<>());
+//        roomCoord.get(583).add(new HashMap<>() {
+//            {
+//                put(231, "Lounge");
+//            }
+//        });
+//
+//        roomCoord.get(231).add(new HashMap<>() {
+//            {
+//                put(167, "StudyRoom");
+//            }
+//        });
+//
+//        roomCoord.put(391, new ArrayList<>());
+//        roomCoord.get(391).add(new HashMap<>() {
+//            {
+//                put(263, "DecisionRoom");
+//            }
+//        });
+        
         // Hashmap of the info on the cardDeck elements (dudas)
         cardDeckMap.put(0, "Green");
         cardDeckMap.put(1, "Mustard");
@@ -411,17 +433,16 @@ public class Build extends JPanel implements ActionListener {
     // * Their respective color
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage(
-                "C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage("C:\\Users\\djavi\\Desktop\\ClueGameBoard(updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 
-        for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
-            g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
-            g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
-            // Redraws the board each time something happens.
-            repaint();
-        }
+//        for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
+//            g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
+//            g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
+//            // Redraws the board each time something happens.
+//            repaint();
+//        }
 
         // Gets the starting position for each players and draws it into the window.
         for (int i = 0; i < Client.playerColor.size(); i++) {
@@ -507,7 +528,7 @@ public class Build extends JPanel implements ActionListener {
         }
         return false;
     }
-
+    
     // Checks to see if players are entering a room through the door.
     public Boolean checkRoom(int xCoord, int yCoord) {
 
@@ -524,6 +545,7 @@ public class Build extends JPanel implements ActionListener {
         }
         return false;
     }
+    
 
     // Uses the global variable direction in order to move a player N,E,S,W with
     // respect to the Unit_Size.
@@ -602,35 +624,36 @@ public class Build extends JPanel implements ActionListener {
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
 
-            switch (e.getKeyCode()) {
+                switch (e.getKeyCode()) {
 
-                case KeyEvent.VK_LEFT:
-                    direction = 'L';
-                    move();
-                    break;
+                    case KeyEvent.VK_LEFT:
+                        direction = 'L';
+                        move();
+                        break;
 
-                case KeyEvent.VK_RIGHT:
-                    direction = 'R';
-                    move();
-                    break;
+                    case KeyEvent.VK_RIGHT:
+                        direction = 'R';
+                        move();
+                        break;
 
-                case KeyEvent.VK_UP:
-                    direction = 'U';
-                    move();
-                    break;
+                    case KeyEvent.VK_UP:
+                        direction = 'U';
+                        move();
+                        break;
 
-                case KeyEvent.VK_DOWN:
-                    direction = 'D';
-                    move();
-                    break;
+                    case KeyEvent.VK_DOWN:
+                        direction = 'D';
+                        move();
+                        break;
+                        
+                    case KeyEvent.VK_C:
 
-                case KeyEvent.VK_C:
+                        new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
 
-                    new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
+                        break;
+                }
 
-                    break;
-            }
-
+          
         }// keyPressed
     }// MyKeyAdapter
 

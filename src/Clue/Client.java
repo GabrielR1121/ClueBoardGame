@@ -40,7 +40,9 @@ public class Client implements Runnable {
 	public String inMsg;
 	public String character;
 	private volatile static int playerTurn = 0;
-
+	public volatile static int colorIdx = -1;
+	public volatile static String[] availableColors;
+	
 	public static ArrayList<Boolean> playerAssumptions = new ArrayList<>() {
 
 		{
@@ -51,7 +53,7 @@ public class Client implements Runnable {
 
 	};
 
-	// ColorIdx Global
+	
 
 	public Client() {
 		try {
@@ -79,14 +81,16 @@ public class Client implements Runnable {
 
 			String[] strMsg = inMsg.split(";");
 
-			String[] availableColors = strMsg[0].split(",");
-
+			availableColors = strMsg[0].split(",");
+			
 			currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
 
 			isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
 
-			int colorIdx = rand.nextInt(availableColors.length); // Replace with while(colorIdn != -1) {break;}
-
+			//int colorIdx = rand.nextInt(availableColors.length); 
+			while(colorIdx == -1) {
+			}
+			
 			// System.out.println("Color index: " + colorIdx);
 
 			// We should send the index of the amount of players, and the colorIdx to
@@ -134,11 +138,8 @@ public class Client implements Runnable {
 			for (int i = 0; i < sC.length; i++)
 				Build.secretCards.add(Integer.parseInt(sC[i].trim()));
 
-			System.out.println(Build.secretCards);
-
-			// First player only
-			if (currTurn == 0)
-				amountofPlayers = Integer.parseInt(positions[0]);
+			//removed an if
+			amountofPlayers = Integer.parseInt(positions[0]);
 
 			positions = Arrays.copyOfRange(positions, 1, positions.length);
 			color = positions[0].trim();

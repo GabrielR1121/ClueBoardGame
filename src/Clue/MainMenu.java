@@ -2,215 +2,255 @@ package Clue;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
+import java.util.Iterator;
+
 import javax.swing.*;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
 
 public class MainMenu extends JPanel {
 
-    // Gotta work on moving the Color enum alone.
+	static final int SCREEN_WIDTH = 842;
+	static final int SCREEN_HEIGHT = 872;
+	JFrame frame = new JFrame();
 
-    // Starts for every player to either start a game or join one.
-    // This main menu must contain every color available for the user to choose.
-    // Eliminates the chosen colors for the next client...
+	// Gotta work on moving the Color enum alone.
 
-    // Waits for every player to choose a color and join the game,
-    // then every player gets the same gameboard with every location for
-    // their chosen color.
-    public MainMenu() {
+	// Starts for every player to either start a game or join one.
+	// This main menu must contain every color available for the user to choose.
+	// Eliminates the chosen colors for the next client...
 
-        // SIDE NOTE: WHEN CHOOSING A COLOR, WE MUST NOT REMOVE THE ELEMENT TO KEEP THE
-        // INDEX
-        // WE CAN ALSO SET THE VALUE TO NULL.
+	// Waits for every player to choose a color and join the game,
+	// then every player gets the same gameboard with every location for
+	// their chosen color.
+	public MainMenu() {
 
-        // Players chooses colors. Player then chooses startGame or joinGame
-        // Waits for the rest of the players.
-        // Esto era el while(colorIdx != -1){
-        // break;
-        // }
+		addGameButtons();
 
-        // En client se elimino colorIdx como local y paso a ser global.
-        // Lo otro que se hizo en client era para evitar el re-write,
-        // se elimino el ultimo outMsg que era lo que estaba rew-writing.
+		this.setPreferredSize(new Dimension(SCREEN_WIDTH/3, SCREEN_HEIGHT/7));
 
-        // Por ultimo, en el constructor de Build esta el mismo codigo que
-        // contienen las ultimas lineas de esta clase..
+		this.setFocusable(true);
+		frame.setLocationRelativeTo(null);
+		frame.add(this);
+		frame.setTitle("Clue");
+		frame.setResizable(false);
+		frame.pack();
+		frame.setVisible(true);
 
-        JFrame frame = new JFrame();
+	}//constructor
 
-        JButton startGameBTN = new JButton("Start Game");
+	private void addGameButtons() {
 
-        JButton joinGameBTN = new JButton("Join Game");
+		JButton startGameBTN = new JButton("Start Game");
 
-        JButton greenColor = new JButton("Green");
-        greenColor.setBackground(new Color(0, 125, 0));
+		JLabel enterText = new JLabel("Entre la cantidad de jugadores (1-6): ");
 
-        JButton plumColor = new JButton("Plum");
-        plumColor.setBackground(new Color(142, 69, 133));
+		JTextField text = new JTextField(5);
+		
+		JButton submitBtn = new JButton("Submit");
+		
+		submitBtn.addActionListener(new ActionListener(){
 
-        JButton scarlettColor = new JButton("Scarlett");
-        scarlettColor.setBackground(new Color(255, 36, 0));
+			public void actionPerformed(ActionEvent e) {
+				
+				Client.amountofPlayers = Integer.parseInt(text.getText());
 
-        JButton orchidColor = new JButton("Orchid");
-        orchidColor.setBackground(new Color(218, 112, 214));
+				enterText.setVisible(false);
 
-        JButton peacockColor = new JButton("Peacock");
-        peacockColor.setBackground(new Color(51, 161, 201));
+				text.setVisible(false);
 
-        JButton mustardColor = new JButton("Mustard");
-        mustardColor.setBackground(new Color(255, 204, 102));
+				submitBtn.setVisible(false);
 
-        startGameBTN.setSize(350, 350);
+				addColorButtons();
 
-        startGameBTN.addActionListener(new ActionListener() {
+			}
 
-            public void actionPerformed(ActionEvent e) {
+		});
 
-                Client client = new Client();
-                Thread thread = new Thread(client);
-                thread.start();
-                startGameBTN.setVisible(false);
-                joinGameBTN.setVisible(false);
+		JButton joinGameBTN = new JButton("Join Game");
 
-                // Luego de presionar los botones de los colores, espera a que entre el resto de
-                // jugadores
-                //
+		startGameBTN.setSize(350, 350);
 
-            }
+		startGameBTN.addActionListener(new ActionListener() {
 
-        });
+			public void actionPerformed(ActionEvent e) {
 
-        joinGameBTN.setSize(350, 350);
+				Client client = new Client();
+				Thread thread = new Thread(client);
+				thread.start();
 
-        joinGameBTN.addActionListener(new ActionListener() {
+				startGameBTN.setVisible(false);
+				joinGameBTN.setVisible(false);
 
-            public void actionPerformed(ActionEvent e) {
+				//We need to gather the amount of players for the first player
+				enterText.setVisible(true);
+				text.setVisible(true);
+				submitBtn.setVisible(true);
 
-                Client client = new Client();
-                Thread thread = new Thread(client);
-                thread.start();
+			}
 
-            }
+		});
 
-        });
 
-        greenColor.addActionListener(new ActionListener() {
+		joinGameBTN.setSize(350, 350);
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 0;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+		joinGameBTN.addActionListener(new ActionListener() {
 
-            }
+			public void actionPerformed(ActionEvent e) {
 
-        });
+				Client client = new Client();
+				Thread thread = new Thread(client);
+				thread.start();
+				startGameBTN.setVisible(false);
+				joinGameBTN.setVisible(false);
+				addColorButtons();
 
-        plumColor.addActionListener(new ActionListener() {
+			}
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 4;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+		});
 
-            }
+		this.add(startGameBTN);
+		this.add(joinGameBTN);
+		enterText.setVisible(false);
+		this.add(enterText);
+		text.setVisible(false);
+		this.add(text);
+		submitBtn.setVisible(false);
+		this.add(submitBtn);
 
-        });
 
-        scarlettColor.addActionListener(new ActionListener() {
+	}
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 5;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+	private void addColorButtons() {
 
-            }
+		JButton greenColor = new JButton("Green");
+		greenColor.setBackground(new Color(0, 125, 0));
 
-        });
+		JButton plumColor = new JButton("Plum");
+		plumColor.setBackground(new Color(142, 69, 133));
 
-        orchidColor.addActionListener(new ActionListener() {
+		JButton scarlettColor = new JButton("Scarlett");
+		scarlettColor.setBackground(new Color(255, 36, 0));
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 2;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+		JButton orchidColor = new JButton("Orchid");
+		orchidColor.setBackground(new Color(218, 112, 214));
 
-            }
+		JButton peacockColor = new JButton("Peacock");
+		peacockColor.setBackground(new Color(51, 161, 201));
 
-        });
+		JButton mustardColor = new JButton("Mustard");
+		mustardColor.setBackground(new Color(255, 204, 102));
 
-        mustardColor.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 1;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+		greenColor.addActionListener(new ActionListener() {
 
-            }
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Green");
+				frame.dispose();
 
-        });
+			}
 
-        peacockColor.addActionListener(new ActionListener() {
+		});
 
-            public void actionPerformed(ActionEvent e) {
-                // Client.colorIdx = 3;
-                greenColor.setVisible(false);
-                plumColor.setVisible(false);
-                orchidColor.setVisible(false);
-                mustardColor.setVisible(false);
-                greenColor.setVisible(false);
-                scarlettColor.setVisible(false);
-                peacockColor.setVisible(false);
+		plumColor.addActionListener(new ActionListener() {
 
-            }
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Plum");
+				greenColor.setVisible(false);
+				plumColor.setVisible(false);
+				orchidColor.setVisible(false);
+				mustardColor.setVisible(false);
+				greenColor.setVisible(false);
+				scarlettColor.setVisible(false);
+				peacockColor.setVisible(false);
+				frame.dispose();
 
-        });
+			}
 
-        this.add(greenColor);
-        this.add(plumColor);
-        this.add(scarlettColor);
-        this.add(orchidColor);
-        this.add(mustardColor);
-        this.add(peacockColor);
-        this.add(startGameBTN);
-        this.add(joinGameBTN);
+		});
 
-        this.setPreferredSize(new Dimension(500, 500));
-        this.setFocusable(true);
+		scarlettColor.addActionListener(new ActionListener() {
 
-        System.out.println("Staring gameframe...");
-        frame.add(this);
-        frame.setTitle("Clue");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setLocationRelativeTo(null);
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Scarlett");
+				frame.dispose();
 
-    }
+			}
+
+		});
+
+		orchidColor.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Orchid");
+				frame.dispose();
+
+			}
+
+		});
+
+		mustardColor.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Mustard");
+				frame.dispose();
+
+			}
+
+		});
+
+		peacockColor.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Peacock");
+				frame.dispose();
+
+			}
+
+		});
+
+
+
+		for (int i = 0; i < Client.availableColors.length; i++) {
+
+
+			switch (Client.availableColors[i]) {
+			case "Green": {
+				this.add(greenColor);
+				break;
+			}
+			case "Plum":{
+				this.add(plumColor);
+				break;
+
+			}
+			case "Orchid": {
+				this.add(orchidColor);
+				break;
+			}
+			case "Scarlett": {
+				this.add(scarlettColor);
+				break;
+			}
+			case "Peacock": {
+				this.add(peacockColor);
+				break;
+			}
+			case "Mustard": {
+				this.add(mustardColor);
+				break;
+			}
+
+
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + Client.availableColors[i]);
+			}
+
+
+		}
+
+
+	}
+
+
 
 }
