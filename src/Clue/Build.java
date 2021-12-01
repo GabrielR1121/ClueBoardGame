@@ -23,7 +23,7 @@ public class Build extends JPanel implements ActionListener {
 
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
-    public static CopyOnWriteArrayList<Integer> playerCards = new CopyOnWriteArrayList<Integer>();
+    public static ArrayList<Integer> playerCards = new ArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> secretCards = new CopyOnWriteArrayList<Integer>();
 
     // will be used for startPlayerTurn()
@@ -39,7 +39,7 @@ public class Build extends JPanel implements ActionListener {
     HashMap<Integer, ArrayList<Integer>> doors = new HashMap<Integer, ArrayList<Integer>>();
 
     // Has the string info of all of the cards on the cardDeck array.
-    HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
+    public static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
     // Enumerator for the colors with their RGB code
     private enum colors {
@@ -374,7 +374,8 @@ public class Build extends JPanel implements ActionListener {
     // * Their respective color
     public void draw(Graphics g) {
 
-        Image img = Toolkit.getDefaultToolkit().getImage("C:\\Users\\djavi\\Desktop\\ClueGameBoard(updated).jpg");
+        Image img = Toolkit.getDefaultToolkit().getImage(
+                "C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
         g.drawImage(img, 0, 0, null);
 
@@ -487,61 +488,63 @@ public class Build extends JPanel implements ActionListener {
     // movement.
     // For now print (X,Y) of the player.
     public void move() {
+        if (Client.isPlayerTurn) {
+            switch (direction) {
 
-        switch (direction) {
+                case 'U':
+                    if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
 
-            case 'U':
-                if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
+                        Client.y = Client.y - UNIT_SIZE;
+                        --diceRoll;
+                    }
+                    if (checkRoom(Client.x, Client.y)) {
+                        System.out.println("Want to enter this room?");
+                        // System.out.println(Client.startRumor());
+                    }
+                    direction = 's';
+                    break;
 
-                    Client.y = Client.y - UNIT_SIZE;
-                    --diceRoll;
-                }
-                if (checkRoom(Client.x, Client.y)) {
-                    System.out.println("Want to enter this room?");
-                    // System.out.println(Client.startRumor());
-                }
-                direction = 's';
-                break;
+                case 'D':
+                    if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
 
-            case 'D':
-                if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
+                        Client.y = Client.y + UNIT_SIZE;
+                        --diceRoll;
+                    }
+                    if (checkRoom(Client.x, Client.y)) {
+                        System.out.println("Want to enter this room?");
+                        // System.out.println(Client.startRumor());
+                    }
+                    direction = 's';
+                    break;
 
-                    Client.y = Client.y + UNIT_SIZE;
-                    --diceRoll;
-                }
-                if (checkRoom(Client.x, Client.y)) {
-                    System.out.println("Want to enter this room?");
-                    // System.out.println(Client.startRumor());
-                }
-                direction = 's';
-                break;
+                case 'L':
+                    if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
 
-            case 'L':
-                if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
+                        Client.x = Client.x - UNIT_SIZE;
+                        --diceRoll;
+                    }
+                    if (checkRoom(Client.x, Client.y)) {
+                        System.out.println("Want to enter this room?");
+                        // System.out.println(Client.startRumor());
+                    }
+                    direction = 's';
+                    break;
 
-                    Client.x = Client.x - UNIT_SIZE;
-                    --diceRoll;
-                }
-                if (checkRoom(Client.x, Client.y)) {
-                    System.out.println("Want to enter this room?");
-                    // System.out.println(Client.startRumor());
-                }
-                direction = 's';
-                break;
+                case 'R':
+                    if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
 
-            case 'R':
-                if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
-
-                    Client.x = Client.x + UNIT_SIZE;
-                    --diceRoll;
-                }
-                if (checkRoom(Client.x, Client.y)) {
-                    System.out.println("Want to enter this room?");
-                    // System.out.println(Client.startRumor());
-                }
-                direction = 's';
-                break;
-        }
+                        Client.x = Client.x + UNIT_SIZE;
+                        --diceRoll;
+                    }
+                    if (checkRoom(Client.x, Client.y)) {
+                        System.out.println("Want to enter this room?");
+                        // System.out.println(Client.startRumor());
+                    }
+                    direction = 's';
+                    break;
+            }
+        } else
+            direction = 's';
     }
 
     // activates when an action is preformed in order to run previus methods.
@@ -556,32 +559,35 @@ public class Build extends JPanel implements ActionListener {
     public class MyKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
 
-            if (Client.isPlayerTurn && diceRoll != 0) {
+            switch (e.getKeyCode()) {
 
-                switch (e.getKeyCode()) {
+                case KeyEvent.VK_LEFT:
+                    direction = 'L';
+                    move();
+                    break;
 
-                    case KeyEvent.VK_LEFT:
-                        direction = 'L';
-                        move();
-                        break;
+                case KeyEvent.VK_RIGHT:
+                    direction = 'R';
+                    move();
+                    break;
 
-                    case KeyEvent.VK_RIGHT:
-                        direction = 'R';
-                        move();
-                        break;
+                case KeyEvent.VK_UP:
+                    direction = 'U';
+                    move();
+                    break;
 
-                    case KeyEvent.VK_UP:
-                        direction = 'U';
-                        move();
-                        break;
+                case KeyEvent.VK_DOWN:
+                    direction = 'D';
+                    move();
+                    break;
 
-                    case KeyEvent.VK_DOWN:
-                        direction = 'D';
-                        move();
-                        break;
-                }
+                case KeyEvent.VK_C:
 
-            } // if()
+                    new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
+
+                    break;
+            }
+
         }// keyPressed
     }// MyKeyAdapter
 

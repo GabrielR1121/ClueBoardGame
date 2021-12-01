@@ -41,6 +41,16 @@ public class Client implements Runnable {
 	public String character;
 	private volatile static int playerTurn = 0;
 
+	public static ArrayList<Boolean> playerAssumptions = new ArrayList<>() {
+
+		{
+			for (int i = 0; i < 21; i++)
+				add(false);
+
+		}
+
+	};
+
 	// ColorIdx Global
 
 	public Client() {
