@@ -30,7 +30,7 @@ public class Client implements Runnable {
 	public static int amountofPlayers = 0;
 
 	public static ArrayList<String> playerColor = new ArrayList<String>();
-	public volatile static boolean isPlayerTurn;
+	public volatile static boolean isPlayerTurn = false;
 	public volatile static int currTurn;
 	public volatile static boolean turnEnded = false;
 
@@ -42,7 +42,7 @@ public class Client implements Runnable {
 	private volatile static int playerTurn = 0;
 	public volatile static int colorIdx = -1;
 	public volatile static String[] availableColors;
-	
+
 	public static ArrayList<Boolean> playerAssumptions = new ArrayList<>() {
 
 		{
@@ -52,8 +52,6 @@ public class Client implements Runnable {
 		}
 
 	};
-
-	
 
 	public Client() {
 		try {
@@ -82,15 +80,15 @@ public class Client implements Runnable {
 			String[] strMsg = inMsg.split(";");
 
 			availableColors = strMsg[0].split(",");
-			
+
 			currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
 
 			isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
 
-			//int colorIdx = rand.nextInt(availableColors.length); 
-			while(colorIdx == -1) {
+			// int colorIdx = rand.nextInt(availableColors.length);
+			while (colorIdx == -1) {
 			}
-			
+
 			// System.out.println("Color index: " + colorIdx);
 
 			// We should send the index of the amount of players, and the colorIdx to
@@ -138,7 +136,7 @@ public class Client implements Runnable {
 			for (int i = 0; i < sC.length; i++)
 				Build.secretCards.add(Integer.parseInt(sC[i].trim()));
 
-			//removed an if
+			// removed an if
 			amountofPlayers = Integer.parseInt(positions[0]);
 
 			positions = Arrays.copyOfRange(positions, 1, positions.length);
@@ -201,6 +199,9 @@ public class Client implements Runnable {
 
 			lastX = x;
 			lastY = y;
+
+			System.out.println("X:" + Build.playerX);
+			System.out.println("Y: " + Build.playerY);
 
 			while (true) {
 				// If the game is not running this will start the build for everyone with
