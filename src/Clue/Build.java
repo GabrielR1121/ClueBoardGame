@@ -47,25 +47,6 @@ public class Build extends JPanel implements ActionListener {
 	// Has the string info of all of the cards on the cardDeck array.
 	public static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
-	// Enumerator for the colors with their RGB code
-	private enum colors {
-		Scarlett("255,36,0"), Plum("142,69,133"), Orchid("218,112,214"), Green("0,125,0"), Mustard("255,204,102"),
-		Peacock("51,161,201");
-
-		private Color clr;
-
-		private colors(String rgb) {
-
-			String[] strRGB = rgb.split(",");
-
-			clr = new Color(Integer.parseInt(strRGB[0]), Integer.parseInt(strRGB[1]), Integer.parseInt(strRGB[2]));
-		}
-
-		public Color getColor() {
-			return clr;
-		}
-	}
-
 	// Constructor
 	public Build() {
 
@@ -472,22 +453,22 @@ public class Build extends JPanel implements ActionListener {
 
 				switch (Client.playerColor.get(i).trim()) {
 				case "Green":
-					g.setColor(colors.Green.getColor());
+					g.setColor(Colors.Green.getColor());
 					break;
 				case "Mustard":
-					g.setColor(colors.Mustard.getColor());
+					g.setColor(Colors.Mustard.getColor());
 					break;
 				case "Orchid":
-					g.setColor(colors.Orchid.getColor());
+					g.setColor(Colors.Orchid.getColor());
 					break;
 				case "Peacock":
-					g.setColor(colors.Peacock.getColor());
+					g.setColor(Colors.Peacock.getColor());
 					break;
 				case "Plum":
-					g.setColor(colors.Plum.getColor());
+					g.setColor(Colors.Plum.getColor());
 					break;
 				case "Scarlett":
-					g.setColor(colors.Scarlett.getColor());
+					g.setColor(Colors.Scarlett.getColor());
 					break;
 				default:
 					break;

@@ -3,7 +3,6 @@ package Clue;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
-import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -42,7 +41,7 @@ public class MainMenu extends JPanel {
 
 		JButton startGameBTN = new JButton("Start Game");
 
-		JLabel enterText = new JLabel("Entre la cantidad de jugadores (1-6): ");
+		JLabel enterText = new JLabel("Entre la cantidad de jugadores (2-6): ");
 
 		JTextField text = new JTextField(5);
 		
@@ -123,22 +122,22 @@ public class MainMenu extends JPanel {
 	private void addColorButtons() {
 
 		JButton greenColor = new JButton("Green");
-		greenColor.setBackground(new Color(0, 125, 0));
+		greenColor.setBackground(Colors.Green.getColor());
 
 		JButton plumColor = new JButton("Plum");
-		plumColor.setBackground(new Color(142, 69, 133));
+		plumColor.setBackground(Colors.Plum.getColor());
 
 		JButton scarlettColor = new JButton("Scarlett");
-		scarlettColor.setBackground(new Color(255, 36, 0));
+		scarlettColor.setBackground(Colors.Scarlett.getColor());
 
 		JButton orchidColor = new JButton("Orchid");
-		orchidColor.setBackground(new Color(218, 112, 214));
+		orchidColor.setBackground(Colors.Orchid.getColor());
 
 		JButton peacockColor = new JButton("Peacock");
-		peacockColor.setBackground(new Color(51, 161, 201));
+		peacockColor.setBackground(Colors.Peacock.getColor());
 
 		JButton mustardColor = new JButton("Mustard");
-		mustardColor.setBackground(new Color(255, 204, 102));
+		mustardColor.setBackground(Colors.Mustard.getColor());
 
 
 		greenColor.addActionListener(new ActionListener() {
@@ -155,13 +154,6 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Plum");
-				greenColor.setVisible(false);
-				plumColor.setVisible(false);
-				orchidColor.setVisible(false);
-				mustardColor.setVisible(false);
-				greenColor.setVisible(false);
-				scarlettColor.setVisible(false);
-				peacockColor.setVisible(false);
 				frame.dispose();
 
 			}
