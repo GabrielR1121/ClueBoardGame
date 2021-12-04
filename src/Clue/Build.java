@@ -418,7 +418,8 @@ public class Build extends JPanel implements ActionListener {
 
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
-					new ImageIcon("C:\\Users\\claud\\Documents\\JAVA\\RumorForClue\\src\\Images\\" + i + ".png"));
+					new ImageIcon(
+							"C:\\Users\\grgar\\eclipse-workspace\\Test_File\\src\\Assets\\Card_Deck\\" + i + ".png"));
 		}
 	}
 
@@ -435,7 +436,7 @@ public class Build extends JPanel implements ActionListener {
 	public void draw(Graphics g) {
 
 		Image img = Toolkit.getDefaultToolkit().getImage(
-				"C:\\Users\\claud\\Documents\\UPRB\\4TH YEAR\\SICI4037 (COM. DATOS)\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
 		g.drawImage(img, 0, 0, null);
 
@@ -452,26 +453,26 @@ public class Build extends JPanel implements ActionListener {
 			if (Client.playerColor.get(i) != null) {
 
 				switch (Client.playerColor.get(i).trim()) {
-				case "Green":
-					g.setColor(Colors.Green.getColor());
-					break;
-				case "Mustard":
-					g.setColor(Colors.Mustard.getColor());
-					break;
-				case "Orchid":
-					g.setColor(Colors.Orchid.getColor());
-					break;
-				case "Peacock":
-					g.setColor(Colors.Peacock.getColor());
-					break;
-				case "Plum":
-					g.setColor(Colors.Plum.getColor());
-					break;
-				case "Scarlett":
-					g.setColor(Colors.Scarlett.getColor());
-					break;
-				default:
-					break;
+					case "Green":
+						g.setColor(Colors.Green.getColor());
+						break;
+					case "Mustard":
+						g.setColor(Colors.Mustard.getColor());
+						break;
+					case "Orchid":
+						g.setColor(Colors.Orchid.getColor());
+						break;
+					case "Peacock":
+						g.setColor(Colors.Peacock.getColor());
+						break;
+					case "Plum":
+						g.setColor(Colors.Plum.getColor());
+						break;
+					case "Scarlett":
+						g.setColor(Colors.Scarlett.getColor());
+						break;
+					default:
+						break;
 				}// switch()
 
 				g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
@@ -493,6 +494,14 @@ public class Build extends JPanel implements ActionListener {
 		FontMetrics metrics2 = getFontMetrics(g.getFont());
 		g.drawString("Dice roll: " + diceRoll, (SCREEN_WIDTH - metrics2.stringWidth("Dice Roll: " + diceRoll)) - 35,
 				g.getFont().getSize() + align);
+
+		g.setColor(Color.white);
+		g.setFont(new Font("Ink Free", Font.BOLD, 20));
+		FontMetrics metrics3 = getFontMetrics(g.getFont());
+		g.drawString("Press C to display checklist",
+				(metrics3.stringWidth("Press C on keyboard to display player checklist")) - 350, SCREEN_HEIGHT - 20);
+		// g.drawString("Game Over" , (SCREEN_WIDTH- metrics.stringWidth("Game
+		// Over"))/2, SCREEN_HEIGHT/2)
 	} // draw()
 
 	public void startPlayerTurn() {
@@ -533,28 +542,28 @@ public class Build extends JPanel implements ActionListener {
 
 	// Checks to see if players are entering a room through the door.
 	public static Boolean checkRoom(int xCoord, int yCoord) {
-		
-		 if(roomCoord.containsKey(xCoord)) {
-			  if(roomCoord.get(xCoord).size()>1) {
-				  for (int i = 0; i < roomCoord.get(xCoord).size(); i++) {
-					if(roomCoord.get(xCoord).get(i).containsKey(yCoord)) {
+
+		if (roomCoord.containsKey(xCoord)) {
+			if (roomCoord.get(xCoord).size() > 1) {
+				for (int i = 0; i < roomCoord.get(xCoord).size(); i++) {
+					if (roomCoord.get(xCoord).get(i).containsKey(yCoord)) {
 
 						roomName = roomCoord.get(xCoord).get(i).get(yCoord);
 						return true;
-					} //if
-				} // for 
-			  } //if FUNCIONA HASTA AQUI
-			  else if(roomCoord.get(xCoord).size()==1) {
-				  if (roomCoord.get(xCoord).get(0).containsKey(yCoord)) {
-					  roomName = roomCoord.get(xCoord).get(0).get(yCoord);
-					  return true;
-			  }
-  
-			  }//else if
-		  }  //if
+					} // if
+				} // for
+			} // if FUNCIONA HASTA AQUI
+			else if (roomCoord.get(xCoord).size() == 1) {
+				if (roomCoord.get(xCoord).get(0).containsKey(yCoord)) {
+					roomName = roomCoord.get(xCoord).get(0).get(yCoord);
+					return true;
+				}
 
-			 return false;
-		
+			} // else if
+		} // if
+
+		return false;
+
 	}
 
 	// Uses the global variable direction in order to move a player N,E,S,W with
@@ -566,58 +575,47 @@ public class Build extends JPanel implements ActionListener {
 		if (Client.isPlayerTurn) {
 			switch (direction) {
 
-			case 'U':
-				if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
+				case 'U':
+					if (checkBounds(Client.x, Client.y - UNIT_SIZE)) {
 
-					Client.y = Client.y - UNIT_SIZE;
-					--diceRoll;
+						Client.y = Client.y - UNIT_SIZE;
+						--diceRoll;
 
-				}
-				if (checkRoom(Client.x, Client.y)) {
-					Rumor.startRumor(roomName);
-				}
-				direction = 's';
-				break;
-
-			case 'D':
-				if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
-
-					Client.y = Client.y + UNIT_SIZE;
-					--diceRoll;
-					if (checkRoom(Client.x, Client.y)) {
-						Rumor.startRumor(roomName);
 					}
-				}
+					break;
 
-				direction = 's';
-				break;
+				case 'D':
+					if (checkBounds(Client.x, Client.y + UNIT_SIZE)) {
 
-			case 'L':
-				if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
+						Client.y = Client.y + UNIT_SIZE;
+						--diceRoll;
 
-					Client.x = Client.x - UNIT_SIZE;
-					--diceRoll;
-					if (checkRoom(Client.x, Client.y)) {
-						Rumor.startRumor(roomName);
 					}
-				}
+					break;
 
-				direction = 's';
-				break;
+				case 'L':
+					if (checkBounds(Client.x - UNIT_SIZE, Client.y)) {
 
-			case 'R':
-				if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
+						Client.x = Client.x - UNIT_SIZE;
+						--diceRoll;
 
-					Client.x = Client.x + UNIT_SIZE;
-					--diceRoll;
-					if (checkRoom(Client.x, Client.y)) {
-						Rumor.startRumor(roomName);
 					}
-				}
+					break;
 
-				direction = 's';
-				break;
+				case 'R':
+					if (checkBounds(Client.x + UNIT_SIZE, Client.y)) {
+						Client.x = Client.x + UNIT_SIZE;
+						--diceRoll;
+					}
+
+					break;
 			}
+
+			// Move to draw when an idea about how to run only once occurs.
+			if (checkRoom(Client.x, Client.y) && diceRoll != 0)
+				Rumor.startRumor(roomName);
+			direction = 's';
+
 		} else
 			direction = 's';
 	}
@@ -636,31 +634,31 @@ public class Build extends JPanel implements ActionListener {
 
 			switch (e.getKeyCode()) {
 
-			case KeyEvent.VK_LEFT:
-				direction = 'L';
-				move();
-				break;
+				case KeyEvent.VK_LEFT:
+					direction = 'L';
+					move();
+					break;
 
-			case KeyEvent.VK_RIGHT:
-				direction = 'R';
-				move();
-				break;
+				case KeyEvent.VK_RIGHT:
+					direction = 'R';
+					move();
+					break;
 
-			case KeyEvent.VK_UP:
-				direction = 'U';
-				move();
-				break;
+				case KeyEvent.VK_UP:
+					direction = 'U';
+					move();
+					break;
 
-			case KeyEvent.VK_DOWN:
-				direction = 'D';
-				move();
-				break;
+				case KeyEvent.VK_DOWN:
+					direction = 'D';
+					move();
+					break;
 
-			case KeyEvent.VK_C:
+				case KeyEvent.VK_C:
 
-				new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
+					new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
 
-				break;
+					break;
 			}
 
 		}// keyPressed

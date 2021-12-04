@@ -25,12 +25,12 @@ public class Server {
 
     public char label = 'A';
 
-    //FIxed the order of color idx
+    // FIxed the order of color idx
     @SuppressWarnings("serial")
     public static ArrayList<String> availableColors = new ArrayList<String>() {
 
         {
-        	add("Green");
+            add("Green");
             add("Mustard");
             add("Orchid");
             add("Peacock");
@@ -59,7 +59,7 @@ public class Server {
     public static void main(String[] args) {
         Server servidor = new Server();
         servidor.startServer();
-        
+
     }
 
     // Server constructor

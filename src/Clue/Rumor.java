@@ -3,11 +3,14 @@ package Clue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -15,17 +18,18 @@ import javax.swing.BoxLayout;
 
 public class Rumor {
 
-    static int rumorCharacterIdx = -1;
-    static int rumorWeaponIdx = -1;
-    static int rumorRoomIdx = -1;
-    static int cardDisputed = -1; // card that the user will dispute
-    static int relevantDisputeCards[] = new int[3];
-    static int count = 0;
-    static JFrame frame = new JFrame("Rumor");
-    static JFrame disputeFrame = new JFrame("Dispute Rumor");
+    public volatile static int rumorCharacterIdx = -1;
+    public volatile static int rumorWeaponIdx = -1;
+    public volatile static int rumorRoomIdx = -1;
+    public volatile static int cardDisputed = -1; // card that the user will dispute
+    public static int relevantDisputeCards[] = { -1, -1, -1 };
+    public static int count = -1;
+    public static JFrame frame = new JFrame("Rumor");
+    public static JFrame disputeFrame = new JFrame("Dispute Rumor");
+    // public volatile static boolean test = false;
 
     public static void startRumor(String room) {
-
+        // test= true;
         for (Map.Entry<Integer, String> entry : Build.cardDeckMap.entrySet()) {
 
             if (room == "DecisionRoom")
@@ -59,7 +63,6 @@ public class Rumor {
 
         for (int i = 0; i < playerCards.size(); i++) {
 
-            System.out.println(playerCards.get(i));
             if (playerCards.get(i) == rumorCharacterIdx || playerCards.get(i) == rumorRoomIdx
                     || playerCards.get(i) == rumorWeaponIdx) {
                 count++;
@@ -68,48 +71,60 @@ public class Rumor {
                 Build.cardButtons[playerCards.get(i)].setVisible(true);
 
                 pane.add(Build.cardButtons[playerCards.get(i)]);
-
+                System.out.println("Count: " + count);
             }
 
         }
+        System.out.println("relevant disputed cards " + Arrays.toString(relevantDisputeCards));
 
-        Build.cardButtons[relevantDisputeCards[0]].addActionListener(new ActionListener() {
+        if (relevantDisputeCards[0] != -1)
+            Build.cardButtons[relevantDisputeCards[0]].addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e) {
 
-                cardDisputed = relevantDisputeCards[0];
-                disputeFrame.dispose();
+                    cardDisputed = relevantDisputeCards[0];
+                    System.out.println("Disputed Card: " + cardDisputed);
+                    disputeFrame.getContentPane().removeAll();
+                    disputeFrame.dispose();
 
-            }
+                }
 
-        });
+            });
+        if (relevantDisputeCards[1] != -1)
+            Build.cardButtons[relevantDisputeCards[1]].addActionListener(new ActionListener() {
 
-        Build.cardButtons[relevantDisputeCards[1]].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
 
-            public void actionPerformed(ActionEvent e) {
+                    cardDisputed = relevantDisputeCards[1];
+                    System.out.println("Disputed Card: " + cardDisputed);
+                    disputeFrame.getContentPane().removeAll();
+                    disputeFrame.dispose();
 
-                cardDisputed = relevantDisputeCards[1];
-                disputeFrame.dispose();
+                }
 
-            }
+            });
 
-        });
+        if (relevantDisputeCards[2] != -1)
+            Build.cardButtons[relevantDisputeCards[2]].addActionListener(new ActionListener() {
 
-        Build.cardButtons[relevantDisputeCards[2]].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
 
-            public void actionPerformed(ActionEvent e) {
+                    cardDisputed = relevantDisputeCards[2];
+                    System.out.println("Disputed Card: " + cardDisputed);
+                    disputeFrame.getContentPane().removeAll();
+                    disputeFrame.dispose();
 
-                cardDisputed = relevantDisputeCards[2];
-                disputeFrame.dispose();
+                }
 
-            }
-
-        });
+            });
 
         if (count == 0) {
             JLabel label = new JLabel("You do not have any relevant cards at this moment.");
             label.setAlignmentX(Component.CENTER_ALIGNMENT);
             pane.add(label);
+            disputeFrame.getContentPane().removeAll();
+            disputeFrame.dispose();
+            // Use this to move to next player. Use bool value.
         }
     }
 
@@ -162,11 +177,12 @@ public class Rumor {
 
                 System.out.println(rumorCharacterIdx + "(" + rumorCharacterName + ") with " +
                         rumorWeaponIdx + "(" + rumorWeaponName + ") in " + room);
-
+                // test =false;
                 frame.getContentPane().removeAll();
                 frame.dispose();
 
-                disputeRumor();
+                // To be removed.
+                // disputeRumor();
 
             }
 

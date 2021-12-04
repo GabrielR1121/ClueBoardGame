@@ -3,6 +3,7 @@ package Clue;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.swing.*;
 
@@ -25,7 +26,7 @@ public class MainMenu extends JPanel {
 
 		addGameButtons();
 
-		this.setPreferredSize(new Dimension(SCREEN_WIDTH/3, SCREEN_HEIGHT/7));
+		this.setPreferredSize(new Dimension(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 7));
 
 		this.setFocusable(true);
 		frame.setLocationRelativeTo(null);
@@ -35,7 +36,7 @@ public class MainMenu extends JPanel {
 		frame.pack();
 		frame.setVisible(true);
 
-	}//constructor
+	}// constructor
 
 	private void addGameButtons() {
 
@@ -44,13 +45,13 @@ public class MainMenu extends JPanel {
 		JLabel enterText = new JLabel("Entre la cantidad de jugadores (2-6): ");
 
 		JTextField text = new JTextField(5);
-		
+
 		JButton submitBtn = new JButton("Submit");
-		
-		submitBtn.addActionListener(new ActionListener(){
+
+		submitBtn.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				
+
 				Client.amountofPlayers = Integer.parseInt(text.getText());
 
 				enterText.setVisible(false);
@@ -80,7 +81,7 @@ public class MainMenu extends JPanel {
 				startGameBTN.setVisible(false);
 				joinGameBTN.setVisible(false);
 
-				//We need to gather the amount of players for the first player
+				// We need to gather the amount of players for the first player
 				enterText.setVisible(true);
 				text.setVisible(true);
 				submitBtn.setVisible(true);
@@ -88,7 +89,6 @@ public class MainMenu extends JPanel {
 			}
 
 		});
-
 
 		joinGameBTN.setSize(350, 350);
 
@@ -116,7 +116,6 @@ public class MainMenu extends JPanel {
 		submitBtn.setVisible(false);
 		this.add(submitBtn);
 
-
 	}
 
 	private void addColorButtons() {
@@ -139,7 +138,6 @@ public class MainMenu extends JPanel {
 		JButton mustardColor = new JButton("Mustard");
 		mustardColor.setBackground(Colors.Mustard.getColor());
 
-
 		greenColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -154,6 +152,13 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Plum");
+				greenColor.setVisible(false);
+				plumColor.setVisible(false);
+				orchidColor.setVisible(false);
+				mustardColor.setVisible(false);
+				greenColor.setVisible(false);
+				scarlettColor.setVisible(false);
+				peacockColor.setVisible(false);
 				frame.dispose();
 
 			}
@@ -200,49 +205,41 @@ public class MainMenu extends JPanel {
 
 		});
 
-
-
 		for (int i = 0; i < Client.availableColors.length; i++) {
 
-
 			switch (Client.availableColors[i]) {
-			case "Green": {
-				this.add(greenColor);
-				break;
-			}
-			case "Plum":{
-				this.add(plumColor);
-				break;
+				case "Green": {
+					this.add(greenColor);
+					break;
+				}
+				case "Plum": {
+					this.add(plumColor);
+					break;
 
-			}
-			case "Orchid": {
-				this.add(orchidColor);
-				break;
-			}
-			case "Scarlett": {
-				this.add(scarlettColor);
-				break;
-			}
-			case "Peacock": {
-				this.add(peacockColor);
-				break;
-			}
-			case "Mustard": {
-				this.add(mustardColor);
-				break;
-			}
+				}
+				case "Orchid": {
+					this.add(orchidColor);
+					break;
+				}
+				case "Scarlett": {
+					this.add(scarlettColor);
+					break;
+				}
+				case "Peacock": {
+					this.add(peacockColor);
+					break;
+				}
+				case "Mustard": {
+					this.add(mustardColor);
+					break;
+				}
 
-
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + Client.availableColors[i]);
+				default:
+					throw new IllegalArgumentException("Unexpected value: " + Client.availableColors[i]);
 			}
-
 
 		}
 
-
 	}
-
-
 
 }

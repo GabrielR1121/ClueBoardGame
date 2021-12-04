@@ -13,7 +13,7 @@ public class Client implements Runnable {
 	public final int SCREEN_HEIGHT = 872;
 	public final int UNIT_SIZE = 32;
 	private Socket cliente;
-	private DataOutputStream out;
+	private static DataOutputStream out;
 	private DataInputStream in;
 	private int puerto = 2027;
 	private String host = "localhost";
@@ -30,7 +30,7 @@ public class Client implements Runnable {
 	public static int amountofPlayers = 0;
 
 	public static ArrayList<String> playerColor = new ArrayList<String>();
-	public volatile static boolean isPlayerTurn = false;
+	public volatile static boolean isPlayerTurn;
 	public volatile static int currTurn;
 	public volatile static boolean turnEnded = false;
 
@@ -199,9 +199,7 @@ public class Client implements Runnable {
 
 			lastX = x;
 			lastY = y;
-
-			System.out.println("X:" + Build.playerX);
-			System.out.println("Y: " + Build.playerY);
+			int testVar = -1;
 
 			while (true) {
 				// If the game is not running this will start the build for everyone with
@@ -214,7 +212,8 @@ public class Client implements Runnable {
 				else {
 					if (isPlayerTurn) {
 
-						if ((lastX != x || lastY != y)) {
+						if ((lastX != x || lastY != y) || (Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
+								&& Rumor.rumorRoomIdx != -1)) {
 
 							isPlayerTurn = ((Build.diceRoll != 0) ? true : false);
 							lastX = x;
@@ -225,17 +224,68 @@ public class Client implements Runnable {
 							outMsg += x + ";";
 							outMsg += y + ";";
 							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de
-																					// turnEnded().
-							System.out.println("out: " + outMsg);
+							// turnEnded().
+							outMsg += Rumor.rumorCharacterIdx + ";";
+							outMsg += Rumor.rumorWeaponIdx + ";";
+							outMsg += Rumor.rumorRoomIdx + ";";
+							outMsg += testVar + ";";
+
+							System.out.println("out: " + playerColor.get(currTurn) + " " + outMsg);
 							out.writeUTF(outMsg);
 							out.flush();
+							// Errors happening:
+							// The communication for dispute rumor needs to work for all players but only
+							// display for the next player in a circle until everyone is checked
+							// The client needs to be waiting until the disputed variable changes from -1 to
+							// an index. if it goes full circle display message saying no cards available to
+							// dispute.
+							// This can be done with a counter ^.
+
+							// Fix when start rumor happens in corner cases.
+							// When index is received a window needs to appear for the player showing the
+							// card that was disputed.
+							// Variables in Rumor need to be reset when dispute rumor is complete.
+							// Fix Study Room Hashmap (if not fixed move door to another location)
+							// Final rumor method needs to be started.
+							// Optional: if final rumor is wrong player is elimanted and can only dispute
+							// rumors.
+
+							if ((Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
+									&& Rumor.rumorRoomIdx != -1)) {
+								// System.out.println("Im here");
+								String inMsg = in.readUTF();
+								System.out.println("IN MESSAGE FROM DISPUTE: " + inMsg);
+								// changeXYValues(inMsg);
+								Rumor.rumorCharacterIdx = -1;
+								Rumor.rumorWeaponIdx = -1;
+								Rumor.rumorRoomIdx = -1;
+								Build.diceRoll = 0;
+								// NEED TO SAVE DISPUTED CARD!!!!!!!!!
+
+								// Make clear rumor method.
+								// Make code to view disputed card.
+
+								// try to place this in a method because code is repeating.
+								outMsg = "";
+								outMsg += x + ";";
+								outMsg += y + ";";
+								outMsg += true + ";"; // Turn Ended
+								outMsg += Rumor.rumorCharacterIdx + ";";
+								outMsg += Rumor.rumorWeaponIdx + ";";
+								outMsg += Rumor.rumorRoomIdx + ";";
+								outMsg += testVar + ";";
+								System.out.println("final out: " + playerColor.get(currTurn) + " " + outMsg);
+								out.writeUTF(outMsg);
+								out.flush();
+
+							}
 
 						} // if
 
 					} else {
 
 						String inMsg = in.readUTF();
-						System.out.println("in: " + inMsg);
+						System.out.println("in: " + playerColor.get(currTurn) + " " + inMsg);
 						changeXYValues(inMsg);
 
 					} // else
@@ -259,21 +309,57 @@ public class Client implements Runnable {
 		inMsg = inMsg.replace(']', ' ').trim();
 		String[] strMsg = inMsg.split(";");
 
-		Build.playerX.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[0]));
-		Build.playerY.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[1]));
+		if (Integer.parseInt(strMsg[4]) != -1 && Integer.parseInt(strMsg[5]) != -1
+				&& Integer.parseInt(strMsg[6]) != -1) {
+			Rumor.rumorCharacterIdx = Integer.parseInt(strMsg[4]);
+			Rumor.rumorWeaponIdx = Integer.parseInt(strMsg[5]);
+			Rumor.rumorRoomIdx = Integer.parseInt(strMsg[6]);
+			Rumor.disputeRumor();
 
-		if (Boolean.parseBoolean(strMsg[3]) == true) {
+			while (Rumor.cardDisputed == -1) {
 
-			playerTurn = Integer.parseInt(strMsg[2]) + 1;
+			}
 
-			if (playerTurn == amountofPlayers)
-				playerTurn = 0;
-		} // if
+			try {
+				String outMsg = "";
+				outMsg += x + ";";
+				outMsg += y + ";";
+				outMsg += false + ";";
+				// turnEnded().
+				outMsg += Rumor.rumorCharacterIdx + ";";
+				outMsg += Rumor.rumorWeaponIdx + ";";
+				outMsg += Rumor.rumorRoomIdx + ";";
+				outMsg += Rumor.cardDisputed + ";";
 
-		if (Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
-			Build.newDiceRoll();
-			isPlayerTurn = true;
-		} // if
+				Rumor.rumorCharacterIdx = -1;
+				Rumor.rumorWeaponIdx = -1;
+				Rumor.rumorRoomIdx = -1;
+
+				System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
+				out.writeUTF(outMsg);
+				out.flush();
+			} catch (Exception e) {
+				System.out.println("Error Client Trying to dispute rumor");
+			}
+
+		} else {
+			Build.playerX.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[0]));
+			Build.playerY.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[1]));
+
+			if (Boolean.parseBoolean(strMsg[3]) == true) {
+
+				playerTurn = Integer.parseInt(strMsg[2]) + 1;
+
+				if (playerTurn == amountofPlayers)
+					playerTurn = 0;
+			} // if
+
+			if (Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
+				Build.newDiceRoll();
+				isPlayerTurn = true;
+			} // if
+
+		}
 
 	}// changeXY
 
