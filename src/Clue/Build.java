@@ -79,28 +79,6 @@ public class Build extends JPanel implements ActionListener {
 		characters.put("Scarlett", new Integer[] { 551, 39 });
 
 		// Adding the starting coordinates for each of the doors.
-		// doors.put(487, new ArrayList<>());
-		// doors.get(487).add(551); // ball room
-		// doors.put(231, new ArrayList<>());
-		// doors.get(231).add(519); // billiard room
-		// doors.put(199, new ArrayList<>());
-		// doors.get(199).add(647); // conservatory
-		// doors.put(519, new ArrayList<>());
-		// doors.get(519).add(423); // dining room
-		// doors.put(295, new ArrayList<>());
-		// doors.get(295).add(167); // hall
-		// doors.put(647, new ArrayList<>());
-		// doors.get(647).add(583); // kitchen
-		// doors.put(263, new ArrayList<>());
-		// doors.get(263).add(295); // library
-		// doors.put(583, new ArrayList<>());
-		// doors.get(583).add(231); // lounge
-		// // doors.put(231, new ArrayList<>());
-		// doors.get(231).add(167); // study
-		// doors.put(391, new ArrayList<>());
-		// doors.get(391).add(263); // decision
-
-		// Adding the starting coordinates for each of the doors.
 		roomCoord.put(199, new ArrayList<>());
 		roomCoord.get(199).add(new HashMap<>() {
 			{
@@ -149,16 +127,10 @@ public class Build extends JPanel implements ActionListener {
 			}
 		});
 
-		roomCoord.put(231, new ArrayList<>());
-		roomCoord.get(231).add(new HashMap<>() {
+		roomCoord.put(103, new ArrayList<>());
+		roomCoord.get(103).add(new HashMap<>() {
 			{
-				put(519, "BilliardRoom");
-			}
-		});
-
-		roomCoord.get(231).add(new HashMap<>() {
-			{
-				put(167, "StudyRoom");
+				put(391, "BilliardRoom");
 			}
 		});
 
@@ -166,6 +138,13 @@ public class Build extends JPanel implements ActionListener {
 		roomCoord.get(391).add(new HashMap<>() {
 			{
 				put(263, "DecisionRoom");
+			}
+		});
+
+		roomCoord.put(231, new ArrayList<>());
+		roomCoord.get(231).add(new HashMap<>() {
+			{
+				put(167, "Study");
 			}
 		});
 
@@ -419,7 +398,7 @@ public class Build extends JPanel implements ActionListener {
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
 					new ImageIcon(
-							"C:\\Users\\grgar\\eclipse-workspace\\Test_File\\src\\Assets\\Card_Deck\\" + i + ".png"));
+							"C:\\Users\\claud\\Documents\\JAVA\\Clue\\Assets\\Card_Deck" + i + ".png"));
 		}
 	}
 
@@ -436,7 +415,7 @@ public class Build extends JPanel implements ActionListener {
 	public void draw(Graphics g) {
 
 		Image img = Toolkit.getDefaultToolkit().getImage(
-				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+				"C:\\Users\\claud\\Documents\\UPRB\\4TH YEAR\\SICI4037 (COM. DATOS)\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
 		g.drawImage(img, 0, 0, null);
 
@@ -542,23 +521,13 @@ public class Build extends JPanel implements ActionListener {
 
 	// Checks to see if players are entering a room through the door.
 	public static Boolean checkRoom(int xCoord, int yCoord) {
-
+		System.out.println(xCoord + " " + yCoord);
 		if (roomCoord.containsKey(xCoord)) {
-			if (roomCoord.get(xCoord).size() > 1) {
-				for (int i = 0; i < roomCoord.get(xCoord).size(); i++) {
-					if (roomCoord.get(xCoord).get(i).containsKey(yCoord)) {
-
-						roomName = roomCoord.get(xCoord).get(i).get(yCoord);
-						return true;
-					} // if
-				} // for
-			} // if FUNCIONA HASTA AQUI
-			else if (roomCoord.get(xCoord).size() == 1) {
+			if (roomCoord.get(xCoord).size() == 1) {
 				if (roomCoord.get(xCoord).get(0).containsKey(yCoord)) {
 					roomName = roomCoord.get(xCoord).get(0).get(yCoord);
 					return true;
 				}
-
 			} // else if
 		} // if
 

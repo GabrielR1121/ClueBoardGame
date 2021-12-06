@@ -230,7 +230,8 @@ public class Client implements Runnable {
 							outMsg += Rumor.rumorRoomIdx + ";";
 							outMsg += testVar + ";";
 
-							outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
+							outMsg += ((Rumor.rumorCharacterIdx != -1) ? ((Rumor.finalRumor == true) ? false : true)
+									: false) + ";";
 							// This wont work for roundabout.
 							outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
 
@@ -270,7 +271,8 @@ public class Client implements Runnable {
 								outMsg += Rumor.rumorWeaponIdx + ";";
 								outMsg += Rumor.rumorRoomIdx + ";";
 								outMsg += testVar + ";";
-								outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
+								outMsg += ((Rumor.rumorCharacterIdx != -1) ? ((Rumor.finalRumor == true) ? false : true)
+										: false) + ";";
 								// This wont work for roundabout.
 								outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
 								System.out.println("final out: " + playerColor.get(currTurn) + " " + outMsg);
