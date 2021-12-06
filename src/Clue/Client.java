@@ -199,7 +199,7 @@ public class Client implements Runnable {
 
 			lastX = x;
 			lastY = y;
-			int testVar = -1;
+			int testVar = -2;
 
 			while (true) {
 				// If the game is not running this will start the build for everyone with
@@ -230,31 +230,27 @@ public class Client implements Runnable {
 							outMsg += Rumor.rumorRoomIdx + ";";
 							outMsg += testVar + ";";
 
+							outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
+							// This wont work for roundabout.
+							outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
+
 							System.out.println("out: " + playerColor.get(currTurn) + " " + outMsg);
 							out.writeUTF(outMsg);
 							out.flush();
-							// Errors happening:
-							// The communication for dispute rumor needs to work for all players but only
-							// display for the next player in a circle until everyone is checked
-							// The client needs to be waiting until the disputed variable changes from -1 to
-							// an index. if it goes full circle display message saying no cards available to
-							// dispute.
-							// This can be done with a counter ^.
-
-							// Fix when start rumor happens in corner cases.
-							// When index is received a window needs to appear for the player showing the
-							// card that was disputed.
-							// Variables in Rumor need to be reset when dispute rumor is complete.
-							// Fix Study Room Hashmap (if not fixed move door to another location)
-							// Final rumor method needs to be started.
-							// Optional: if final rumor is wrong player is elimanted and can only dispute
-							// rumors.
 
 							if ((Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
 									&& Rumor.rumorRoomIdx != -1)) {
-								// System.out.println("Im here");
-								String inMsg = in.readUTF();
-								System.out.println("IN MESSAGE FROM DISPUTE: " + inMsg);
+
+								String strMsg[];
+								do {
+									String inMsg = in.readUTF();
+
+									strMsg = inMsg.split(";");
+									System.out.println("Received str msg " + Arrays.toString(strMsg));
+								} while (Boolean.parseBoolean(strMsg[8]));
+
+								System.out.println(
+										"Card Disputed: " + Build.cardDeckMap.get(Integer.parseInt(strMsg[7])));
 								// changeXYValues(inMsg);
 								Rumor.rumorCharacterIdx = -1;
 								Rumor.rumorWeaponIdx = -1;
@@ -274,6 +270,9 @@ public class Client implements Runnable {
 								outMsg += Rumor.rumorWeaponIdx + ";";
 								outMsg += Rumor.rumorRoomIdx + ";";
 								outMsg += testVar + ";";
+								outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
+								// This wont work for roundabout.
+								outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
 								System.out.println("final out: " + playerColor.get(currTurn) + " " + outMsg);
 								out.writeUTF(outMsg);
 								out.flush();
@@ -311,35 +310,60 @@ public class Client implements Runnable {
 
 		if (Integer.parseInt(strMsg[4]) != -1 && Integer.parseInt(strMsg[5]) != -1
 				&& Integer.parseInt(strMsg[6]) != -1) {
-			Rumor.rumorCharacterIdx = Integer.parseInt(strMsg[4]);
-			Rumor.rumorWeaponIdx = Integer.parseInt(strMsg[5]);
-			Rumor.rumorRoomIdx = Integer.parseInt(strMsg[6]);
-			Rumor.disputeRumor();
-
-			while (Rumor.cardDisputed == -1) {
-
-			}
-
 			try {
-				String outMsg = "";
-				outMsg += x + ";";
-				outMsg += y + ";";
-				outMsg += false + ";";
-				// turnEnded().
-				outMsg += Rumor.rumorCharacterIdx + ";";
-				outMsg += Rumor.rumorWeaponIdx + ";";
-				outMsg += Rumor.rumorRoomIdx + ";";
-				outMsg += Rumor.cardDisputed + ";";
+				// Check if index are correct
+				if (Boolean.parseBoolean(strMsg[8]) && Integer.parseInt(strMsg[9]) == currTurn) {
+					Rumor.rumorCharacterIdx = Integer.parseInt(strMsg[4]);
+					Rumor.rumorWeaponIdx = Integer.parseInt(strMsg[5]);
+					Rumor.rumorRoomIdx = Integer.parseInt(strMsg[6]);
+					System.out.println("It is my turn to dispute");
 
-				Rumor.rumorCharacterIdx = -1;
-				Rumor.rumorWeaponIdx = -1;
-				Rumor.rumorRoomIdx = -1;
+					Rumor.disputeRumor();
 
-				System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
-				out.writeUTF(outMsg);
-				out.flush();
+					// Use index of -2 as default index and -1 if the player doesn't have cards to
+					// dispute
+					while (Rumor.cardDisputed == -2) {
+					}
+
+					System.out.println("Passed while");
+
+					String outMsg = "";
+					outMsg += x + ";";
+					outMsg += y + ";";
+					outMsg += false + ";";
+
+					outMsg += Rumor.rumorCharacterIdx + ";";
+					outMsg += Rumor.rumorWeaponIdx + ";";
+					outMsg += Rumor.rumorRoomIdx + ";";
+					outMsg += Rumor.cardDisputed + ";";
+
+					Rumor.rumorCharacterIdx = -1;
+					Rumor.rumorWeaponIdx = -1;
+					Rumor.rumorRoomIdx = -1;
+
+					outMsg += false + ";";
+					outMsg += -2 + ";";
+
+					// if(Rumor.cardDisputed == -1) {
+					// outMsg += true +";";
+					//
+					// if (Integer.parseInt(strMsg[8])+1 != amountofPlayers)
+					// outMsg += Integer.parseInt(strMsg[8]) +1 +";";
+					// else
+					// outMsg += 0 +";";
+					// System.out.println("in IF");
+					//
+					// } else {
+					//
+					// }
+
+					System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
+					out.writeUTF(outMsg);
+					out.flush();
+				}
+
 			} catch (Exception e) {
-				System.out.println("Error Client Trying to dispute rumor");
+				System.out.println("Error Client Trying to dispute rumor: " + e.getMessage());
 			}
 
 		} else {

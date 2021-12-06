@@ -21,7 +21,7 @@ public class Rumor {
     public volatile static int rumorCharacterIdx = -1;
     public volatile static int rumorWeaponIdx = -1;
     public volatile static int rumorRoomIdx = -1;
-    public volatile static int cardDisputed = -1; // card that the user will dispute
+    public volatile static int cardDisputed = -2; // card that the user will dispute MADE A CHANGE HERE
     public static int relevantDisputeCards[] = { -1, -1, -1 };
     public static int count = -1;
     public static JFrame frame = new JFrame("Rumor");
@@ -118,12 +118,14 @@ public class Rumor {
 
             });
 
-        if (count == 0) {
+        if (count == -1) {
             JLabel label = new JLabel("You do not have any relevant cards at this moment.");
             label.setAlignmentX(Component.CENTER_ALIGNMENT);
             pane.add(label);
-            disputeFrame.getContentPane().removeAll();
+            // disputeFrame.getContentPane().removeAll();
             disputeFrame.dispose();
+            cardDisputed = -1;
+            // System.out.println("I AM HERE");
             // Use this to move to next player. Use bool value.
         }
     }

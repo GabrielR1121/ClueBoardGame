@@ -85,7 +85,7 @@ public class PlayerChecklist extends JPanel {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 Client.playerAssumptions.clear();
-                System.out.println("Hello");
+                // System.out.println("Hello");
 
                 for (int i = 0; i < characterCheckboxes.size(); i++)
                     Client.playerAssumptions.add(characterCheckboxes.get(i).getState());
