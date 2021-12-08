@@ -23,7 +23,7 @@ public class MainMenu extends JPanel {
 		addGameButtons();
 		this.setFocusable(true);
 		//ImageIcon
-		ImageIcon logo = new ImageIcon("C:\\Users\\djavi\\Desktop\\iconImage.png");
+		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
 		frame.setIconImage(logo.getImage());
 		frame.add(this);
 		frame.setTitle("Clue");
@@ -68,7 +68,7 @@ public class MainMenu extends JPanel {
 		authorsNote.setFont(new Font("Serif", Font.PLAIN, 10));
 		
 		//Menu Image
-		ImageIcon icon = new ImageIcon("C:\\Users\\djavi\\Desktop\\menu.png");//change path
+		ImageIcon icon = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\menu.png");//change path
 		JLabel img = new JLabel();
 		img.setIcon(icon);
 		

@@ -58,6 +58,9 @@ public class Build extends JPanel implements ActionListener {
 		System.out.println("Staring gameframe...");
 		frame.add(this);
 		frame.setTitle("Clue");
+		//ImageIcon
+		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+		frame.setIconImage(logo.getImage());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.pack();

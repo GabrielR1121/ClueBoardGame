@@ -16,6 +16,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 
 public class Rumor {
 
@@ -73,6 +74,9 @@ public class Rumor {
         finalFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         finalFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         finalFrame.setResizable(false);
+        //ImageIcon
+		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+		finalFrame.setIconImage(logo.getImage());
 
         rumorCheckBox(finalFrame.getContentPane(), "");
 
@@ -90,6 +94,9 @@ public class Rumor {
 
         resultFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         // disputeFrame.setResizable(false);
+        //ImageIcon
+		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+		resultFrame.setIconImage(logo.getImage());
 
         boolean win = false;
 
@@ -147,6 +154,9 @@ public class Rumor {
         rumorframe.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         rumorframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         rumorframe.setResizable(false);
+        //ImageIcon
+	    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+        rumorframe.setIconImage(logo.getImage());
 
         rumorCheckBox(rumorframe.getContentPane(), room);
 
@@ -164,6 +174,9 @@ public class Rumor {
             disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
             disputedCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             disputedCardFrame.setResizable(false);
+            //ImageIcon
+		    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+		    disputedCardFrame.setIconImage(logo.getImage());
 
             Build.cardButtons[card].setVisible(true);
             disputedCardFrame.getContentPane().add(Build.cardButtons[card]);
@@ -311,6 +324,9 @@ public class Rumor {
         // disputeFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // disputeFrame.setResizable(false);
         addDisputeButtons(disputeFrame.getContentPane(), Build.playerCards);
+        //ImageIcon
+		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+		disputeFrame.setIconImage(logo.getImage());
 
         disputeFrame.pack();
         disputeFrame.setLocationRelativeTo(null);

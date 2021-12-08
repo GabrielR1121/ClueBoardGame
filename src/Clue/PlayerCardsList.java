@@ -1,14 +1,19 @@
 package Clue;
 
 import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import java.awt.GridLayout;
 
 public class PlayerCardsList {
 
     public static JFrame cardFrame = new JFrame("Your Deck");
 
+
     public PlayerCardsList() {
 
+        //ImageIcon
+	    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
+        cardFrame.setIconImage(logo.getImage());
         showPlayerCards();
 
     }
