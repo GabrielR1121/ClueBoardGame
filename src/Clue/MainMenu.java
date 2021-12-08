@@ -22,8 +22,6 @@ public class MainMenu extends JPanel {
 		//Adds the game buttons
 		addGameButtons();
 		this.setFocusable(true);
-		//setLocation to center of screen
-		frame.setLocationRelativeTo(null);
 		//ImageIcon
 		ImageIcon logo = new ImageIcon("C:\\Users\\djavi\\Desktop\\iconImage.png");
 		frame.setIconImage(logo.getImage());
@@ -31,6 +29,8 @@ public class MainMenu extends JPanel {
 		frame.setTitle("Clue");
 		frame.setResizable(false);
 		frame.pack();
+		//setLocation to center of screen
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
 	}//constructor
