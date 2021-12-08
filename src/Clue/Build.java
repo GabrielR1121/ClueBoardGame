@@ -398,7 +398,8 @@ public class Build extends JPanel implements ActionListener {
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
 					new ImageIcon(
-							"C:\\Users\\claud\\Documents\\JAVA\\Clue\\Assets\\Card_Deck" + i + ".png"));
+							"C:\\Users\\claud\\Documents\\UPRB\\4TH YEAR\\SICI4037 (COM. DATOS)\\ClueBoardGame\\Assets\\Card_Deck\\"
+									+ i + ".png"));
 		}
 	}
 
@@ -478,7 +479,13 @@ public class Build extends JPanel implements ActionListener {
 		g.setFont(new Font("Ink Free", Font.BOLD, 20));
 		FontMetrics metrics3 = getFontMetrics(g.getFont());
 		g.drawString("Press C to display checklist",
-				(metrics3.stringWidth("Press C on keyboard to display player checklist")) - 350, SCREEN_HEIGHT - 20);
+				(metrics3.stringWidth("Press C on keyboard to display player checklist")) - 350, SCREEN_HEIGHT - 35);
+		g.setColor(Color.white);
+		g.setFont(new Font("Ink Free", Font.BOLD, 20));
+		FontMetrics metrics4 = getFontMetrics(g.getFont());
+		g.drawString("Press P to display deck of cards.",
+				(metrics4.stringWidth("Press P on keyboard to display deck of cards.")) - 350, SCREEN_HEIGHT - 15);
+
 		// g.drawString("Game Over" , (SCREEN_WIDTH- metrics.stringWidth("Game
 		// Over"))/2, SCREEN_HEIGHT/2)
 	} // draw()
@@ -626,6 +633,11 @@ public class Build extends JPanel implements ActionListener {
 				case KeyEvent.VK_C:
 
 					new PlayerChecklist(playerCards, Client.currTurn, Client.playerAssumptions);
+
+					break;
+				case KeyEvent.VK_P:
+
+					new PlayerCardsList();
 
 					break;
 			}

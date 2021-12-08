@@ -37,6 +37,7 @@ public class Rumor {
     public static JFrame disputeFrame = new JFrame("Dispute Rumor");
     public static JFrame finalFrame = new JFrame("Final Rumor");
     public static JFrame resultFrame = new JFrame("Results");
+    public static JFrame disputedCardFrame = new JFrame("Disputed Cards");
 
     /**
      * Starts whether it's the final or regular rumor.
@@ -150,6 +151,25 @@ public class Rumor {
         rumorframe.pack();
         rumorframe.setLocationRelativeTo(null);
         rumorframe.setVisible(true);
+
+    }
+
+    /**
+     * Shows the user the succeeding client's disputed card.
+     */
+    public static void showDisputedCard() {
+
+        disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
+        disputedCardFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        disputedCardFrame.setResizable(false);
+
+        Build.cardButtons[cardDisputed].setVisible(true);
+        disputedCardFrame.getContentPane().add(Build.cardButtons[cardDisputed]);
+
+        disputedCardFrame.pack();
+        disputedCardFrame.setLocationRelativeTo(null);
+        disputedCardFrame.setVisible(true);
+
     }
 
     /**
