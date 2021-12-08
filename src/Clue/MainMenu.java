@@ -1,4 +1,4 @@
-package clue;
+package Clue;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -34,6 +34,10 @@ public class MainMenu extends JPanel {
 		frame.setVisible(true);
 
 	}//constructor
+	
+	public static void main(String[] args) {
+		new MainMenu();
+	}
 	
 
 	//Adds Start button or Join button
