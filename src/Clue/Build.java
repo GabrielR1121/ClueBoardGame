@@ -398,8 +398,7 @@ public class Build extends JPanel implements ActionListener {
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
 					new ImageIcon(
-							"C:\\Users\\claud\\Documents\\UPRB\\4TH YEAR\\SICI4037 (COM. DATOS)\\ClueBoardGame\\Assets\\Card_Deck\\"
-									+ i + ".png"));
+							"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\Card_Deck\\"+ i + ".png"));
 		}
 	}
 
@@ -416,7 +415,7 @@ public class Build extends JPanel implements ActionListener {
 	public void draw(Graphics g) {
 
 		Image img = Toolkit.getDefaultToolkit().getImage(
-				"C:\\Users\\claud\\Documents\\UPRB\\4TH YEAR\\SICI4037 (COM. DATOS)\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
 		g.drawImage(img, 0, 0, null);
 

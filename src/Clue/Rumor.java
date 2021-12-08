@@ -2,6 +2,8 @@ package Clue;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -157,18 +159,29 @@ public class Rumor {
     /**
      * Shows the user the succeeding client's disputed card.
      */
-    public static void showDisputedCard() {
+    public static void showDisputedCard(int card) {
+        if (card != -1) {
+            disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
+            disputedCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            disputedCardFrame.setResizable(false);
 
-        disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
-        disputedCardFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        disputedCardFrame.setResizable(false);
+            Build.cardButtons[card].setVisible(true);
+            disputedCardFrame.getContentPane().add(Build.cardButtons[card]);
 
-        Build.cardButtons[cardDisputed].setVisible(true);
-        disputedCardFrame.getContentPane().add(Build.cardButtons[cardDisputed]);
-
+        } else {
+            JLabel rumorLabel = new JLabel("The other player had no cards to show you!");
+            rumorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            disputedCardFrame.getContentPane().add(rumorLabel);
+        }
         disputedCardFrame.pack();
         disputedCardFrame.setLocationRelativeTo(null);
         disputedCardFrame.setVisible(true);
+
+        disputedCardFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                disputedCardFrame.getContentPane().removeAll();
+            }
+        });
 
     }
 
@@ -340,7 +353,7 @@ public class Rumor {
 
                     cardDisputed = relevantDisputeCards[0];
                     System.out.println("Disputed Card: " + cardDisputed);
-                    disputeFrame.getContentPane().removeAll();
+                    // disputeFrame.getContentPane().removeAll();
                     disputeFrame.dispose();
 
                 }
@@ -379,11 +392,25 @@ public class Rumor {
             JLabel label = new JLabel("You do not have any relevant cards at this moment.");
             label.setAlignmentX(Component.CENTER_ALIGNMENT);
             pane.add(label);
-            disputeFrame.getContentPane().removeAll();
+            // disputeFrame.getContentPane().removeAll();
             disputeFrame.dispose();
             // Use this to move to next player. Use bool value.
             cardDisputed = -1;
         }
     }
 
+    public static void reset() {
+        // Starting index for the character.
+        rumorCharacterIdx = -1;
+        // Starting index for the weapon.
+        rumorWeaponIdx = -1;
+        // Starting index for the room.
+        rumorRoomIdx = -1;
+        // Starting index for the card disputed.
+        cardDisputed = -2;
+        // Starting array index for the disputed cards.
+        Arrays.fill(relevantDisputeCards, -1);
+
+        count = -1;
+    }
 }

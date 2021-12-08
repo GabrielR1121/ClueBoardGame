@@ -230,8 +230,7 @@ public class Client implements Runnable {
 							outMsg += Rumor.rumorRoomIdx + ";";
 							outMsg += testVar + ";";
 
-							outMsg += ((Rumor.rumorCharacterIdx != -1) ? ((Rumor.finalRumor == true) ? false : true)
-									: false) + ";";
+							outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
 							// This wont work for roundabout.
 							outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
 
@@ -250,12 +249,10 @@ public class Client implements Runnable {
 									System.out.println("Received str msg " + Arrays.toString(strMsg));
 								} while (Boolean.parseBoolean(strMsg[8]));
 
-								System.out.println(
-										"Card Disputed: " + Build.cardDeckMap.get(Integer.parseInt(strMsg[7])));
+								Rumor.showDisputedCard(Integer.parseInt(strMsg[7]));
+								// System.out.println("Card Disputed: " + Build.cardDeckMap.get());
 								// changeXYValues(inMsg);
-								Rumor.rumorCharacterIdx = -1;
-								Rumor.rumorWeaponIdx = -1;
-								Rumor.rumorRoomIdx = -1;
+								Rumor.reset();
 								Build.diceRoll = 0;
 								// NEED TO SAVE DISPUTED CARD!!!!!!!!!
 
@@ -271,8 +268,7 @@ public class Client implements Runnable {
 								outMsg += Rumor.rumorWeaponIdx + ";";
 								outMsg += Rumor.rumorRoomIdx + ";";
 								outMsg += testVar + ";";
-								outMsg += ((Rumor.rumorCharacterIdx != -1) ? ((Rumor.finalRumor == true) ? false : true)
-										: false) + ";";
+								outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
 								// This wont work for roundabout.
 								outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
 								System.out.println("final out: " + playerColor.get(currTurn) + " " + outMsg);
@@ -339,25 +335,10 @@ public class Client implements Runnable {
 					outMsg += Rumor.rumorRoomIdx + ";";
 					outMsg += Rumor.cardDisputed + ";";
 
-					Rumor.rumorCharacterIdx = -1;
-					Rumor.rumorWeaponIdx = -1;
-					Rumor.rumorRoomIdx = -1;
+					Rumor.reset();
 
 					outMsg += false + ";";
 					outMsg += -2 + ";";
-
-					// if(Rumor.cardDisputed == -1) {
-					// outMsg += true +";";
-					//
-					// if (Integer.parseInt(strMsg[8])+1 != amountofPlayers)
-					// outMsg += Integer.parseInt(strMsg[8]) +1 +";";
-					// else
-					// outMsg += 0 +";";
-					// System.out.println("in IF");
-					//
-					// } else {
-					//
-					// }
 
 					System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
 					out.writeUTF(outMsg);
