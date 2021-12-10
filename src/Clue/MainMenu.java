@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 import javax.swing.*;
 
+/**
+ * Creates and opens the frame for the Main Menu with all its component.
+ */
 public class MainMenu extends JPanel {
 
 	static final int SCREEN_WIDTH = 842;
@@ -30,7 +33,6 @@ public class MainMenu extends JPanel {
 		frame.setTitle("Clue");
 		frame.setResizable(false);
 		frame.pack();
-		// setLocation to center of screen
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
@@ -40,7 +42,7 @@ public class MainMenu extends JPanel {
 		new MainMenu();
 	}
 
-	// Adds Start button or Join button
+	// Adds Start button for the first player, and adds the Join button for the rest of the players.
 	private void addGameButtons() {
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -78,12 +80,11 @@ public class MainMenu extends JPanel {
 		authorsNote.setFont(new Font("Serif", Font.PLAIN, 10));
 
 		// Menu Image
-		ImageIcon icon = new ImageIcon("C:\\Users\\djavi\\Desktop\\menu.png");// change
-																																														// path
+		ImageIcon icon = new ImageIcon("C:\\Users\\djavi\\Desktop\\menu.png");
 		JLabel img = new JLabel();
 		img.setIcon(icon);
 
-		// Once client opens MainMenu, start the client thread
+		// Once client opens MainMenu, starts the client thread.
 		Client client = new Client();
 		Thread thread = new Thread(client);
 		thread.start();
@@ -125,7 +126,7 @@ public class MainMenu extends JPanel {
 
 				startGameBTN.setVisible(false);
 
-				// We need to gather the amount of players for the first player
+				// Gather the amount of players for the first player.
 				enterText.setVisible(true);
 				text.setVisible(true);
 				submitBtn.setVisible(true);
@@ -159,7 +160,7 @@ public class MainMenu extends JPanel {
 		this.add(img, c);
 
 		// Show only the start button for the first client,
-		// the rest only join the game.
+		// the rest can only join the game.
 		if (Client.currTurn == 0)
 			this.add(startGameBTN, c01);
 		else
@@ -207,6 +208,7 @@ public class MainMenu extends JPanel {
 		mustardColor.setFont(new Font("Serif", Font.BOLD, 20));
 		mustardColor.setBackground(Colors.Mustard.getColor());
 
+		//If a color is chosen, drops the frame and waits for every player to join.
 		greenColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -217,6 +219,7 @@ public class MainMenu extends JPanel {
 
 		});
 
+		//If a color is chosen, drops the frame and waits for every player to join.
 		plumColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -227,6 +230,7 @@ public class MainMenu extends JPanel {
 
 		});
 
+		//If a color is chosen, drops the frame and waits for every player to join.
 		scarlettColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -236,7 +240,8 @@ public class MainMenu extends JPanel {
 			}
 
 		});
-
+		
+		//If a color is chosen, drops the frame and waits for every player to join.
 		orchidColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -247,6 +252,7 @@ public class MainMenu extends JPanel {
 
 		});
 
+		//If a color is chosen, drops the frame and waits for every player to join.
 		mustardColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -256,7 +262,8 @@ public class MainMenu extends JPanel {
 			}
 
 		});
-
+		
+		//If a color is chosen, drops the frame and waits for every player to join.
 		peacockColor.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -303,4 +310,4 @@ public class MainMenu extends JPanel {
 
 	}// addColorButtons
 
-}
+}//MainMenu
