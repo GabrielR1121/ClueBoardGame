@@ -58,10 +58,19 @@ public class MainMenu extends JPanel {
 		GridBagConstraints c02 = new GridBagConstraints();
 		c02.gridx = 0;
 		c02.gridy = 2;
+		
+		GridBagConstraints c03 = new GridBagConstraints();
+		c03.gridx = 0;
+		c03.gridy = 3;
 
 		// Input text from user
-		JLabel enterText = new JLabel("Entre la cantidad de jugadores (2-6): ");
+		JLabel enterText = new JLabel("Enter the amount of players (2-6): ");
 		JTextField text = new JTextField(5);
+		
+		// Copyright
+		JLabel cR = new JLabel("This is not intended for commercial purposes.");
+		cR.setFont(new Font("Serif", Font.PLAIN, 8));
+
 
 		// Author's Note
 		JLabel authorsNote = new JLabel(
@@ -69,8 +78,7 @@ public class MainMenu extends JPanel {
 		authorsNote.setFont(new Font("Serif", Font.PLAIN, 10));
 
 		// Menu Image
-		ImageIcon icon = new ImageIcon(
-				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\menu.png");// change
+		ImageIcon icon = new ImageIcon("C:\\Users\\djavi\\Desktop\\menu.png");// change
 																																														// path
 		JLabel img = new JLabel();
 		img.setIcon(icon);
@@ -112,6 +120,8 @@ public class MainMenu extends JPanel {
 				img.setVisible(false);
 
 				authorsNote.setVisible(false);
+				
+				cR.setVisible(false);
 
 				startGameBTN.setVisible(false);
 
@@ -135,6 +145,8 @@ public class MainMenu extends JPanel {
 				img.setVisible(false);
 
 				authorsNote.setVisible(false);
+				
+				cR.setVisible(false);
 
 				joinGameBTN.setVisible(false);
 
@@ -154,6 +166,8 @@ public class MainMenu extends JPanel {
 			this.add(joinGameBTN, c01);
 
 		this.add(authorsNote, c02);
+		
+		this.add(cR, c03);
 
 		enterText.setVisible(false);
 		this.add(enterText, c);
