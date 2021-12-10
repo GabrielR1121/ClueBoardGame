@@ -70,6 +70,7 @@ public class Build extends JPanel implements ActionListener {
 
 	}
 
+	/** Main entry point. */
 	public void main() {
 
 		// Adding the starting coordinates for each of the characters.
@@ -150,7 +151,7 @@ public class Build extends JPanel implements ActionListener {
 			}
 		});
 
-		// Hashmap of the info on the cardDeck elements (dudas)
+		// Hashmap of the info on the cardDeck elements.
 		cardDeckMap.put(0, "Green");
 		cardDeckMap.put(1, "Mustard");
 		cardDeckMap.put(2, "Orchid");
@@ -405,7 +406,9 @@ public class Build extends JPanel implements ActionListener {
 		}
 	}
 
-	// Initializes the paint for the whole game
+	/**
+	 * Initializes the paint for the whole game.
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		draw(g);
@@ -421,13 +424,6 @@ public class Build extends JPanel implements ActionListener {
 				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
 		g.drawImage(img, 0, 0, null);
-
-		// for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
-		// g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
-		// g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
-		// // Redraws the board each time something happens.
-		// repaint();
-		// }
 
 		// Gets the starting position for each players and draws it into the window.
 		for (int i = 0; i < Client.playerColor.size(); i++) {
@@ -508,8 +504,13 @@ public class Build extends JPanel implements ActionListener {
 		}
 	}
 
-	// Checks to see if the player has remaining moves.
+	/**
+	 * Verifies if the player has remaining moves.
+	 */
 	public void checkMoves() {
+
+		// when the dice roll count hits 0 and it's still the player's turn,
+		// that mentioned player's turn becomes false and moves onto the next player.
 		if (diceRoll == 0 && Client.isPlayerTurn) {
 			Client.isPlayerTurn = false;
 			mutablePlayerTurn = 0;
@@ -529,27 +530,48 @@ public class Build extends JPanel implements ActionListener {
 
 	}
 
-	// Checks to see if players are within the game bounds
+	/**
+	 * Checks to see if the player is between the game bounds:
+	 * the permited coordinates inside of the board.
+	 * 
+	 * @param xCoord - x coordinates
+	 * @param yCoord - y coordinates
+	 * @return true if the coordinates exists
+	 *         false if the coordinates don't exist.
+	 */
 	public Boolean checkBounds(int xCoord, int yCoord) {
 
+		// If the x coordinate is inside of the permited coordinates.
 		if (permitedCoordinates.containsKey(xCoord)) {
+			// Checks if the y associated with the x is the same one.
 			if (permitedCoordinates.get(xCoord).contains(yCoord))
 				return true;
 		}
 		return false;
 	}
 
-	// Checks to see if players are entering a room through the door.
+	/**
+	 * Checks if the player is in front of a door based on the coordinates
+	 * of the tile in front of the door.
+	 * 
+	 * @param xCoord - x coordinates
+	 * @param yCoord - y coordinates.
+	 * @return true if the coordinates exists
+	 *         false if the coordinates don't exist.
+	 */
 	public static Boolean checkRoom(int xCoord, int yCoord) {
-		System.out.println(xCoord + " " + yCoord);
+
+		// If the x coordinate is inside of the permited coordinates.
 		if (roomCoord.containsKey(xCoord)) {
 			if (roomCoord.get(xCoord).size() == 1) {
+				// Gets the y coordinate associated with said x.
 				if (roomCoord.get(xCoord).get(0).containsKey(yCoord)) {
+					// gets the name of the room associates with the x and y values.
 					roomName = roomCoord.get(xCoord).get(0).get(yCoord);
 					return true;
 				}
-			} // else if
-		} // if
+			}
+		}
 
 		return false;
 

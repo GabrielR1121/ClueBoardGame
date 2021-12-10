@@ -1,5 +1,19 @@
+/**
+* The Rumor.java program is specialized in handling the
+* rumors and disputions of the game.
+*
+* @author  Claudia P. Monge Torres
+* @author  Gabriel E. Rodriguez Garcia
+* @author  Christian J. Ramos Ortega
+* @version 1.0
+* @since   12-2021
+*/
 package Clue;
 
+//Imports.
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -7,15 +21,13 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.GridLayout;
-import javax.swing.BoxLayout;
 
 public class Rumor {
 
@@ -38,7 +50,9 @@ public class Rumor {
     // Starting array index for the disputed cards.
     public static int relevantDisputeCards[] = { -1, -1, -1 };
 
-    public static int count = -1;
+    private static int count = -1;
+
+    // Booleans for verification.
     public volatile static boolean finalRumor = false;
     public volatile static boolean isEliminated = false;
     public volatile static boolean playerWon = false;
@@ -57,6 +71,7 @@ public class Rumor {
      */
     public static void startRumor(String room) {
 
+        // Starts the final rumor
         if (room == "DecisionRoom") {
             finalRumor = true;
             startFinalRumor();
@@ -64,6 +79,8 @@ public class Rumor {
 
         for (Map.Entry<Integer, String> entry : Build.cardDeckMap.entrySet()) {
 
+            // Starts a regular rumor with the string of the room entered as a "where"
+            // index.
             if (entry.getValue() == room) {
                 // Gets the index of the room the user entered from cardDeckMap.
                 rumorRoomIdx = entry.getKey();
@@ -83,6 +100,7 @@ public class Rumor {
         finalFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         finalFrame.setResizable(false);
 
+        // Fills the checkboxes for the rumors.
         rumorCheckBox(finalFrame.getContentPane(), "");
 
         finalFrame.pack();
@@ -98,10 +116,10 @@ public class Rumor {
     public static void checkSecretFolder() {
 
         resultFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
-        // disputeFrame.setResizable(false);
 
         boolean win = false;
 
+        // Check if the player has ALL of the cards on the secret folder.
         if (Build.secretCards.get(0) == finalRumorCharacterIdx &&
                 Build.secretCards.get(1) == finalRumorRoomIdx &&
                 Build.secretCards.get(2) == finalRumorWeaponIdx) {
@@ -116,6 +134,14 @@ public class Rumor {
 
     }
 
+    /**
+     * Checks if the boolean sent by the user is false or true.
+     * If false: Player looses the game.
+     * If true: Player wins the game.
+     * 
+     * @param pane - The content pane of the result frame.
+     * @param win  - boolean to check the player status.
+     */
     private static void playerEndScreen(Container pane, boolean win) {
 
         resultFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -128,6 +154,7 @@ public class Rumor {
             text = "Your rumor was incorrect and you have been eliminated. You can still"
                     + " dispute rumors. The correct cards were:";
         }
+        // Boolean to stop the eliminated player from still moving.
         isEliminated = true;
 
         JTextArea endingPosLabel = new JTextArea(text);
@@ -137,6 +164,11 @@ public class Rumor {
 
     }
 
+    /**
+     * Shows the cards that were inside of the secret folder.
+     * 
+     * @param pane- The content pane of the result frame.
+     */
     public static void showCorrectCards(Container pane) {
 
         pane.setLayout(new GridLayout(4, 1, 2, 2));
@@ -151,6 +183,8 @@ public class Rumor {
 
     /**
      * Creates the frame for the regular rumor.
+     * 
+     * @param room - the string of the room the user entered.
      */
     public static void startRegularRumor(String room) {
 
@@ -248,6 +282,7 @@ public class Rumor {
 
                 // Gets the index of the rumored room.
                 if (finalRumor == true) {
+
                     finalRumorRoomIdx = Build.cardDeckMap.size() - weapons.getItemCount() -
                             (rooms.getItemCount() - rooms.getSelectedIndex());
 
@@ -265,16 +300,10 @@ public class Rumor {
                     rumorWeaponIdx = Build.cardDeckMap.size() -
                             (weapons.getItemCount() - weapons.getSelectedIndex());
 
-                    Object rumorCharacterName = characters.getSelectedItem();
-                    Object rumorWeaponName = weapons.getSelectedItem();
-
-                    System.out.println(rumorCharacterIdx + "(" + rumorCharacterName + ") with " +
-                            rumorWeaponIdx + "(" + rumorWeaponName + ") in " + room);
-
                 }
                 if (finalRumor == true) {
-                    // endingFrame.getContentPane().removeAll();
                     finalFrame.dispose();
+
                 } else {
                     rumorframe.getContentPane().removeAll();
                     rumorframe.dispose();
@@ -289,6 +318,7 @@ public class Rumor {
         pane.add(cancelRumorBTN);
         cancelRumorBTN.addActionListener(new ActionListener() {
 
+            // Verifies if the cancel button is activated.
             public void actionPerformed(ActionEvent e) {
 
                 if (finalRumor == true) {
@@ -345,7 +375,9 @@ public class Rumor {
      * @param playerCards - Gets the specified client's cards.
      */
     public static void addDisputeButtons(Container pane, ArrayList<Integer> playerCards) {
+
         disputeFrame.getContentPane().removeAll();
+
         pane.setLayout(new GridLayout(1, 3, 2, 2));
 
         for (int i = 0; i < playerCards.size(); i++) {
@@ -355,15 +387,16 @@ public class Rumor {
                 count++;
                 relevantDisputeCards[count] = playerCards.get(i);
 
+                // Creates the buttons for the relevant cards.
                 Build.cardButtons[playerCards.get(i)].setVisible(true);
 
                 pane.add(Build.cardButtons[playerCards.get(i)]);
-                System.out.println("Count: " + count);
+
             }
 
         }
-        System.out.println("relevant disputed cards " + Arrays.toString(relevantDisputeCards));
 
+        // Checks which button the user pressed.
         if (relevantDisputeCards[0] != -1)
             Build.cardButtons[relevantDisputeCards[0]].addActionListener(new ActionListener() {
 
