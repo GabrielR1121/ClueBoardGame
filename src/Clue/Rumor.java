@@ -130,17 +130,16 @@ public class Rumor {
         }
         isEliminated = true;
 
-        showCorrectCards(resultFrame.getContentPane());
-
         JTextArea endingPosLabel = new JTextArea(text);
         endingPosLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         pane.add(endingPosLabel);
+        showCorrectCards(resultFrame.getContentPane());
 
     }
 
     public static void showCorrectCards(Container pane) {
 
-        pane.setLayout(new GridLayout(1, 3, 2, 2));
+        pane.setLayout(new GridLayout(4, 1, 2, 2));
 
         for (int i = 0; i < Build.secretCards.size(); i++) {
 
@@ -191,6 +190,7 @@ public class Rumor {
         disputedCardFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 disputedCardFrame.getContentPane().removeAll();
+                disputedCardFrame.dispose();
             }
         });
 
@@ -345,7 +345,7 @@ public class Rumor {
      * @param playerCards - Gets the specified client's cards.
      */
     public static void addDisputeButtons(Container pane, ArrayList<Integer> playerCards) {
-
+        disputeFrame.getContentPane().removeAll();
         pane.setLayout(new GridLayout(1, 3, 2, 2));
 
         for (int i = 0; i < playerCards.size(); i++) {
@@ -371,7 +371,7 @@ public class Rumor {
 
                     cardDisputed = relevantDisputeCards[0];
                     System.out.println("Disputed Card: " + cardDisputed);
-                    // disputeFrame.getContentPane().removeAll();
+                    disputeFrame.getContentPane().removeAll();
                     disputeFrame.dispose();
 
                 }
@@ -410,11 +410,12 @@ public class Rumor {
             JLabel label = new JLabel("You do not have any relevant cards at this moment.");
             label.setAlignmentX(Component.CENTER_ALIGNMENT);
             pane.add(label);
-            // disputeFrame.getContentPane().removeAll();
+
             disputeFrame.dispose();
             // Use this to move to next player. Use bool value.
             cardDisputed = -1;
         }
+
     }
 
     public static void reset() {
@@ -430,5 +431,6 @@ public class Rumor {
         Arrays.fill(relevantDisputeCards, -1);
 
         count = -1;
+
     }
 }
