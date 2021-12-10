@@ -2,6 +2,7 @@ package Clue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 import javax.swing.JOptionPane;
@@ -36,12 +37,14 @@ public class Client implements Runnable {
 
 	public static boolean isGameRunning = false;
 
-	public String outMsg;
+	public static String outMsg = "";
 	public String inMsg;
 	public String character;
 	private volatile static int playerTurn = 0;
 	public volatile static int colorIdx = -1;
 	public volatile static String[] availableColors;
+	public volatile static int startCoordsX;
+	public volatile static int startCoordsY;
 
 	public static ArrayList<Boolean> playerAssumptions = new ArrayList<>() {
 
@@ -95,7 +98,7 @@ public class Client implements Runnable {
 			// join.
 			// This is for the first player, the rest send only the color chosen.
 
-			String outMsg = "";
+			// String outMsg = "";
 
 			// Only for the first player
 			if (currTurn == 0)
@@ -199,7 +202,8 @@ public class Client implements Runnable {
 
 			lastX = x;
 			lastY = y;
-			int testVar = -2;
+			startCoordsX = x;
+			startCoordsY = y;
 
 			while (true) {
 				// If the game is not running this will start the build for everyone with
@@ -220,23 +224,10 @@ public class Client implements Runnable {
 							lastY = y;
 							Build.playerX.set(currTurn, x);
 							Build.playerY.set(currTurn, y);
-							String outMsg = "";
-							outMsg += x + ";";
-							outMsg += y + ";";
-							outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de
-							// turnEnded().
-							outMsg += Rumor.rumorCharacterIdx + ";";
-							outMsg += Rumor.rumorWeaponIdx + ";";
-							outMsg += Rumor.rumorRoomIdx + ";";
-							outMsg += testVar + ";";
 
-							outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
-							// This wont work for roundabout.
-							outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
-
-							System.out.println("out: " + playerColor.get(currTurn) + " " + outMsg);
-							out.writeUTF(outMsg);
-							out.flush();
+							///////////////
+							sendOutMsg();
+							//////////////
 
 							if ((Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
 									&& Rumor.rumorRoomIdx != -1)) {
@@ -260,24 +251,27 @@ public class Client implements Runnable {
 								// Make code to view disputed card.
 
 								// try to place this in a method because code is repeating.
-								outMsg = "";
-								outMsg += x + ";";
-								outMsg += y + ";";
-								outMsg += true + ";"; // Turn Ended
-								outMsg += Rumor.rumorCharacterIdx + ";";
-								outMsg += Rumor.rumorWeaponIdx + ";";
-								outMsg += Rumor.rumorRoomIdx + ";";
-								outMsg += testVar + ";";
-								outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
-								// This wont work for roundabout.
-								outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
-								System.out.println("final out: " + playerColor.get(currTurn) + " " + outMsg);
-								out.writeUTF(outMsg);
-								out.flush();
+
+								////////////////////
+								sendOutMsg();
+								/////////////////
 
 							}
 
-						} // if
+						} else if (Rumor.isEliminated) {
+							Build.diceRoll = 0;
+							isPlayerTurn = false;
+
+							x = startCoordsX;
+							y = startCoordsY;
+							Build.playerX.set(currTurn, x);
+							Build.playerY.set(currTurn, y);
+
+							////////
+							sendOutMsg();
+							////////
+
+						}
 
 					} else {
 
@@ -323,8 +317,8 @@ public class Client implements Runnable {
 					while (Rumor.cardDisputed == -2) {
 					}
 
-					System.out.println("Passed while");
-
+					// This cant go into sendDM cause we are ending turns and switching variables
+					// specifically for this case.
 					String outMsg = "";
 					outMsg += x + ";";
 					outMsg += y + ";";
@@ -340,9 +334,13 @@ public class Client implements Runnable {
 					outMsg += false + ";";
 					outMsg += -2 + ";";
 
+					// If anything ever goes wrong en el codigo the error might be here.
+					outMsg += false;
+
 					System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
 					out.writeUTF(outMsg);
 					out.flush();
+
 				}
 
 			} catch (Exception e) {
@@ -366,51 +364,42 @@ public class Client implements Runnable {
 				isPlayerTurn = true;
 			} // if
 
+			if (Boolean.parseBoolean(strMsg[10])) {
+				// System.out.println("I LOST");
+				Rumor.isEliminated = true;
+				x = startCoordsX;
+				y = startCoordsY;
+				Build.playerX.set(currTurn, x);
+				Build.playerY.set(currTurn, y);
+				Rumor.checkSecretFolder();
+			}
+
 		}
 
 	}// changeXY
 
-	// Makes refrence to gameframe in order to create the window needed. Also needs
-	// to connect to server inorder to send accusation cards to next player.
-	public String startRumor() {
+	public static void sendOutMsg() throws IOException {
+		outMsg = "";
 
-		String room = JOptionPane.showInputDialog("Enter the room you think the murder was in: ");
-		String character = JOptionPane.showInputDialog("Enter the character you think was the murderer: ");
-		String weapon = JOptionPane.showInputDialog("Enter the weapon you think was used by the murderer: ");
+		outMsg += x + ";";
+		outMsg += y + ";";
+		outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de
+		// turnEnded().
+		outMsg += Rumor.rumorCharacterIdx + ";";
+		outMsg += Rumor.rumorWeaponIdx + ";";
+		outMsg += Rumor.rumorRoomIdx + ";";
+		// Equivalent of testVar V
+		outMsg += Rumor.cardDisputed + ";";
 
-		// This may be removed later on
-		HashMap<String, Integer> cardDeckMap = new HashMap<String, Integer>();
-		cardDeckMap.put("Green", 0);
-		cardDeckMap.put("Mustard", 1);
-		cardDeckMap.put("Orchid", 2);
-		cardDeckMap.put("Peacock", 3);
-		cardDeckMap.put("Plum", 4);
-		cardDeckMap.put("Scarlett", 5);
-		cardDeckMap.put("BallRoom", 6);
-		cardDeckMap.put("BilliardRoom", 7);
-		cardDeckMap.put("Conservatory", 8);
-		cardDeckMap.put("DiningRoom", 9);
-		cardDeckMap.put("Hall", 10);
-		cardDeckMap.put("Kitchen", 11);
-		cardDeckMap.put("Library", 12);
-		cardDeckMap.put("Lounge", 13);
-		cardDeckMap.put("Study", 14);
-		cardDeckMap.put("Candlestick", 15);
-		cardDeckMap.put("Dagger", 16);
-		cardDeckMap.put("LeadPipe", 17);
-		cardDeckMap.put("Revolver", 18);
-		cardDeckMap.put("Rope", 19);
-		cardDeckMap.put("Wrench", 20);
+		outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
 
-		return cardDeckMap.get(weapon).toString() + ", " + cardDeckMap.get(character).toString() + ", "
-				+ cardDeckMap.get(room).toString();
+		outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
+		outMsg += Rumor.playerWon + ";";
+
+		System.out.println("out: test " + playerColor.get(currTurn) + " " + outMsg);
+		out.writeUTF(outMsg);
+		out.flush();
 
 	}
 
-	// Makes refrence to gameframe in order to create the window needed. Also needs
-	// to connect to server inorder to receive accusation cards from last player and
-	// respond if needed.
-	public String disputeRumor() {
-		return null;
-	}
 }

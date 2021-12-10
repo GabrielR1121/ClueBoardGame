@@ -16,7 +16,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 
 public class Rumor {
 
@@ -26,6 +25,14 @@ public class Rumor {
     public volatile static int rumorWeaponIdx = -1;
     // Starting index for the room.
     public volatile static int rumorRoomIdx = -1;
+
+    // Starting index for the character.
+    public volatile static int finalRumorCharacterIdx = -1;
+    // Starting index for the weapon.
+    public volatile static int finalRumorWeaponIdx = -1;
+    // Starting index for the room.
+    public volatile static int finalRumorRoomIdx = -1;
+
     // Starting index for the card disputed.
     public volatile static int cardDisputed = -2;
     // Starting array index for the disputed cards.
@@ -34,6 +41,7 @@ public class Rumor {
     public static int count = -1;
     public volatile static boolean finalRumor = false;
     public volatile static boolean isEliminated = false;
+    public volatile static boolean playerWon = false;
 
     // Frame initiations.
     public static JFrame rumorframe = new JFrame("Rumor");
@@ -74,9 +82,6 @@ public class Rumor {
         finalFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         finalFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         finalFrame.setResizable(false);
-        //ImageIcon
-		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-		finalFrame.setIconImage(logo.getImage());
 
         rumorCheckBox(finalFrame.getContentPane(), "");
 
@@ -90,23 +95,20 @@ public class Rumor {
      * Last part of the final rumor. Checks if ALL of the rumored cards
      * are equal to the cards on the secret folder.
      */
-    private static void checkSecretFolder() {
+    public static void checkSecretFolder() {
 
         resultFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         // disputeFrame.setResizable(false);
-        //ImageIcon
-		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-		resultFrame.setIconImage(logo.getImage());
 
         boolean win = false;
 
-        if (Build.secretCards.get(0) == rumorCharacterIdx &&
-                Build.secretCards.get(1) == rumorRoomIdx &&
-                Build.secretCards.get(2) == rumorWeaponIdx) {
+        if (Build.secretCards.get(0) == finalRumorCharacterIdx &&
+                Build.secretCards.get(1) == finalRumorRoomIdx &&
+                Build.secretCards.get(2) == finalRumorWeaponIdx) {
             win = true;
-            playerEndScreen(resultFrame.getContentPane(), win);
-        } else
-            playerEndScreen(resultFrame.getContentPane(), win);
+        }
+
+        playerEndScreen(resultFrame.getContentPane(), win);
 
         resultFrame.pack();
         resultFrame.setLocationRelativeTo(null);
@@ -116,17 +118,19 @@ public class Rumor {
 
     private static void playerEndScreen(Container pane, boolean win) {
 
-        resultFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        resultFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         String text = "";
-        if (win == true)
+        if (win == true) {
             text = "WIN";
-        else {
+            playerWon = true;
+        } else {
             text = "Your rumor was incorrect and you have been eliminated. You can still"
                     + " dispute rumors. The correct cards were:";
-            showCorrectCards(rumorframe.getContentPane());
-            isEliminated = true;
         }
+        isEliminated = true;
+
+        showCorrectCards(resultFrame.getContentPane());
 
         JTextArea endingPosLabel = new JTextArea(text);
         endingPosLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -134,7 +138,7 @@ public class Rumor {
 
     }
 
-    private static void showCorrectCards(Container pane) {
+    public static void showCorrectCards(Container pane) {
 
         pane.setLayout(new GridLayout(1, 3, 2, 2));
 
@@ -154,9 +158,6 @@ public class Rumor {
         rumorframe.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
         rumorframe.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         rumorframe.setResizable(false);
-        //ImageIcon
-	    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-        rumorframe.setIconImage(logo.getImage());
 
         rumorCheckBox(rumorframe.getContentPane(), room);
 
@@ -174,9 +175,6 @@ public class Rumor {
             disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
             disputedCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             disputedCardFrame.setResizable(false);
-            //ImageIcon
-		    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-		    disputedCardFrame.setIconImage(logo.getImage());
 
             Build.cardButtons[card].setVisible(true);
             disputedCardFrame.getContentPane().add(Build.cardButtons[card]);
@@ -250,23 +248,30 @@ public class Rumor {
 
                 // Gets the index of the rumored room.
                 if (finalRumor == true) {
-                    rumorRoomIdx = Build.cardDeckMap.size() - weapons.getItemCount() -
+                    finalRumorRoomIdx = Build.cardDeckMap.size() - weapons.getItemCount() -
                             (rooms.getItemCount() - rooms.getSelectedIndex());
+
+                    // Gets the index of the rumored characters.
+                    finalRumorCharacterIdx = characters.getSelectedIndex();
+                    // Gets the index of the rumored characters.
+                    finalRumorWeaponIdx = Build.cardDeckMap.size() -
+                            (weapons.getItemCount() - weapons.getSelectedIndex());
                     checkSecretFolder();
+                } else {
+
+                    // Gets the index of the rumored characters.
+                    rumorCharacterIdx = characters.getSelectedIndex();
+                    // Gets the index of the rumored characters.
+                    rumorWeaponIdx = Build.cardDeckMap.size() -
+                            (weapons.getItemCount() - weapons.getSelectedIndex());
+
+                    Object rumorCharacterName = characters.getSelectedItem();
+                    Object rumorWeaponName = weapons.getSelectedItem();
+
+                    System.out.println(rumorCharacterIdx + "(" + rumorCharacterName + ") with " +
+                            rumorWeaponIdx + "(" + rumorWeaponName + ") in " + room);
+
                 }
-
-                // Gets the index of the rumored characters.
-                rumorCharacterIdx = characters.getSelectedIndex();
-                // Gets the index of the rumored characters.
-                rumorWeaponIdx = Build.cardDeckMap.size() -
-                        (weapons.getItemCount() - weapons.getSelectedIndex());
-
-                Object rumorCharacterName = characters.getSelectedItem();
-                Object rumorWeaponName = weapons.getSelectedItem();
-
-                System.out.println(rumorCharacterIdx + "(" + rumorCharacterName + ") with " +
-                        rumorWeaponIdx + "(" + rumorWeaponName + ") in " + room);
-
                 if (finalRumor == true) {
                     // endingFrame.getContentPane().removeAll();
                     finalFrame.dispose();
@@ -324,9 +329,6 @@ public class Rumor {
         // disputeFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // disputeFrame.setResizable(false);
         addDisputeButtons(disputeFrame.getContentPane(), Build.playerCards);
-        //ImageIcon
-		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-		disputeFrame.setIconImage(logo.getImage());
 
         disputeFrame.pack();
         disputeFrame.setLocationRelativeTo(null);

@@ -103,9 +103,6 @@ public class PlayerChecklist extends JPanel {
         this.setFocusable(true);
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //ImageIcon
-	    ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-        frame.setIconImage(logo.getImage());
         frame.setResizable(false);
         frame.pack();
         frame.setVisible(true);
