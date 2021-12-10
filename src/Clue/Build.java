@@ -47,6 +47,8 @@ public class Build extends JPanel implements ActionListener {
 	// Has the string info of all of the cards on the cardDeck array.
 	public static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
+	public volatile static Color playerColor;
+
 	// Constructor
 	public Build() {
 
@@ -58,9 +60,6 @@ public class Build extends JPanel implements ActionListener {
 		System.out.println("Staring gameframe...");
 		frame.add(this);
 		frame.setTitle("Clue");
-		//ImageIcon
-		ImageIcon logo = new ImageIcon(".\\ClueBoardGame\\Assets\\GameBoard\\iconImage.png");
-		frame.setIconImage(logo.getImage());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.pack();
@@ -401,7 +400,8 @@ public class Build extends JPanel implements ActionListener {
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
 					new ImageIcon(
-							"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\Card_Deck\\"+ i + ".png"));
+							"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\Card_Deck\\"
+									+ i + ".png"));
 		}
 	}
 
@@ -456,6 +456,8 @@ public class Build extends JPanel implements ActionListener {
 					default:
 						break;
 				}// switch()
+				if (i == Client.currTurn)
+					playerColor = g.getColor();
 
 				g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
 				repaint();
@@ -465,11 +467,17 @@ public class Build extends JPanel implements ActionListener {
 		startPlayerTurn();
 		checkMoves();
 
+		g.setColor(playerColor);
+		g.setFont(new Font("Ink Free", Font.BOLD, 20));
+		FontMetrics metrics = getFontMetrics(g.getFont());
+		g.drawString(Client.playerColor.get(Client.currTurn), (metrics.stringWidth("Player Color: ")) + 40,
+				g.getFont().getSize() + align);
+
 		g.setColor(Color.white);
 		g.setFont(new Font("Ink Free", Font.BOLD, 20));
 		FontMetrics metrics1 = getFontMetrics(g.getFont());
-		g.drawString("Player Turn: " + Client.playerColor.get(Client.currTurn),
-				(metrics1.stringWidth("Player Turn: ")) - 70, g.getFont().getSize() + align);
+		g.drawString("Player Color: ",
+				(metrics1.stringWidth("Player Color: ")) - 70, g.getFont().getSize() + align);
 
 		g.setColor(Color.white);
 		g.setFont(new Font("Ink Free", Font.BOLD, 20));
@@ -514,7 +522,10 @@ public class Build extends JPanel implements ActionListener {
 	public static void newDiceRoll() {
 
 		Random rand = new Random();
-		diceRoll = rand.nextInt(12) + 1;
+		if (!Rumor.isEliminated)
+			diceRoll = rand.nextInt(12) + 1;
+		else
+			diceRoll = 0;
 
 	}
 

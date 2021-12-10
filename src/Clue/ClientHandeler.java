@@ -130,7 +130,8 @@ public class ClientHandeler implements Runnable {
 				String[] strMsg = inMsg.split(";");
 
 				outMsg = strMsg[0] + ";" + strMsg[1] + ";" + Server.currTurn + ";" + strMsg[2] + ";" + strMsg[3] + ";"
-						+ strMsg[4] + ";" + strMsg[5] + ";" + strMsg[6] + ";" + strMsg[7] + ";" + strMsg[8];
+						+ strMsg[4] + ";" + strMsg[5] + ";" + strMsg[6] + ";" + strMsg[7] + ";" + strMsg[8] + ";"
+						+ strMsg[9];
 				System.out.println("SERVER OUT MSG: " + outMsg);
 				broadcastMessage(outMsg);
 
