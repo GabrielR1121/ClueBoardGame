@@ -15,6 +15,8 @@ public class MainMenu extends JPanel {
 	static final int SCREEN_HEIGHT = 872;
 	JFrame frame = new JFrame();
 
+	public static SoundThread mainMenuSound = new SoundThread(".//Assets//Sound//startScreen.wav");
+
 	// Waits for every player to choose a color and join the game,
 	// then every player gets the same gameboard with every location for
 	// their chosen color.
@@ -39,6 +41,7 @@ public class MainMenu extends JPanel {
 
 	public static void main(String[] args) {
 		new MainMenu();
+		mainMenuSound.playSound();
 	}
 
 	// Adds Start button for the first player, and adds the Join button for the rest
@@ -212,6 +215,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Green");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}
@@ -223,6 +227,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Plum");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}
@@ -234,6 +239,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Scarlett");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}
@@ -245,6 +251,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Orchid");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}
@@ -256,6 +263,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Mustard");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}
@@ -267,6 +275,7 @@ public class MainMenu extends JPanel {
 
 			public void actionPerformed(ActionEvent e) {
 				Client.colorIdx = Arrays.binarySearch(Client.availableColors, "Peacock");
+				mainMenuSound.pauseSound();
 				frame.dispose();
 
 			}

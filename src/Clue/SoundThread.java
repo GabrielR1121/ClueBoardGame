@@ -54,7 +54,7 @@ public class SoundThread extends Thread {
     } // playsound
 
     public void playSoundEffect() {
-        this.clip.start();
+        this.clip.loop(clip.LOOP_CONTINUOUSLY);
     }
 
 } // class

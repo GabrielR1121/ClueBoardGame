@@ -185,6 +185,7 @@ public class Rumor {
             pane.add(Build.cardButtons[Build.secretCards.get(i)]);
 
         }
+        Build.looseSound.playSound();
 
     }
 

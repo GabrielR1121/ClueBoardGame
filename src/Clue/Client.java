@@ -82,6 +82,8 @@ public class Client implements Runnable {
 
 	};
 
+	public static SoundThread horrorSound = new SoundThread(".//Assets//Sound//Horror Scream.wav");
+
 	/**
 	 * Creates a new client and connects them to the server.
 	 */
@@ -246,6 +248,7 @@ public class Client implements Runnable {
 				// required values. These must not contain 0.
 				if (!isGameRunning && !Build.playerX.contains(0)) {
 					isGameRunning = true;
+					horrorSound.playSound();
 					new Build();
 
 				} else {
@@ -421,6 +424,7 @@ public class Client implements Runnable {
 				Build.playerX.set(currTurn, x);
 				Build.playerY.set(currTurn, y);
 				Rumor.checkSecretFolder();
+
 			}
 
 		}

@@ -52,6 +52,10 @@ public class Build extends JPanel implements ActionListener {
 
 	public volatile static Boolean gameEnded = false;
 
+	public static SoundThread gameSound = new SoundThread(".//Assets//Sound//gameScreen.wav");
+	public static SoundThread winSound = new SoundThread(".//Assets//Sound//playerWin.wav");
+	public static SoundThread looseSound = new SoundThread(".//Assets//Sound//playerLoose.wav");
+
 	// Constructor
 	public Build() {
 
@@ -73,6 +77,7 @@ public class Build extends JPanel implements ActionListener {
 		frame.setLocationRelativeTo(null);
 
 		main();
+		gameSound.playSoundEffect();
 
 	}
 
@@ -511,7 +516,7 @@ public class Build extends JPanel implements ActionListener {
 	} // draw()
 
 	public void gameOver(Graphics g) {
-
+		gameSound.pauseSound();
 		this.setBackground(Color.black);
 		g.setColor(Color.red);
 		g.setFont(new Font("Ink Free", Font.BOLD, 100));
@@ -521,10 +526,10 @@ public class Build extends JPanel implements ActionListener {
 		if (Rumor.playerWon) {
 			g.drawString("YOU WON!!", (SCREEN_WIDTH - metrics5.stringWidth("YOU WON!!")) / 2,
 					(SCREEN_HEIGHT / 2) + 100);
-			// add win sound here.
+			winSound.playSound();
 		} else {
 			g.drawString("YOU LOST", (SCREEN_WIDTH - metrics5.stringWidth("YOU LOST")) / 2, (SCREEN_HEIGHT / 2) + 100);
-			// Add lost sound here.
+			looseSound.playSound();
 		}
 
 	}
@@ -556,9 +561,11 @@ public class Build extends JPanel implements ActionListener {
 	public static void newDiceRoll() {
 
 		Random rand = new Random();
-		if (!Rumor.isEliminated)
+		if (!Rumor.isEliminated) {
+			SoundThread diceSound = new SoundThread(".//Assets//Sound//Dice Roll.wav");
 			diceRoll = rand.nextInt(12) + 1;
-		else
+			diceSound.playSound();
+		} else
 			diceRoll = 0;
 
 	}
