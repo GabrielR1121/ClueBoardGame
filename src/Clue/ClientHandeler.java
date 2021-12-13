@@ -8,17 +8,21 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class ClientHandeler implements Runnable {
-
+	// Creates the Data input and output streams;
 	private DataOutputStream out;
 	private DataInputStream in;
-	private static int playerTurn;
-
 	public String inMsg = "";
 	public String outMsg = "";
 
+	// Establishes whos turn it is within all the players in the game
+	private static int playerTurn;
+
 	public static HashMap<String, Integer[]> characters = new HashMap<String, Integer[]>();
 
+	// Establishes whos turn it is
 	public boolean isPlayerTurn = false;
+
+	// Identifier for each player
 	public char label;
 
 	/**

@@ -413,8 +413,8 @@ public class Client implements Runnable {
 
 			// If the game ended reset everyone to their startinf positions and show the
 			// winning cards.
-			if (Boolean.parseBoolean(strMsg[10])) {
-				// System.out.println("I LOST");
+			if (Boolean.parseBoolean(strMsg[10]) && !Rumor.isEliminated) {
+				Build.gameEnded = true;
 				Rumor.isEliminated = true;
 				x = startCoordsX;
 				y = startCoordsY;
@@ -445,7 +445,13 @@ public class Client implements Runnable {
 
 		outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
 
-		outMsg += rand.nextInt(amountofPlayers) + ";";
+		int test = -1;
+		do {
+			test = rand.nextInt(amountofPlayers);
+
+		} while (test == currTurn);
+
+		outMsg += test + ";";
 		outMsg += Rumor.playerWon + ";";
 
 		System.out.println("out: test " + playerColor.get(currTurn) + " " + outMsg);
