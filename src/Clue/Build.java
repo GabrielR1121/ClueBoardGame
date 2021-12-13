@@ -61,6 +61,9 @@ public class Build extends JPanel implements ActionListener {
 		this.addKeyListener(new MyKeyAdapter());
 
 		System.out.println("Staring gameframe...");
+		// ImageIcon
+		ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");
+		frame.setIconImage(logo.getImage());
 		frame.add(this);
 		frame.setTitle("Clue");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -404,8 +407,7 @@ public class Build extends JPanel implements ActionListener {
 		for (int i = 0; i < cardButtons.length; i++) {
 			cardButtons[i] = new JButton(
 					new ImageIcon(
-							"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\Card_Deck\\"
-									+ i + ".png"));
+							".\\Assets\\Card_Deck\\" + i + ".png"));
 		}
 	}
 
@@ -424,7 +426,7 @@ public class Build extends JPanel implements ActionListener {
 	public void draw(Graphics g) {
 		if (!gameEnded) {
 			Image img = Toolkit.getDefaultToolkit().getImage(
-					"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+					".\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
 			g.drawImage(img, 0, 0, null);
 

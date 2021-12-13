@@ -123,6 +123,9 @@ public class PlayerChecklist extends JPanel {
 
         this.setPreferredSize(new Dimension(500, 500));
         this.setFocusable(true);
+        // ImageIcon
+        ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");
+        frame.setIconImage(logo.getImage());
         frame.add(this);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable(false);

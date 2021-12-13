@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -70,6 +71,11 @@ public class Rumor {
      * @param room - String of the room the user entered.
      */
     public static void startRumor(String room) {
+        // ImageIcon
+        ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");
+        rumorframe.setIconImage(logo.getImage());
+        finalFrame.setIconImage(logo.getImage());
+        resultFrame.setIconImage(logo.getImage());
 
         // Starts the final rumor
         if (room == "DecisionRoom") {
@@ -205,6 +211,10 @@ public class Rumor {
      * Shows the user the succeeding client's disputed card.
      */
     public static void showDisputedCard(int card) {
+        // ImageIcon
+        ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");
+        disputedCardFrame.setIconImage(logo.getImage());
+
         if (card != -1) {
             disputedCardFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
             disputedCardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -357,6 +367,11 @@ public class Rumor {
     static void disputeRumor() {
 
         disputeFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
+
+        // ImageIcon
+        ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");
+        disputeFrame.setIconImage(logo.getImage());
+
         // disputeFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // disputeFrame.setResizable(false);
         addDisputeButtons(disputeFrame.getContentPane(), Build.playerCards);
