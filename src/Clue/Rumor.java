@@ -168,7 +168,7 @@ public class Rumor {
     /**
      * Shows the cards that were inside of the secret folder.
      * 
-     * @param pane- The content pane of the result frame.
+     * @param pane- The content pane of the result frame
      */
     public static void showCorrectCards(Container pane) {
 
