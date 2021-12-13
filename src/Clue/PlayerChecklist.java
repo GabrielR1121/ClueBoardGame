@@ -10,12 +10,30 @@ import javax.swing.JPanel;
 import javax.swing.JFrame;
 import java.awt.event.WindowEvent;
 
+/**
+ * This class is used for the player checklist. In clue each player receives a
+ * checklist where they can rule out posibilities until they can narrow down
+ * who, where and what.
+ */
 public class PlayerChecklist extends JPanel {
 
-    // Has the string info of all of the cards on the cardDeck array.
-
+    /**
+     * Creates a new instance of checklist each time it is called but stores players
+     * choices for future use. All player cards are automatically checked if they
+     * are in their posesion.
+     * Each checklist is designed specifically for each player.
+     * 
+     * @param playerCards  The cards in the player posesion.
+     * @param playerNumber The players assigned number
+     * @param assumptions  This arraylist will be filled with 21 false options. Once
+     *                     the Player starts eliminating options through diduction
+     *                     or assumptions this variable will store that change for
+     *                     future use.
+     */
     public PlayerChecklist(ArrayList<Integer> playerCards, int playerNumber, ArrayList<Boolean> assumptions) {
         JFrame frame = new JFrame("Player " + (playerNumber + 1) + " Checklist");
+
+        // Sorts the player cards to make it easier search through.
         Collections.sort(playerCards);
 
         List<Checkbox> characterCheckboxes = new ArrayList<Checkbox>();
@@ -23,7 +41,7 @@ public class PlayerChecklist extends JPanel {
         List<Checkbox> weaponCheckboxes = new ArrayList<Checkbox>();
 
         for (int i = 0; i < 21; i++) {
-            // This part here checks the box if the index is found with binary search OR the
+            // Checks the box if the index is found OR the
             // value is true in playerAssumptions.
             Checkbox checkbox = new Checkbox(Build.cardDeckMap.get(i), playerCards.contains(i) || assumptions.get(i));
             checkbox.setFont(new Font("TimesRoman", Font.BOLD, 23));
@@ -47,10 +65,12 @@ public class PlayerChecklist extends JPanel {
 
         for (int i = 0; i < characterCheckboxes.size(); i++)
             characterSlot.add(characterCheckboxes.get(i));
-        // chararcterSlot.add(chararcterBoxes);
+
         this.add(characterSlot);
 
-        // Setting up panel for characters
+        ///////////////////////////////////////
+
+        // Setting up panel for rooms
         JPanel roomSlot = new JPanel();
 
         JPanel roomTitle = new JPanel();
@@ -64,6 +84,8 @@ public class PlayerChecklist extends JPanel {
             roomSlot.add(roomCheckboxes.get(i));
 
         this.add(roomSlot);
+
+        ////////////////////////////////////
 
         // Setting up panel for weapons
         JPanel weaponSlot = new JPanel();
@@ -79,13 +101,13 @@ public class PlayerChecklist extends JPanel {
         this.add(weaponSlot);
 
         this.setLayout(new GridLayout());
+        ///////////////////////////////////
 
-        // Adds action listener to save new checks before window closes
-
+        // Adds action listener to save new checks before window closes.
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                // Clears assumtions in order to save new choices made.
                 Client.playerAssumptions.clear();
-                // System.out.println("Hello");
 
                 for (int i = 0; i < characterCheckboxes.size(); i++)
                     Client.playerAssumptions.add(characterCheckboxes.get(i).getState());

@@ -4,28 +4,25 @@ import java.net.Socket;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.net.ServerSocket;
 import java.util.List;
 
+// Class for the server. Implements threads, and Java Sockets. 
 public class Server {
 
     private final int port = 2027;
     private final int numberOfConnections = 6;
     public static ArrayList<Socket> users = new ArrayList<Socket>();
-
     public volatile static int amountofPlayers = 0;
-
     public static int connPlayers = 0;
     public volatile static int currTurn = 0;
-
     public static CopyOnWriteArrayList<Integer> playerX = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<Integer> playerY = new CopyOnWriteArrayList<Integer>();
     public static CopyOnWriteArrayList<String> playerColor = new CopyOnWriteArrayList<String>();
 
     public char label = 'A';
 
-    // FIxed the order of color idx
+    // ArrayList for the Colors in order. Each client receives the updated ArrayList.
     @SuppressWarnings("serial")
     public static ArrayList<String> availableColors = new ArrayList<String>() {
 
@@ -41,17 +38,14 @@ public class Server {
 
     };
 
+    //ArrayList for all the clients.
     public static ArrayList<ClientHandeler> clientHandeler = new ArrayList<>();
 
-    // Not in UML yet
     public static int turn = 0;
     static int amountCards = 21;
     static Random rand = new Random();
-
-    // try to auto generate.
     public static ArrayList<Integer> secretFolder = new ArrayList<Integer>();
     public static List<List<Integer>> playerCards = new ArrayList<List<Integer>>();
-
     public static ArrayList<Integer> CardDeck = new ArrayList<Integer>();
 
     ServerSocket server;
@@ -63,7 +57,7 @@ public class Server {
     }
 
     // Server constructor
-    // Initalizes the panel for the jFrome with the determined Width and Height.
+    // Initalizes the panel for the JFrame with the determined Width and Height.
     // Adds the action Listeners
     // Starts the server
     Server() {
@@ -71,9 +65,8 @@ public class Server {
         ClientHandeler.main();
     }
 
-    // Opens the sockets and waits for a connection from the client.
-    // Sets the program to running and allows the timer thread to start
-    // Eventually a pop up with the color will be displayed here.
+    // Opens the socket and waits for a connection from the client.
+    // Sets the program to running. 
     public void startServer() {
 
         System.out.println("Starting server... \n-------------");
@@ -99,17 +92,15 @@ public class Server {
 
     }// startServer
 
-    // Starts the Final Rumor
-    public void finalRumor() {
-
-    }
-
+    //Fills the card deck with the amount of cards.
     public static void fillCardDeck() {
         CardDeck.clear();
         for (int i = 0; i < amountCards; i++)
             CardDeck.add(i);
     }
 
+    // Distributes the three cards needed for the secret folder. Containing one of each
+    // category (Characters, Weapons, Rooms).
     public static void secretFolderDistribute() {
         secretFolder.clear();
 
@@ -129,6 +120,7 @@ public class Server {
 
     }
 
+    //Distributes the cards across every player in the game.
     public static void distributeCards() {
 
         playerCards.clear();
@@ -138,6 +130,11 @@ public class Server {
         int start = 0;
         int end = distribute;
 
+        /* To distribute cards correctly,
+        * the remainder of amountCards % amountofPlayers is used.
+        * This happens because there will always be 18 cards left to distribute
+        * since there is three cards removed to fill the secret folder.
+        */
         for (int i = 1; i <= amountofPlayers; i++) {
 
             int extra = (i <= rem) ? 1 : 0;
@@ -151,10 +148,5 @@ public class Server {
 
     }// distributeCards
 
-    // Displays GameOver screen when a player wins or all players get eliminated.
-    // Will display winning cards and player who one if any.
-    public void gameOver() {
-
-    }
 
 }// class

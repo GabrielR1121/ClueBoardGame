@@ -47,7 +47,10 @@ public class Build extends JPanel implements ActionListener {
 	// Has the string info of all of the cards on the cardDeck array.
 	public static HashMap<Integer, String> cardDeckMap = new HashMap<Integer, String>();
 
+	// Used to paint the players color at the top of the play screen.
 	public volatile static Color playerColor;
+
+	public volatile static Boolean gameEnded = false;
 
 	// Constructor
 	public Build() {
@@ -419,82 +422,110 @@ public class Build extends JPanel implements ActionListener {
 	// * Players / Player Movement.
 	// * Their respective color
 	public void draw(Graphics g) {
+		if (!gameEnded) {
+			Image img = Toolkit.getDefaultToolkit().getImage(
+					"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
 
-		Image img = Toolkit.getDefaultToolkit().getImage(
-				"C:\\Users\\grgar\\OneDrive\\The backup folder\\School\\UPRB folder\\Fourth Year\\Semester 1\\Data Communication\\CLUE\\ClueBoardGame\\Assets\\GameBoard\\ClueGameBoard(updated).jpg");
+			g.drawImage(img, 0, 0, null);
 
-		g.drawImage(img, 0, 0, null);
+			// for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
+			// g.drawLine(i * UNIT_SIZE + align, 0, i * UNIT_SIZE + align, SCREEN_HEIGHT);
+			// g.drawLine(0, i * UNIT_SIZE + align, SCREEN_WIDTH, i * UNIT_SIZE + align);
+			// // Redraws the board each time something happens.
+			// repaint();
+			// }
 
-		// Gets the starting position for each players and draws it into the window.
-		for (int i = 0; i < Client.playerColor.size(); i++) {
+			// Gets the starting position for each players and draws it into the window.
+			for (int i = 0; i < Client.playerColor.size(); i++) {
 
-			if (Client.playerColor.get(i) != null) {
+				if (Client.playerColor.get(i) != null) {
 
-				switch (Client.playerColor.get(i).trim()) {
-					case "Green":
-						g.setColor(Colors.Green.getColor());
-						break;
-					case "Mustard":
-						g.setColor(Colors.Mustard.getColor());
-						break;
-					case "Orchid":
-						g.setColor(Colors.Orchid.getColor());
-						break;
-					case "Peacock":
-						g.setColor(Colors.Peacock.getColor());
-						break;
-					case "Plum":
-						g.setColor(Colors.Plum.getColor());
-						break;
-					case "Scarlett":
-						g.setColor(Colors.Scarlett.getColor());
-						break;
-					default:
-						break;
-				}// switch()
-				if (i == Client.currTurn)
-					playerColor = g.getColor();
+					switch (Client.playerColor.get(i).trim()) {
+						case "Green":
+							g.setColor(Colors.Green.getColor());
+							break;
+						case "Mustard":
+							g.setColor(Colors.Mustard.getColor());
+							break;
+						case "Orchid":
+							g.setColor(Colors.Orchid.getColor());
+							break;
+						case "Peacock":
+							g.setColor(Colors.Peacock.getColor());
+							break;
+						case "Plum":
+							g.setColor(Colors.Plum.getColor());
+							break;
+						case "Scarlett":
+							g.setColor(Colors.Scarlett.getColor());
+							break;
+						default:
+							break;
+					}// switch()
+					if (i == Client.currTurn)
+						playerColor = g.getColor();
 
-				g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
-				repaint();
-			} // if()
-		} // for()
+					g.fillOval(playerX.get(i), playerY.get(i), UNIT_SIZE, UNIT_SIZE);
+					repaint();
+				} // if()
+			} // for()
 
-		startPlayerTurn();
-		checkMoves();
+			startPlayerTurn();
+			checkMoves();
 
-		g.setColor(playerColor);
-		g.setFont(new Font("Ink Free", Font.BOLD, 20));
-		FontMetrics metrics = getFontMetrics(g.getFont());
-		g.drawString(Client.playerColor.get(Client.currTurn), (metrics.stringWidth("Player Color: ")) + 40,
-				g.getFont().getSize() + align);
+			g.setColor(playerColor);
+			g.setFont(new Font("Ink Free", Font.BOLD, 20));
+			FontMetrics metrics = getFontMetrics(g.getFont());
+			g.drawString(Client.playerColor.get(Client.currTurn), (metrics.stringWidth("Player Color: ")) + 40,
+					g.getFont().getSize() + align);
 
-		g.setColor(Color.white);
-		g.setFont(new Font("Ink Free", Font.BOLD, 20));
-		FontMetrics metrics1 = getFontMetrics(g.getFont());
-		g.drawString("Player Color: ",
-				(metrics1.stringWidth("Player Color: ")) - 70, g.getFont().getSize() + align);
+			g.setColor(Color.white);
+			g.setFont(new Font("Ink Free", Font.BOLD, 20));
+			FontMetrics metrics1 = getFontMetrics(g.getFont());
+			g.drawString("Player Color: ",
+					(metrics1.stringWidth("Player Color: ")) - 70, g.getFont().getSize() + align);
 
-		g.setColor(Color.white);
-		g.setFont(new Font("Ink Free", Font.BOLD, 20));
-		FontMetrics metrics2 = getFontMetrics(g.getFont());
-		g.drawString("Dice roll: " + diceRoll, (SCREEN_WIDTH - metrics2.stringWidth("Dice Roll: " + diceRoll)) - 35,
-				g.getFont().getSize() + align);
+			g.setColor(Color.white);
+			g.setFont(new Font("Ink Free", Font.BOLD, 20));
+			FontMetrics metrics2 = getFontMetrics(g.getFont());
+			g.drawString("Dice roll: " + diceRoll, (SCREEN_WIDTH - metrics2.stringWidth("Dice Roll: " + diceRoll)) - 35,
+					g.getFont().getSize() + align);
 
-		g.setColor(Color.white);
-		g.setFont(new Font("Ink Free", Font.BOLD, 20));
-		FontMetrics metrics3 = getFontMetrics(g.getFont());
-		g.drawString("Press C to display checklist",
-				(metrics3.stringWidth("Press C on keyboard to display player checklist")) - 350, SCREEN_HEIGHT - 35);
-		g.setColor(Color.white);
-		g.setFont(new Font("Ink Free", Font.BOLD, 20));
-		FontMetrics metrics4 = getFontMetrics(g.getFont());
-		g.drawString("Press P to display deck of cards.",
-				(metrics4.stringWidth("Press P on keyboard to display deck of cards.")) - 350, SCREEN_HEIGHT - 15);
+			g.setColor(Color.white);
+			g.setFont(new Font("Ink Free", Font.BOLD, 20));
+			FontMetrics metrics3 = getFontMetrics(g.getFont());
+			g.drawString("Press C to display checklist",
+					(metrics3.stringWidth("Press C on keyboard to display player checklist")) - 350,
+					SCREEN_HEIGHT - 35);
+			g.setColor(Color.white);
+			g.setFont(new Font("Ink Free", Font.BOLD, 20));
+			FontMetrics metrics4 = getFontMetrics(g.getFont());
+			g.drawString("Press P to display deck of cards.",
+					(metrics4.stringWidth("Press P on keyboard to display deck of cards.")) - 350, SCREEN_HEIGHT - 15);
 
-		// g.drawString("Game Over" , (SCREEN_WIDTH- metrics.stringWidth("Game
-		// Over"))/2, SCREEN_HEIGHT/2)
+		} else
+			gameOver(g);
+
 	} // draw()
+
+	public void gameOver(Graphics g) {
+
+		this.setBackground(Color.black);
+		g.setColor(Color.red);
+		g.setFont(new Font("Ink Free", Font.BOLD, 100));
+		FontMetrics metrics5 = getFontMetrics(g.getFont());
+		g.drawString("Game Over", (SCREEN_WIDTH - metrics5.stringWidth("Game Over")) / 2, SCREEN_HEIGHT / 2);
+		g.setColor(playerColor);
+		if (Rumor.playerWon) {
+			g.drawString("YOU WON!!", (SCREEN_WIDTH - metrics5.stringWidth("YOU WON!!")) / 2,
+					(SCREEN_HEIGHT / 2) + 100);
+			// add win sound here.
+		} else {
+			g.drawString("YOU LOST", (SCREEN_WIDTH - metrics5.stringWidth("YOU LOST")) / 2, (SCREEN_HEIGHT / 2) + 100);
+			// Add lost sound here.
+		}
+
+	}
 
 	public void startPlayerTurn() {
 
@@ -579,7 +610,7 @@ public class Build extends JPanel implements ActionListener {
 
 	// Uses the global variable direction in order to move a player N,E,S,W with
 	// respect to the Unit_Size.
-	// After player moves direction is switched to s in order to prevent cosntant
+	// After player moves direction is switched to s in order to prevent constant
 	// movement.
 	// For now print (X,Y) of the player.
 	public void move() {
@@ -631,8 +662,9 @@ public class Build extends JPanel implements ActionListener {
 			direction = 's';
 	}
 
-	// activates when an action is preformed in order to run previus methods.
+	// activates when an action is preformed in order to run previous methods.
 	// Useless method right now
+	// Dead code but cant delete.
 	public void actionPerformed(ActionEvent e) {
 		System.out.println(direction);
 

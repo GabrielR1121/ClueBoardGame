@@ -5,22 +5,38 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
-import javax.swing.JOptionPane;
 
-//Client side.
-//Methods in this class will be exclusively for the player and nobody else.  
+/**
+ * Client side.
+ * Methods in this class will be exclusively for the player and nobody else.
+ * 
+ * This class will establish communication with the server and retrieve
+ * all the nesecary information the player needs before starting the game.
+ */
 public class Client implements Runnable {
+	// Width and Height of the gameboard
 	public final int SCREEN_WIDTH = 842;
 	public final int SCREEN_HEIGHT = 872;
+
+	// Establishes the movement of all pieces (each player can move 32 at a time)
 	public final int UNIT_SIZE = 32;
-	private Socket cliente;
+
+	// Creates the player socket
+	private Socket player;
+
+	// Creates the Data input and output streams;
 	private static DataOutputStream out;
 	private DataInputStream in;
+	public static String outMsg = "";
+	public String inMsg;
+
+	// Established the port and host that will be used.
 	private int puerto = 2027;
 	private String host = "localhost";
 	// private String host = "147.182.234.14";
 
-	Random rand = new Random();
+	// Variables need to creat all players.
+	static Random rand = new Random();
 	volatile static int x;
 	volatile static int y;
 	volatile static String color;
@@ -28,24 +44,34 @@ public class Client implements Runnable {
 	public static int lastX;
 	public static int lastY;
 
-	public static int amountofPlayers = 0;
+	// Saves the players starting coords for when the game ends.
+	public volatile static int startCoordsX;
+	public volatile static int startCoordsY;
 
-	public static ArrayList<String> playerColor = new ArrayList<String>();
 	public volatile static boolean isPlayerTurn;
 	public volatile static int currTurn;
 	public volatile static boolean turnEnded = false;
 
+	// The amount of players the game will expect before starting
+	public static int amountofPlayers = 0;
+
+	// All player colors in order of arrival.
+	public static ArrayList<String> playerColor = new ArrayList<String>();
+
+	// Checks to see if the game has started.
 	public static boolean isGameRunning = false;
 
-	public static String outMsg = "";
-	public String inMsg;
-	public String character;
+	// Determines who is the next turn so all players know whos tuen it is.
 	private volatile static int playerTurn = 0;
-	public volatile static int colorIdx = -1;
-	public volatile static String[] availableColors;
-	public volatile static int startCoordsX;
-	public volatile static int startCoordsY;
 
+	// Received the input from main menu for the color the player picked.
+	public volatile static int colorIdx = -1;
+
+	// Receives the available colors from server and shows it to the client.
+	public volatile static String[] availableColors;
+
+	// Fills players assumptions with false and when player check list is used this
+	// will be updated.
 	public static ArrayList<Boolean> playerAssumptions = new ArrayList<>() {
 
 		{
@@ -56,16 +82,19 @@ public class Client implements Runnable {
 
 	};
 
+	/**
+	 * Creates a new client and connects them to the server.
+	 */
 	public Client() {
 		try {
 
 			System.out.println("Client created");
 
-			cliente = new Socket(host, puerto);
+			player = new Socket(host, puerto);
 
-			this.in = new DataInputStream(cliente.getInputStream());
+			this.in = new DataInputStream(player.getInputStream());
 
-			this.out = new DataOutputStream(cliente.getOutputStream());
+			out = new DataOutputStream(player.getOutputStream());
 
 		} catch (Exception e) {
 			System.out.println("Error in Client file creating client constructor. Error message: " + e.getMessage());
@@ -73,34 +102,37 @@ public class Client implements Runnable {
 
 	}
 
+	/**
+	 * Client thread.
+	 * 
+	 * The way this thread works is in a zig-zag pattern where the clienthandeler
+	 * sends the first message.
+	 * The client receives it and sends in a responce.
+	 */
 	@Override
 	public void run() {
 		try {
 
-			// We should receive availableColors, turn, and isPlayerTurn
+			// Receives the available colors, the players turn on the cycle and if its the
+			// players turn from clienteHandeler.
 			String inMsg = in.readUTF();
 
 			String[] strMsg = inMsg.split(";");
 
 			availableColors = strMsg[0].split(",");
 
-			currTurn = Integer.parseInt(strMsg[1]); // Will be used as an index for the coordinates.
+			currTurn = Integer.parseInt(strMsg[1]);
 
 			isPlayerTurn = Boolean.parseBoolean(strMsg[2]);
 
-			// int colorIdx = rand.nextInt(availableColors.length);
+			// The program stops until the player picks their color in main menu.
 			while (colorIdx == -1) {
 			}
 
-			// System.out.println("Color index: " + colorIdx);
-
-			// We should send the index of the amount of players, and the colorIdx to
-			// join.
-			// This is for the first player, the rest send only the color chosen.
-
-			// String outMsg = "";
-
-			// Only for the first player
+			// Prepares the out message for the clientehandeler.
+			// If the you are the first one to connect the server you will send the amount
+			// of player that are playing and the color index.
+			// else only the color index.
 			if (currTurn == 0)
 				outMsg += amountofPlayers + ";" + colorIdx;
 			else
@@ -114,11 +146,10 @@ public class Client implements Runnable {
 
 		try {
 			String inMsg = "";
-			// Message to be received: Amount of players, and the starting position of each
-			// player.
+			// Message to be received: Amount of players, and the starting position of the
+			// player, the player color, the players cards, and the secret cards.
 			inMsg = in.readUTF();
 
-			// The first thing being sent is the amount of players, then the positions.
 			String[] positions = inMsg.split(";");
 
 			// Receives the distributed cards from server.
@@ -139,15 +170,18 @@ public class Client implements Runnable {
 			for (int i = 0; i < sC.length; i++)
 				Build.secretCards.add(Integer.parseInt(sC[i].trim()));
 
-			// removed an if
+			// Sets the amount of players for everyone.
 			amountofPlayers = Integer.parseInt(positions[0]);
 
+			// Removes the amount of players from the received list so it is easier to work
+			// with later on.
 			positions = Arrays.copyOfRange(positions, 1, positions.length);
 			color = positions[0].trim();
 			x = Integer.parseInt(positions[1]);
 			y = Integer.parseInt(positions[2]);
 
-			// Placeholders
+			// Fills arraylists with default values while waiting for all player colors and
+			// coords.
 			for (int i = 0; i < amountofPlayers; i++) {
 
 				playerColor.add(null);
@@ -167,10 +201,10 @@ public class Client implements Runnable {
 		}
 		try {
 
-			// Setting the initial values for the colors, and the starting positions of
-			// each.
+			// Receives all player X and Y Coords and their colors.
 			String inMsg = in.readUTF();
 
+			// Dismantles the message
 			inMsg = inMsg.replace('[', ' ').trim();
 			inMsg = inMsg.replace(']', ' ').trim();
 			String[] strMsg = inMsg.split(";");
@@ -187,11 +221,12 @@ public class Client implements Runnable {
 			strMsg[2] = strMsg[2].replace(']', ' ').trim();
 			String[] yP = strMsg[2].split(",");
 
+			// Stores all X, Y Coords and colors in their respective arraylist in the
+			// correct order.
 			for (int i = 0; i < amountofPlayers; i++) {
 				playerColor.set(i, cP[i]);
 				Build.playerX.set(i, Integer.parseInt(xP[i].trim()));
 				Build.playerY.set(i, Integer.parseInt(yP[i].trim()));
-
 			}
 
 		} catch (Exception e) {
@@ -199,12 +234,13 @@ public class Client implements Runnable {
 		}
 
 		try {
-
+			// Prepares variable before thread goes in a loop.
 			lastX = x;
 			lastY = y;
 			startCoordsX = x;
 			startCoordsY = y;
 
+			// Starts the thread loop.
 			while (true) {
 				// If the game is not running this will start the build for everyone with
 				// required values. These must not contain 0.
@@ -212,52 +248,56 @@ public class Client implements Runnable {
 					isGameRunning = true;
 					new Build();
 
-				} // Forces while loop to online run when the values of x and y change.
-				else {
+				} else {
+					// Checks if its the players turn.
 					if (isPlayerTurn) {
-
+						// If the player moved or a rumor started this if will run
 						if ((lastX != x || lastY != y) || (Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
 								&& Rumor.rumorRoomIdx != -1)) {
-
+							// Changes the player turn if their dice roll reached 0;
 							isPlayerTurn = ((Build.diceRoll != 0) ? true : false);
+
+							// Updates lastX and lastY
 							lastX = x;
 							lastY = y;
+
+							// Updates the arraylist with its new x, y values
 							Build.playerX.set(currTurn, x);
 							Build.playerY.set(currTurn, y);
 
-							///////////////
+							// Sends message to clientHandeler.
 							sendOutMsg();
-							//////////////
 
+							// If a rumor started sets th eplayer into a waiting state until the rumor is
+							// disputed
 							if ((Rumor.rumorCharacterIdx != -1 && Rumor.rumorWeaponIdx != -1
 									&& Rumor.rumorRoomIdx != -1)) {
 
 								String strMsg[];
 								do {
+
+									// Receives the disputed card and a boolean tealling it the start rumor is
+									// over..
 									String inMsg = in.readUTF();
 
 									strMsg = inMsg.split(";");
 									System.out.println("Received str msg " + Arrays.toString(strMsg));
 								} while (Boolean.parseBoolean(strMsg[8]));
 
+								// Displays the disputed card sent by the othe player.
 								Rumor.showDisputedCard(Integer.parseInt(strMsg[7]));
-								// System.out.println("Card Disputed: " + Build.cardDeckMap.get());
-								// changeXYValues(inMsg);
+
+								// Resets the Rumor class in order to be used again.
 								Rumor.reset();
+
 								Build.diceRoll = 0;
-								// NEED TO SAVE DISPUTED CARD!!!!!!!!!
 
-								// Make clear rumor method.
-								// Make code to view disputed card.
-
-								// try to place this in a method because code is repeating.
-
-								////////////////////
+								// Sends message to clientHandeler.
 								sendOutMsg();
-								/////////////////
 
 							}
-
+							// If the player is eliminated they will be sent back to their starting
+							// positions and the only thing they are allowed to do is dispute rumors.
 						} else if (Rumor.isEliminated) {
 							Build.diceRoll = 0;
 							isPlayerTurn = false;
@@ -267,12 +307,10 @@ public class Client implements Runnable {
 							Build.playerX.set(currTurn, x);
 							Build.playerY.set(currTurn, y);
 
-							////////
 							sendOutMsg();
-							////////
-
 						}
-
+						// If its not your turn all the player will do is receive the updated coords
+						// from the player that is moving
 					} else {
 
 						String inMsg = in.readUTF();
@@ -293,22 +331,27 @@ public class Client implements Runnable {
 
 	}// run
 
-	// We receive x y and index to change value at
+	/**
+	 * Dismantles the message sent from clientHandeler and applies the proper
+	 * changes
+	 * 
+	 * @param inMsg Message sent from clienteHandelet
+	 */
 	public static void changeXYValues(String inMsg) {
 
 		inMsg = inMsg.replace('[', ' ').trim();
 		inMsg = inMsg.replace(']', ' ').trim();
 		String[] strMsg = inMsg.split(";");
 
+		// Checks if a rumor has started
 		if (Integer.parseInt(strMsg[4]) != -1 && Integer.parseInt(strMsg[5]) != -1
 				&& Integer.parseInt(strMsg[6]) != -1) {
 			try {
-				// Check if index are correct
+				// checks to see which player gets to dispute the rumor.
 				if (Boolean.parseBoolean(strMsg[8]) && Integer.parseInt(strMsg[9]) == currTurn) {
 					Rumor.rumorCharacterIdx = Integer.parseInt(strMsg[4]);
 					Rumor.rumorWeaponIdx = Integer.parseInt(strMsg[5]);
 					Rumor.rumorRoomIdx = Integer.parseInt(strMsg[6]);
-					System.out.println("It is my turn to dispute");
 
 					Rumor.disputeRumor();
 
@@ -317,8 +360,7 @@ public class Client implements Runnable {
 					while (Rumor.cardDisputed == -2) {
 					}
 
-					// This cant go into sendDM cause we are ending turns and switching variables
-					// specifically for this case.
+					// Prepares to send the disputed card to the other player.
 					String outMsg = "";
 					outMsg += x + ";";
 					outMsg += y + ";";
@@ -329,12 +371,12 @@ public class Client implements Runnable {
 					outMsg += Rumor.rumorRoomIdx + ";";
 					outMsg += Rumor.cardDisputed + ";";
 
+					// Resets rumor for later use
 					Rumor.reset();
 
 					outMsg += false + ";";
 					outMsg += -2 + ";";
 
-					// If anything ever goes wrong en el codigo the error might be here.
 					outMsg += false;
 
 					System.out.println("OUT MESSAGE FOR DISPUTE: " + outMsg);
@@ -348,24 +390,31 @@ public class Client implements Runnable {
 			}
 
 		} else {
+			// Updates the x, y coords of the moving player.
 			Build.playerX.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[0]));
 			Build.playerY.set(Integer.parseInt(strMsg[2]), Integer.parseInt(strMsg[1]));
 
+			// Checks to see if the turn ended
 			if (Boolean.parseBoolean(strMsg[3]) == true) {
-
+				// If the turn ended increamnet player turn
 				playerTurn = Integer.parseInt(strMsg[2]) + 1;
 
+				// If the increament passed the amount of players reset playerTurn to 0.
 				if (playerTurn == amountofPlayers)
 					playerTurn = 0;
 			} // if
 
+			// if the turn ended and player turn is equal to the players assined turn then
+			// start the turn
 			if (Boolean.parseBoolean(strMsg[3]) && playerTurn == currTurn) {
 				Build.newDiceRoll();
 				isPlayerTurn = true;
 			} // if
 
-			if (Boolean.parseBoolean(strMsg[10])) {
-				// System.out.println("I LOST");
+			// If the game ended reset everyone to their startinf positions and show the
+			// winning cards.
+			if (Boolean.parseBoolean(strMsg[10]) && !Rumor.isEliminated) {
+				Build.gameEnded = true;
 				Rumor.isEliminated = true;
 				x = startCoordsX;
 				y = startCoordsY;
@@ -378,22 +427,31 @@ public class Client implements Runnable {
 
 	}// changeXY
 
+	/**
+	 * Prepares the out message to be sent to the clientHandeler.
+	 * 
+	 * @throws IOException
+	 */
 	public static void sendOutMsg() throws IOException {
 		outMsg = "";
 
 		outMsg += x + ";";
 		outMsg += y + ";";
-		outMsg += ((Build.diceRoll != 0) ? false : true) + ";";// Estamos haciendo el trabajo de
-		// turnEnded().
+		outMsg += ((Build.diceRoll != 0) ? false : true) + ";";
 		outMsg += Rumor.rumorCharacterIdx + ";";
 		outMsg += Rumor.rumorWeaponIdx + ";";
 		outMsg += Rumor.rumorRoomIdx + ";";
-		// Equivalent of testVar V
 		outMsg += Rumor.cardDisputed + ";";
 
 		outMsg += ((Rumor.rumorCharacterIdx != -1) ? true : false) + ";";
 
-		outMsg += ((currTurn == amountofPlayers - 1) ? 0 : (currTurn + 1)) + ";";
+		int test = -1;
+		do {
+			test = rand.nextInt(amountofPlayers);
+
+		} while (test == currTurn);
+
+		outMsg += test + ";";
 		outMsg += Rumor.playerWon + ";";
 
 		System.out.println("out: test " + playerColor.get(currTurn) + " " + outMsg);

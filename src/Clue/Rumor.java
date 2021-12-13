@@ -150,6 +150,7 @@ public class Rumor {
         if (win == true) {
             text = "WIN";
             playerWon = true;
+            Build.gameEnded = true;
         } else {
             text = "Your rumor was incorrect and you have been eliminated. You can still"
                     + " dispute rumors. The correct cards were:";
