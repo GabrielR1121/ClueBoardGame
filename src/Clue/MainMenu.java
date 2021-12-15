@@ -40,6 +40,10 @@ public class MainMenu extends JPanel {
 	}// constructor
 
 	public static void main(String[] args) {
+		// Once client opens MainMenu, starts the client thread.
+		Client client = new Client();
+		Thread thread = new Thread(client);
+		thread.start();
 		new MainMenu();
 		mainMenuSound.playSound();
 	}
@@ -85,11 +89,6 @@ public class MainMenu extends JPanel {
 		ImageIcon icon = new ImageIcon(".\\Assets\\GameBoard\\menu.png");
 		JLabel img = new JLabel();
 		img.setIcon(icon);
-
-		// Once client opens MainMenu, starts the client thread.
-		Client client = new Client();
-		Thread thread = new Thread(client);
-		thread.start();
 
 		// Submit Button
 		JButton submitBtn = new JButton("Submit");
