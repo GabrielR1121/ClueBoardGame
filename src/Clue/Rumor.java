@@ -314,6 +314,7 @@ public class Rumor {
 
                 }
                 if (finalRumor == true) {
+                    finalFrame.getContentPane().removeAll();
                     finalFrame.dispose();
 
                 } else {
@@ -336,6 +337,7 @@ public class Rumor {
                 if (finalRumor == true) {
                     finalFrame.getContentPane().removeAll();
                     finalFrame.dispose();
+                    finalRumor = false;
                 } else {
                     rumorframe.getContentPane().removeAll();
                     rumorframe.dispose();
