@@ -370,6 +370,7 @@ public class Rumor {
     static void disputeRumor() {
 
         disputeFrame.setSize(Build.SCREEN_WIDTH, Build.SCREEN_HEIGHT);
+        disputeFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // ImageIcon
         ImageIcon logo = new ImageIcon(".\\Assets\\GameBoard\\iconImage.png");

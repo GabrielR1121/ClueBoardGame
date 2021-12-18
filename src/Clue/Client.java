@@ -32,8 +32,8 @@ public class Client implements Runnable {
 
 	// Established the port and host that will be used.
 	private int puerto = 2027;
-	private String host = "localhost";
-	// private String host = "147.182.234.14";
+	// private String host = "localhost";
+	private String host = "147.182.234.14";
 
 	// Variables need to creat all players.
 	static Random rand = new Random();
