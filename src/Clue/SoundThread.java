@@ -11,11 +11,6 @@ public class SoundThread extends Thread {
     private Clip clip;
 
     // Receives the file path for the sound and tries to play it.
-    // The audio NEEDS to be a .wav for this to work. Code Example below taken from
-    // GalaxyWars.
-    // player = new SoundThread("File path");
-    // player.start();
-    // player.playSound();
     public SoundThread(String string) { // constructor
 
         try {
